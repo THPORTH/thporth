@@ -1,12 +1,5 @@
 ### Hi there 👋
 
-### TODAY
-⚾️ MLB...12 PM
-⚽️ Premier League...1 PM
-🏈 CFL...4 PM
-
-
-
 **THPORTH/thporth** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
 Here are some ideas to get you started:
