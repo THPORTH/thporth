@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+	  <!-- Place these in your <head> section, before any code that uses Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA541jUwddBleOIhc-vka3IRMyEdUmyMIQ",
+    authDomain: "flashlive-polling-project.firebaseapp.com",
+    projectId: "flashlive-polling-project",
+    storageBucket: "flashlive-polling-project.appspot.com",
+    messagingSenderId: "867318318074",
+    appId: "1:867318318074:web:0919bc064388ffa93b9a43"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
    <script>
   const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   const host    = location.hostname; // e.g. "thporth.com" or "www.thporth.com"
