@@ -2819,6 +2819,101 @@ function getDisplayLeagueName(originalName) {
   return originalName && originalName.includes(':') ? originalName.split(':')[1].trim() : originalName;
 }
 	    </script>
+
+	    <script>
+  // Listen for real-time updates to your sports games collection
+  db
+    .collection('artifacts')
+    .doc('flashlive-polling-project')
+    .collection('public')
+    .doc('data')
+    .collection('sportsGames')
+    .orderBy('Start Time Unix')
+    .onSnapshot(
+      (snapshot) => {
+        const games = snapshot.docs.map(doc => doc.data());
+        const dynamicGamesContent = document.getElementById('dynamicGamesContent');
+        if (!dynamicGamesContent) return;
+        dynamicGamesContent.innerHTML = '';
+        if (games.length === 0) {
+          dynamicGamesContent.innerHTML = '<div style="color:#ccc;padding:20px;">No live games found.</div>';
+          return;
+        }
+        // Group games by league
+        const groupedGames = games.reduce((acc, game) => {
+          const league = game.League || 'Other';
+          if (!acc[league]) acc[league] = [];
+          acc[league].push(game);
+          return acc;
+        }, {});
+        // Sort league names alphabetically
+        const sortedLeagueNames = Object.keys(groupedGames).sort();
+        sortedLeagueNames.forEach(leagueName => {
+          const leagueGames = groupedGames[leagueName];
+          leagueGames.sort((a, b) => (a['Start Time Unix'] || 0) - (b['Start Time Unix'] || 0));
+          const leagueSection = document.createElement('div');
+          leagueSection.classList.add('league-section');
+          const leagueHeader = document.createElement('h2');
+          leagueHeader.classList.add('league-header');
+          leagueHeader.textContent = getDisplayLeagueName(leagueName);
+          leagueSection.appendChild(leagueHeader);
+          const gamesListContainer = document.createElement('div');
+          gamesListContainer.classList.add('game-entry-wrapper');
+          leagueGames.forEach(game => {
+            const row = document.createElement('div');
+            row.className = 'game-row';
+            // 1. Time/Status
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'game-time';
+            let timeText = '';
+            if (game.Status === 'FINISHED') {
+              timeText = 'F';
+              timeDiv.classList.add('status-finished');
+            } else if (game.Status && game.Status !== 'SCHEDULED' && game.Status !== 'N/A') {
+              timeText = game.Status;
+              timeDiv.classList.add('status-live');
+            } else {
+              const startTime = game['Start Time'] || '';
+              timeText = startTime;
+              timeDiv.classList.add('status-scheduled');
+            }
+            timeDiv.textContent = timeText;
+            row.appendChild(timeDiv);
+            // 2. Teams
+            const teamsDiv = document.createElement('div');
+            teamsDiv.className = 'game-teams';
+            teamsDiv.innerHTML = `<div>${game['Home Team'] || ''}</div><div>${game['Away Team'] || ''}</div>`;
+            row.appendChild(teamsDiv);
+            // 3. Score
+            const scoreDiv = document.createElement('div');
+            scoreDiv.className = 'score-cell';
+            let homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
+            let awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
+            if (game.Status === 'SCHEDULED' || game.Status === 'N/A') {
+              homeScore = '';
+              awayScore = '';
+            }
+            scoreDiv.innerHTML = `<div>${homeScore}</div><div>${awayScore}</div>`;
+            row.appendChild(scoreDiv);
+            // 4. Channel (if you have this info in Firestore)
+            const channelDiv = document.createElement('div');
+            channelDiv.className = 'channel-cell';
+            channelDiv.textContent = game.Channels || '';
+            row.appendChild(channelDiv);
+            gamesListContainer.appendChild(row);
+          });
+          leagueSection.appendChild(gamesListContainer);
+          dynamicGamesContent.appendChild(leagueSection);
+        });
+      },
+      (error) => {
+        const dynamicGamesContent = document.getElementById('dynamicGamesContent');
+        if (dynamicGamesContent) {
+          dynamicGamesContent.innerHTML = `<div style='color:#f00;padding:20px;'>Failed to load games: ${error.message}</div>`;
+        }
+      }
+    );
+</script>
 	    
 <script>
 function fetchAndDisplaySportsData() {
