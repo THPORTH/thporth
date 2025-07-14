@@ -2779,57 +2779,102 @@ const response = await fetch("https://raw.githubusercontent.com/ajolly2/Social_s
   });
 </script>
 
-	    <script>
-		    // Mapping of original league names to display names (exact matches)
-const leagueNameMap = {
-  "USA: WNBA": "WNBA",
-  "USA: NBA Salt Lake City Summer League": "NBA Summer League",
-  "USA: MLB": "MLB",
-  "World: Club Friendly": "Club Friendly",
-	"Euro Women": "FIFA Women's Euro",
-	"Europe: Euro Women": "FIFA Women's Euro",
-  // Add more as needed
-};
+	  <script>
+  // 1) Exact-match mappings
+  const leagueNameMap = {
+    "USA: NBA": "NBA",
+    "USA: WNBA": "WNBA",
+    "USA: NBA Salt Lake City Summer League": "NBA Summer League",
+    "USA: MLB": "MLB",
+    "World: Club Friendly": "Club Friendly",
+    "Euro Women": "FIFA Women's Euro",
+    "Europe: Euro Women": "FIFA Women's Euro",
+    // …add more exact matches as needed
+  };
 
-// Mapping for "contains" keywords
-const leagueNameContainsMap = [
-  { keyword: "Tour de France", display: "Tour de France" },
-  { keyword: "Wimbledon", display: "Wimbledon" },
-  { keyword: "NBA", display: "NBA" },
-  // Add more as needed
-];
+  // 2) “Contains”-based fallbacks
+  const leagueNameContainsMap = [
+    { keyword: "NBA", display: "NBA" },
+    { keyword: "WNBA", display: "WNBA" },
+    { keyword: "MLB", display: "MLB" },
+    { keyword: "Tour de France", display: "Tour de France" },
+    { keyword: "Club Friendly", display: "Club Friendly" },
+    // …add more contains-rules as needed
+  ];
 
-// Function to get display name for a league
-function getDisplayLeagueName(originalName) {
-  // 1. Exact match mapping
-  if (leagueNameMap[originalName]) {
-    return leagueNameMap[originalName];
-  }
-  // 2. Contains mapping
-  if (originalName) {
-    for (const rule of leagueNameContainsMap) {
-      if (originalName.toLowerCase().includes(rule.keyword.toLowerCase())) {
-        return rule.display;
+  // 3) Normalize a raw league string to its display form
+  function getDisplayLeagueName(originalName) {
+    // exact match
+    if (leagueNameMap[originalName]) {
+      return leagueNameMap[originalName];
+    }
+    // contains match
+    if (originalName) {
+      const lower = originalName.toLowerCase();
+      for (const { keyword, display } of leagueNameContainsMap) {
+        if (lower.includes(keyword.toLowerCase())) {
+          return display;
+        }
       }
     }
+    // fallback: drop prefix before colon
+    if (originalName && originalName.includes(":")) {
+      return originalName.split(":")[1].trim();
+    }
+    return originalName;
   }
-  // 3. Generic: remove prefix before colon
-  return originalName && originalName.includes(':') ? originalName.split(':')[1].trim() : originalName;
-}
 
-		     // 1) Which leagues to include?
+  // 4) Which league keywords to include
   const includeKeywords = ["NBA", "WNBA", "MLB", "Tour de France", "Club Friendly"];
 
-  // 2) Filter function: pass in your array of game-objects
+  // 5) Filter any array of game-objects so only those leagues pass
   function filterByLeagues(games) {
     return games.filter(game =>
       includeKeywords.some(kw =>
-        game.league && game.league.includes(kw)
+        game.league && game.league.toLowerCase().includes(kw.toLowerCase())
       )
     );
   }
 
-	    </script>
+  // 6) Render function—adjust markup as needed
+  function renderGames(games) {
+    const container = document.getElementById("games-container");
+    if (!container) return;
+    container.innerHTML = "";
+    games.forEach(game => {
+      const div = document.createElement("div");
+      div.className = "game";
+      div.innerHTML = `
+        <span class="league">${getDisplayLeagueName(game.league)}</span>
+        <span class="teams">${game.home} vs ${game.away}</span>
+        <span class="time">${game.time}</span>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // 7) On page load: fetch → filter → normalize → render
+  document.addEventListener("DOMContentLoaded", async () => {
+    const allGames = await fetchGamesFromYourDatabase();  // your data loader
+    const nbaGames = filterByLeagues(allGames)
+      .map(game => ({
+        ...game,
+        league: getDisplayLeagueName(game.league)
+      }));
+    renderGames(nbaGames);
+  });
+
+  // 8) Stub—replace with your actual fetch from Sheets/Firestore/etc.
+  async function fetchGamesFromYourDatabase() {
+    // Example stub data:
+    return [
+      { league: "USA: NBA Las Vegas Summer League", home: "Lakers", away: "Warriors", time: "7:00 PM" },
+      { league: "USA: WNBA", home: "Sky", away: "Mercury", time: "8:00 PM" },
+      { league: "USA: MLB", home: "Yankees", away: "Red Sox", time: "6:30 PM" },
+      // …
+    ];
+  }
+</script>
 	    
 <script>
 function fetchAndDisplaySportsData() {
