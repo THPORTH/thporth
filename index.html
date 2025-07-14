@@ -2852,28 +2852,6 @@ const response = await fetch("https://raw.githubusercontent.com/ajolly2/Social_s
       container.appendChild(div);
     });
   }
-
-  // 7) On page load: fetch → filter → normalize → render
-  document.addEventListener("DOMContentLoaded", async () => {
-    const allGames = await fetchGamesFromYourDatabase();  // your data loader
-    const nbaGames = filterByLeagues(allGames)
-      .map(game => ({
-        ...game,
-        league: getDisplayLeagueName(game.league)
-      }));
-    renderGames(nbaGames);
-  });
-
-  // 8) Stub—replace with your actual fetch from Sheets/Firestore/etc.
-  async function fetchGamesFromYourDatabase() {
-    // Example stub data:
-    return [
-      { league: "USA: NBA Las Vegas Summer League", home: "Lakers", away: "Warriors", time: "7:00 PM" },
-      { league: "USA: WNBA", home: "Sky", away: "Mercury", time: "8:00 PM" },
-      { league: "USA: MLB", home: "Yankees", away: "Red Sox", time: "6:30 PM" },
-      // …
-    ];
-  }
 </script>
 	    
 <script>
