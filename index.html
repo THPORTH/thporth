@@ -2815,6 +2815,19 @@ function getDisplayLeagueName(originalName) {
   // 3. Generic: remove prefix before colon
   return originalName && originalName.includes(':') ? originalName.split(':')[1].trim() : originalName;
 }
+
+		     // 1) Which leagues to include?
+  const includeKeywords = ["NBA", "WNBA", "MLB", "Tour de France", "Club Friendly"];
+
+  // 2) Filter function: pass in your array of game-objects
+  function filterByLeagues(games) {
+    return games.filter(game =>
+      includeKeywords.some(kw =>
+        game.league && game.league.includes(kw)
+      )
+    );
+  }
+
 	    </script>
 	    
 <script>
