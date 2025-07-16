@@ -1536,7 +1536,11 @@
       background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif;
       font-size: 10px; display: flex; align-items: center;
       padding-left: 1px; z-index: 11; border-bottom: 1px solid #1f1f1f;">News</div>
-           
+
+<div id="newsSubMenu" style="display: flex;">
+  <!-- This can be empty for now -->
+</div>
+
   <div class="news-main-container">
     <!-- Headlines Section -->
     <div class="news-section headlines-section">
@@ -1807,17 +1811,19 @@
       <div class="divider"></div>
 
       <!-- SOCIAL PANEL -->
-      <div class="column social" style="padding: 0; margin: 0;">
-        <div
-          id="socialHeader"
-          style="position: sticky; top: 0; width: 100%; height: 18px; background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif; font-size: 10px; display: flex; align-items: center; padding-left: 10px; z-index: 11;"
-        ><strong>Social</strong>
-        </div>
-        <!-- Single dynamic container for social feeds -->
-       <div id="my-rss-widget">
-  <!-- RSS.app embed: -->
-  <rssapp-feed id="FPxevhdc3HmbTqUF"></rssapp-feed>
-  <script src="https://widget.rss.app/v1/feed.js" type="text/javascript" async></script>
+<!-- SOCIAL PANEL -->
+<div class="column social" style="padding: 0; margin: 0;">
+  <div
+    id="socialHeader"
+    style="position: sticky; top: 0; width: 100%; height: 18px; background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif; font-size: 10px; display: flex; align-items: center; padding-left: 10px; z-index: 11;"
+  ><strong>Social</strong>
+  </div>
+  <!-- Dynamic container for social feeds -->
+  <div id="social-feed-container">
+    <!-- RSS.app embed: -->
+    <rssapp-feed id="FPxevhdc3HmbTqUF"></rssapp-feed>
+    <script src="https://widget.rss.app/v1/feed.js" type="text/javascript" async></script>
+  </div>
 </div>
 
       </div>
