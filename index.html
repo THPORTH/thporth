@@ -1811,19 +1811,15 @@
       <div class="divider"></div>
 
       <!-- SOCIAL PANEL -->
-<!-- SOCIAL PANEL -->
-<!-- SOCIAL PANEL -->
 <div class="column social" style="padding: 0; margin: 0;">
   <div
     id="socialHeader"
     style="position: sticky; top: 0; width: 100%; height: 18px; background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif; font-size: 10px; display: flex; align-items: center; padding-left: 10px; z-index: 11;"
   ><strong>Social</strong>
   </div>
-  <!-- Dynamic container for social feeds -->
-  <div id="my-rss-widget">
-    <!-- RSS.app embed: -->
-    <rssapp-feed id="FPxevhdc3HmbTqUF"></rssapp-feed>
-    <script src="https://widget.rss.app/v1/feed.js" type="text/javascript" async></script>
+  <!-- Dynamic container for all social feeds -->
+  <div id="social-feed-container">
+    <!-- RSS.app embed will be loaded here dynamically -->
   </div>
 </div>
 
@@ -1978,83 +1974,89 @@ tr.innerHTML = `<td style="text-align:left">${formattedName} <span style="font-s
 
     <!-- Lazy Load Social Feeds Script -->
     <script>
-      // Updated rssFeeds including new social feed keys
-      const rssFeeds = {
-        Home: "_W0ZzValCUhv9Q88Y",
-        MLB: "_wcNmb7Pr9SpM8BQ4",
-        NBA: "KDHaD7kKFdoZKNKv",
-        NFL: "INJ6Bk4bDkbmuBbD",
-        NHL: "pNuN9vyuvzYgmCmy",
-        UFC: "D7Pzjs1eNyeNfRZg",
-        Boxing: "E4QHg9gnRHekN0eL",
-        NASCARCupSeries: "aIpvGxQaOiSfwADb",
-        Tennis: "InsXma0Pwpks5ZgB",
-        WNBA: "Am6lI6WHRaAxHmbL",
-        LIVGolf: "xTe6w6kt4LL4Hi8v",
-        IndyCar: "0J2bXOqqSpbcTt1Y",
-        NCAAM: "Zd1KfPkoPaqAlIxp",
-        NCAAW: "Aozk9D13FRvOiR16",
-        NCAABaseball: "iJ2vCYtgsHm9IR5d",
-        NCAASoftball: "ON2eWO5ApxIBiGYV",
-        MotoGP: "CKPWivTATHSyhDSN",
-        LPGATour: "RsLnkbshlMSpf2b7",
-        UEFAChampionsLeague: ["_UEFASocialFeed", "fJDD9RMqob2qCjwA"],
-        PremierLeague: ["_PremierSocialFeed", "neXmnwbubK21ZWYF"],
-        MLS: "9EAOd7JHtY1IRVUP",
-        Bundesliga: "YPjYmfSS1NyBDka8",
-        LaLiga: "iatyOkXWhSWdum53",
-        SerieA: "zbTyEkE5gjqLEv3s",
-        Soccer: "YhR2LGbhScpKNkzd",
-        FACup: "2zqHVQtHCIa3PVME",
-        LigaMX: "ExlLtrY7vEkY58OK",
-        NWSL: "YuC1qAhWubEURaom",
-        Ligue1: "WMDUyBIu1k0aSUYq",
-        UEFAEuropaLeague: "7ONIKeDn4stczUat",
-        UEFAConferenceLeague: "F5l3pTQwaGkBrFJk",
-        FormulaOne: "s7r6yAgtrA3k2dJw",
-        NCAAF: "AnA5shmkBJ7gdzCs",
-        PGATour: "c2yYJn0ed57eix3y",
-        TrackAndField: "26sFnjxqUEUQ6mkZ"
-      };
+      <script>
+  // Map of league to RSS.app feed ID
+  const rssFeeds = {
+    Home: "_W0ZzValCUhv9Q88Y",
+    MLB: "_wcNmb7Pr9SpM8BQ4",
+    NBA: "KDHaD7kKFdoZKNKv",
+    NFL: "INJ6Bk4bDkbmuBbD",
+    NHL: "pNuN9vyuvzYgmCmy",
+    UFC: "D7Pzjs1eNyeNfRZg",
+    Boxing: "E4QHg9gnRHekN0eL",
+    NASCARCupSeries: "aIpvGxQaOiSfwADb",
+    Tennis: "InsXma0Pwpks5ZgB",
+    WNBA: "Am6lI6WHRaAxHmbL",
+    LIVGolf: "xTe6w6kt4LL4Hi8v",
+    IndyCar: "0J2bXOqqSpbcTt1Y",
+    NCAAM: "Zd1KfPkoPaqAlIxp",
+    NCAAW: "Aozk9D13FRvOiR16",
+    NCAABaseball: "iJ2vCYtgsHm9IR5d",
+    NCAASoftball: "ON2eWO5ApxIBiGYV",
+    MotoGP: "CKPWivTATHSyhDSN",
+    LPGATour: "RsLnkbshlMSpf2b7",
+    UEFAChampionsLeague: "fJDD9RMqob2qCjwA",
+    PremierLeague: "neXmnwbubK21ZWYF",
+    MLS: "9EAOd7JHtY1IRVUP",
+    Bundesliga: "YPjYmfSS1NyBDka8",
+    LaLiga: "iatyOkXWhSWdum53",
+    SerieA: "zbTyEkE5gjqLEv3s",
+    Soccer: "YhR2LGbhScpKNkzd",
+    FACup: "2zqHVQtHCIa3PVME",
+    LigaMX: "ExlLtrY7vEkY58OK",
+    NWSL: "YuC1qAhWubEURaom",
+    Ligue1: "WMDUyBIu1k0aSUYq",
+    UEFAEuropaLeague: "7ONIKeDn4stczUat",
+    UEFAConferenceLeague: "F5l3pTQwaGkBrFJk",
+    FormulaOne: "s7r6yAgtrA3k2dJw",
+    NCAAF: "AnA5shmkBJ7gdzCs",
+    PGATour: "c2yYJn0ed57eix3y",
+    TrackAndField: "26sFnjxqUEUQ6mkZ"
+  };
 
-      let currentFeed = null;
+  let currentFeed = null;
 
-      function loadSocialFeed(section) {
-        const container = document.getElementById("social-feed-container");
-        if (currentFeed === section) return;
-        container.innerHTML = "";
-        const feedId = rssFeeds[section];
-        if (feedId) {
-          if (Array.isArray(feedId)) {
-            feedId.forEach(id => {
-              const feedTag = document.createElement("rssapp-feed");
-              feedTag.setAttribute("id", id);
-              container.appendChild(feedTag);
-            });
-          } else {
-            const feedTag = document.createElement("rssapp-feed");
-            feedTag.setAttribute("id", feedId);
-            container.appendChild(feedTag);
-          }
-        } else {
-          container.innerHTML =
-            "<div style='padding: 10px; font-size: 12px;'>No social feed available for this section.</div>";
-        }
-        currentFeed = section;
-      }
+  function loadSocialFeed(section) {
+    const container = document.getElementById("social-feed-container");
+    if (!container) return;
+    if (currentFeed === section) return;
+    container.innerHTML = "";
+    const feedId = rssFeeds[section];
+    if (feedId) {
+      const feedTag = document.createElement("rssapp-feed");
+      feedTag.setAttribute("id", feedId);
+      container.appendChild(feedTag);
 
-      document.addEventListener("DOMContentLoaded", () => {
-        // Load default feed (Home) on page load
-        loadSocialFeed("Home");
+      // Remove any previous RSS.app script
+      const oldScript = container.querySelector('script[data-rssapp]');
+      if (oldScript) oldScript.remove();
 
-        // Bind lazy loading to menu item clicks
-        document.querySelectorAll("#menuList li[data-section]").forEach(item => {
-          item.addEventListener("click", () => {
-            const section = item.dataset.section;
-            loadSocialFeed(section);
-          });
-        });
+      // Add the RSS.app script dynamically
+      const script = document.createElement("script");
+      script.src = "https://widget.rss.app/v1/feed.js";
+      script.async = true;
+      script.setAttribute('data-rssapp', 'true');
+      container.appendChild(script);
+    } else {
+      container.innerHTML =
+        "<div style='padding: 10px; font-size: 12px;'>No social feed available for this section.</div>";
+    }
+    currentFeed = section;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Load default feed (Home) on page load
+    loadSocialFeed("Home");
+
+    // Bind lazy loading to menu item clicks
+    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
+      item.addEventListener("click", () => {
+        const section = item.dataset.section;
+        loadSocialFeed(section);
       });
+    });
+  });
+</script>
     </script>
 
       <script>
@@ -2569,40 +2571,7 @@ document.addEventListener("DOMContentLoaded", function() {
     activateSource("espn");
   });
 </script>
-	    <script>
-  async function loadSocialFeed() {
-const response = await fetch("https://raw.githubusercontent.com/ajolly2/Social_sources/main/social_feed.xml?nocache=" + new Date().getTime());
-    const xmlText = await response.text();
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(xmlText, "application/xml");
-
-    const items = [...xml.querySelectorAll("item")].slice(0, 10); // Top 10 posts
-    const container = document.getElementById("social-feed-container");
-    container.innerHTML = ""; // Clear loading state
-
-    items.forEach(item => {
-      const title = item.querySelector("title")?.textContent ?? "";
-      const link = item.querySelector("link")?.textContent ?? "#";
-      const pubDate = item.querySelector("pubDate")?.textContent ?? "";
-      const description = item.querySelector("description")?.textContent ?? "";
-      const imgMatch = description.match(/<img[^>]+src="([^">]+)"/i);
-      const imgSrc = imgMatch ? imgMatch[1] : "";
-
-      const div = document.createElement("div");
-      div.style.marginBottom = "15px";
-      div.innerHTML = `
-        <a href="${link}" target="_blank" style="text-decoration:none;color:inherit;">
-          ${imgSrc ? `<img src="${imgSrc}" style="width:100%;max-height:140px;object-fit:cover;border-radius:6px;">` : ""}
-          <div style="font-weight:bold;margin-top:5px;">${title}</div>
-          <div style="font-size:11px;color:gray;">${new Date(pubDate).toLocaleString()}</div>
-        </a>
-      `;
-      container.appendChild(div);
-    });
-  }
-
-  loadSocialFeed();
-</script>
+	 
 
 	    <script>
   /**
