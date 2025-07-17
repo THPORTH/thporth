@@ -1680,66 +1680,57 @@
       <div class="divider"></div>
 
       <!-- SOCIAL PANEL -->
-      <div class="column social" style="padding: 0; margin: 0;">
+     <div class="column social" style="padding: 0; margin: 0; display: flex; flex-direction: column; height: 100vh;">
   <div
     id="socialHeader"
-    style="position: sticky; top: 0; width: 100%; height: 18px; background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif; font-size: 10px; display: flex; align-items: center; padding-left: 10px; z-index: 11;"
+    style="position: sticky; top: 0; width: 100%; height: 18px; background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif; font-size: 10px; display: flex; align-items: center; padding-left: 10px; z-index: 11; flex-shrink: 0;"
   ><strong>Social</strong>
   </div>
-  <!-- Single dynamic container for social feeds -->
-  <div id="social-feed-container"></div>
+  <div id="social-feed-container" style="flex: 1 1 0%; min-height: 0; width: 100%;"></div>
   <script>
-    // Mapping of league names to their RSS.app widget XML IDs
-   const leagueSocialFeeds = {
-  Home: [
-    "_dQv2W26Lxax1n3sC",
-    "4kPf5TwmnRhc9JOI"
-    // Add a third XML ID here if you have one
-  ],
-  MLB: ["ujM61O6ZzDQ7sOrb"],
-  NBA: ["KDHaD7kKFdoZKNKv"],
-  NFL: ["uvYTDMyn9nIYp068"],
-  NHL: ["FkhRHZBH8WxhSWqp"],
-  UFC: ["qzbgRcN4Qbr7VV0a"],
-  Boxing: ["F2n8AUgzsvLsTadA"],
-  NASCARCupSeries: ["AHhwgLGIFW2bn8zL"],
-  Tennis: ["VeaGgNXCdeNdgl5l"],
-  WNBA: ["DDsbnQvTkj4SNtgY"],
-  LIVGolf: ["4lGhahA1b9JU9QZw"],
-  IndyCar: ["oP6JlgisMb451EVK"],
-  NCAAM: ["nSxcJn3Ke9aIPqkw"],
-  NCAAW: ["8V2qb8WK1CMdeBfd"],
-  NCAABaseball: ["6wO4p6CY027kWz5C"],
-  NCAASoftball: ["WhV6lzzXj1FYOxln"],
-  MotoGP: ["tNL3DAMLhpRv30tg"],
-  LPGATour: ["MfbotBtAVnTL3I8j"],
-  UEFAChampionsLeague: ["UMleWQY5zVMDG3RE"],
-  PremierLeague: ["d972MWUX8N4NiXWc"],
-  MLS: ["J2tGf8v6qaD6GjFC"],
-  Bundesliga: ["YPjYmfSS1NyBDka8"],
-  LaLiga: ["8ZkcLZl1mdrw2loE"],
-  SerieA: ["vFegYItzKVnhgmre"],
-  Soccer: ["S2jMmGyBQoDlvZ4D"],
-  FACup: ["Lyr6iaRy8Fq04PKN"],
-  LigaMX: ["jak4RrwNxI4UyoHb"],
-  NWSL: ["wL801782ohBuXGyb"],
-  Ligue1: ["2yFpSRvAMKYuQUZV"],
-  UEFAEuropaLeague: ["p3fm4LjBWgp1WWr1"],
-  UEFAConferenceLeague: ["9ThCZix939tiPtXy"],
-  FormulaOne: ["8CRDFN299eMRIrYT"],
-  NCAAF: ["MgdJ7SfrtcBRmv21"],
-  PGATour: ["MPoz9LBtXzspAFPT"],
-  TrackAndField: ["hcIJ3xkcewSGD4Yq"]
-};
+    const leagueSocialFeeds = {
+      Home: [
+        "_dQv2W26Lxax1n3sC",
+        "4kPf5TwmnRhc9JOI"
+      ],
+      MLB: ["ujM61O6ZzDQ7sOrb"],
+      NBA: ["KDHaD7kKFdoZKNKv"],
+      NFL: ["uvYTDMyn9nIYp068"],
+      NHL: ["FkhRHZBH8WxhSWqp"],
+      UFC: ["qzbgRcN4Qbr7VV0a"],
+      Boxing: ["F2n8AUgzsvLsTadA"],
+      NASCARCupSeries: ["AHhwgLGIFW2bn8zL"],
+      Tennis: ["VeaGgNXCdeNdgl5l"],
+      WNBA: ["DDsbnQvTkj4SNtgY"],
+      LIVGolf: ["4lGhahA1b9JU9QZw"],
+      IndyCar: ["oP6JlgisMb451EVK"],
+      NCAAM: ["nSxcJn3Ke9aIPqkw"],
+      NCAAW: ["8V2qb8WK1CMdeBfd"],
+      NCAABaseball: ["6wO4p6CY027kWz5C"],
+      NCAASoftball: ["WhV6lzzXj1FYOxln"],
+      MotoGP: ["tNL3DAMLhpRv30tg"],
+      LPGATour: ["MfbotBtAVnTL3I8j"],
+      UEFAChampionsLeague: ["UMleWQY5zVMDG3RE"],
+      PremierLeague: ["d972MWUX8N4NiXWc"],
+      MLS: ["J2tGf8v6qaD6GjFC"],
+      Bundesliga: ["YPjYmfSS1NyBDka8"],
+      LaLiga: ["8ZkcLZl1mdrw2loE"],
+      SerieA: ["vFegYItzKVnhgmre"],
+      Soccer: ["S2jMmGyBQoDlvZ4D"],
+      FACup: ["Lyr6iaRy8Fq04PKN"],
+      LigaMX: ["jak4RrwNxI4UyoHb"],
+      NWSL: ["wL801782ohBuXGyb"],
+      Ligue1: ["2yFpSRvAMKYuQUZV"],
+      UEFAEuropaLeague: ["p3fm4LjBWgp1WWr1"],
+      UEFAConferenceLeague: ["9ThCZix939tiPtXy"],
+      FormulaOne: ["8CRDFN299eMRIrYT"],
+      NCAAF: ["MgdJ7SfrtcBRmv21"],
+      PGATour: ["MPoz9LBtXzspAFPT"],
+      TrackAndField: ["hcIJ3xkcewSGD4Yq"]
+    };
 
     // Set this variable to the current league, e.g., "Home", "NBA", "NFL", etc.
-    // You should set this dynamically based on your menu/page logic.
-    // For demonstration, it is set to "Home".
     var currentLeague = "Home";
-
-    // If you have a way to determine the current league from your app's state,
-    // replace the above line with your logic, e.g.:
-    // var currentLeague = window.selectedLeague || "Home";
 
     var feeds = leagueSocialFeeds[currentLeague];
     if (feeds && feeds.length > 0) {
@@ -1751,11 +1742,12 @@
 
       var socialFeedContainer = document.getElementById("social-feed-container");
       if (socialFeedContainer) {
-        socialFeedContainer.innerHTML = 
-          '<iframe src="https://rss.app/embed/v1/wall/' + xmlId + '?limit=15" width="100%" height="600" frameborder="0" scrolling="no" style="border:none;overflow:hidden;"></iframe>';
+        socialFeedContainer.innerHTML =
+          '<iframe src="https://rss.app/embed/v1/wall/' + xmlId + '?limit=15" width="100%" height="100%" frameborder="0" scrolling="no" style="border:none;overflow:hidden;min-height:100%;"></iframe>';
       }
     }
   </script>
+</div>
 </div>
  <!-- DIVIDER BETWEEN SOCIAL PANEL AND MEDIA CENTER PANEL -->
       <div class="divider"></div>
