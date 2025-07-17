@@ -1970,85 +1970,89 @@ tr.innerHTML = `<td style="text-align:left">${formattedName} <span style="font-s
     <script src="https://widget.rss.app/v1/feed.js" async></script>
 
     <!-- Lazy Load Social Feeds Script -->
-    <script>
-      // Updated rssFeeds including new social feed keys
-      const rssFeeds = {
-        Home: "_W0ZzValCUhv9Q88Y",
-        MLB: "_wcNmb7Pr9SpM8BQ4",
-        NBA: "5RV6ZHeyJhWxORz5",
-        NFL: "INJ6Bk4bDkbmuBbD",
-        NHL: "pNuN9vyuvzYgmCmy",
-        UFC: "D7Pzjs1eNyeNfRZg",
-        Boxing: "E4QHg9gnRHekN0eL",
-        NASCARCupSeries: "aIpvGxQaOiSfwADb",
-        Tennis: "InsXma0Pwpks5ZgB",
-        WNBA: "Am6lI6WHRaAxHmbL",
-        LIVGolf: "xTe6w6kt4LL4Hi8v",
-        IndyCar: "0J2bXOqqSpbcTt1Y",
-        NCAAM: "Zd1KfPkoPaqAlIxp",
-        NCAAW: "Aozk9D13FRvOiR16",
-        NCAABaseball: "iJ2vCYtgsHm9IR5d",
-        NCAASoftball: "ON2eWO5ApxIBiGYV",
-        MotoGP: "CKPWivTATHSyhDSN",
-        LPGATour: "RsLnkbshlMSpf2b7",
-        UEFAChampionsLeague: ["_UEFASocialFeed", "fJDD9RMqob2qCjwA"],
-        PremierLeague: ["_PremierSocialFeed", "neXmnwbubK21ZWYF"],
-        MLS: "9EAOd7JHtY1IRVUP",
-        Bundesliga: "YPjYmfSS1NyBDka8",
-        LaLiga: "iatyOkXWhSWdum53",
-        SerieA: "zbTyEkE5gjqLEv3s",
-        Soccer: "YhR2LGbhScpKNkzd",
-        FACup: "2zqHVQtHCIa3PVME",
-        LigaMX: "ExlLtrY7vEkY58OK",
-        NWSL: "YuC1qAhWubEURaom",
-        Ligue1: "WMDUyBIu1k0aSUYq",
-        UEFAEuropaLeague: "7ONIKeDn4stczUat",
-        UEFAConferenceLeague: "F5l3pTQwaGkBrFJk",
-        FormulaOne: "s7r6yAgtrA3k2dJw",
-        NCAAF: "AnA5shmkBJ7gdzCs",
-        PGATour: "c2yYJn0ed57eix3y",
-        TrackAndField: "26sFnjxqUEUQ6mkZ"
-      };
+   <script>
+  // Map of league to RSS.app feed ID
+  const rssFeeds = {
+    Home: "_W0ZzValCUhv9Q88Y",
+    MLB: "_wcNmb7Pr9SpM8BQ4",
+    NBA: "KDHaD7kKFdoZKNKv",
+    NFL: "INJ6Bk4bDkbmuBbD",
+    NHL: "pNuN9vyuvzYgmCmy",
+    UFC: "D7Pzjs1eNyeNfRZg",
+    Boxing: "E4QHg9gnRHekN0eL",
+    NASCARCupSeries: "aIpvGxQaOiSfwADb",
+    Tennis: "InsXma0Pwpks5ZgB",
+    WNBA: "Am6lI6WHRaAxHmbL",
+    LIVGolf: "xTe6w6kt4LL4Hi8v",
+    IndyCar: "0J2bXOqqSpbcTt1Y",
+    NCAAM: "Zd1KfPkoPaqAlIxp",
+    NCAAW: "Aozk9D13FRvOiR16",
+    NCAABaseball: "iJ2vCYtgsHm9IR5d",
+    NCAASoftball: "ON2eWO5ApxIBiGYV",
+    MotoGP: "CKPWivTATHSyhDSN",
+    LPGATour: "RsLnkbshlMSpf2b7",
+    UEFAChampionsLeague: "fJDD9RMqob2qCjwA",
+    PremierLeague: "neXmnwbubK21ZWYF",
+    MLS: "9EAOd7JHtY1IRVUP",
+    Bundesliga: "YPjYmfSS1NyBDka8",
+    LaLiga: "iatyOkXWhSWdum53",
+    SerieA: "zbTyEkE5gjqLEv3s",
+    Soccer: "YhR2LGbhScpKNkzd",
+    FACup: "2zqHVQtHCIa3PVME",
+    LigaMX: "ExlLtrY7vEkY58OK",
+    NWSL: "YuC1qAhWubEURaom",
+    Ligue1: "WMDUyBIu1k0aSUYq",
+    UEFAEuropaLeague: "7ONIKeDn4stczUat",
+    UEFAConferenceLeague: "F5l3pTQwaGkBrFJk",
+    FormulaOne: "s7r6yAgtrA3k2dJw",
+    NCAAF: "AnA5shmkBJ7gdzCs",
+    PGATour: "c2yYJn0ed57eix3y",
+    TrackAndField: "26sFnjxqUEUQ6mkZ"
+  };
 
-      let currentFeed = null;
+  let currentFeed = null;
 
-      function loadSocialFeed(section) {
-        const container = document.getElementById("social-feed-container");
-        if (currentFeed === section) return;
-        container.innerHTML = "";
-        const feedId = rssFeeds[section];
-        if (feedId) {
-          if (Array.isArray(feedId)) {
-            feedId.forEach(id => {
-              const feedTag = document.createElement("rssapp-feed");
-              feedTag.setAttribute("id", id);
-              container.appendChild(feedTag);
-            });
-          } else {
-            const feedTag = document.createElement("rssapp-feed");
-            feedTag.setAttribute("id", feedId);
-            container.appendChild(feedTag);
-          }
-        } else {
-          container.innerHTML =
-            "<div style='padding: 10px; font-size: 12px;'>No social feed available for this section.</div>";
-        }
-        currentFeed = section;
-      }
+  function loadSocialFeed(section) {
+    const container = document.getElementById("social-feed-container");
+    if (!container) return;
+    if (currentFeed === section) return;
+    container.innerHTML = "";
+    const feedId = rssFeeds[section];
+    if (feedId) {
+      const feedTag = document.createElement("rssapp-feed");
+      feedTag.setAttribute("id", feedId);
+      container.appendChild(feedTag);
 
-      document.addEventListener("DOMContentLoaded", () => {
-        // Load default feed (Home) on page load
-        loadSocialFeed("Home");
+      // Remove any previous RSS.app script
+      const oldScript = container.querySelector('script[data-rssapp]');
+      if (oldScript) oldScript.remove();
 
-        // Bind lazy loading to menu item clicks
-        document.querySelectorAll("#menuList li[data-section]").forEach(item => {
-          item.addEventListener("click", () => {
-            const section = item.dataset.section;
-            loadSocialFeed(section);
-          });
-        });
+      // Add the RSS.app script dynamically
+      const script = document.createElement("script");
+      script.src = "https://widget.rss.app/v1/feed.js";
+      script.async = true;
+      script.setAttribute('data-rssapp', 'true');
+      container.appendChild(script);
+    } else {
+      container.innerHTML =
+        "<div style='padding: 10px; font-size: 12px;'>No social feed available for this section.</div>";
+    }
+    currentFeed = section;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Load default feed (Home) on page load
+    loadSocialFeed("Home");
+
+    // Bind lazy loading to menu item clicks
+    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
+      item.addEventListener("click", () => {
+        const section = item.dataset.section;
+        loadSocialFeed(section);
       });
-    </script>
+    });
+  });
+</script>
 
       <script>
         function showDiscussionSection(section) {
