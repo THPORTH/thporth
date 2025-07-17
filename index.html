@@ -1531,277 +1531,140 @@
 
       <!-- NEWS PANEL -->
 <div class="column news">
-  <!-- News header -->
-  <div class="news-header" style="width: 100%; height: 18px;
-      background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif;
-      font-size: 10px; display: flex; align-items: center;
-      padding-left: 1px; z-index: 11; border-bottom: 1px solid #1f1f1f;">News</div>
-           
-  <div class="news-main-container">
-    <!-- Headlines Section -->
-    <div class="news-section headlines-section">
-      <div class="news-section-header">Headlines</div>
-      <div id="headlines-tabs">
-        <div class="headlines-tab active" data-source="espn">ESPN</div>
-        <div class="headlines-tab" data-source="cbs">CBS</div>
-        <div class="headlines-tab" data-source="yahoo">Yahoo</div>
-        <div class="headlines-tab" data-source="fox">FOX</div>
+  <div class="news-header" style="width: 100%; height: 18px; background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif; font-size: 10px; display: flex; align-items: center; padding-left: 1px; z-index: 11; border-bottom: 1px solid #1f1f1f;">News</div>
+  <div id="news-Home" class="content-section" style="display: block;">
+    <div class="news-main-container">
+      <div class="news-section headlines-section">
+        <div class="news-section-header">Headlines</div>
+        <div id="headlines-tabs">
+          <div class="headlines-tab active" data-source="espn">ESPN</div>
+          <div class="headlines-tab" data-source="cbs">CBS</div>
+          <div class="headlines-tab" data-source="yahoo">Yahoo</div>
+          <div class="headlines-tab" data-source="fox">FOX</div>
+        </div>
+        <div class="news-feed-content" id="espn-feed">Loading ESPN...</div>
+        <div class="news-feed-content" id="cbs-feed" style="display:none;">Loading CBS...</div>
+        <div class="news-feed-content" id="yahoo-feed" style="display:none;">Loading Yahoo...</div>
+        <div class="news-feed-content" id="fox-feed" style="display:none;">Loading FOX...</div>
       </div>
-      <div class="news-feed-content" id="espn-feed">Loading ESPN...</div>
-      <div class="news-feed-content" id="cbs-feed" style="display:none;">Loading CBS...</div>
-      <div class="news-feed-content" id="yahoo-feed" style="display:none;">Loading Yahoo...</div>
-      <div class="news-feed-content" id="fox-feed" style="display:none;">Loading FOX...</div>
+      <div class="news-section breaking-section">
+        <div class="news-section-header breaking-tabs-header">
+          <span class="news-tab active" data-tab="breaking">Breaking</span>
+          <span class="news-tab" data-tab="fantasy">Fantasy</span>
+          <span class="news-tab" data-tab="transactions">Transactions</span>
+        </div>
+        <div class="news-feed-content" id="breaking-feed">Loading breaking news...</div>
+        <div class="news-feed-content" id="fantasy-feed" style="display:none;">Loading fantasy news...</div>
+        <div class="news-feed-content" id="transactions-feed" style="display:none;">Loading transactions...</div>
+      </div>
     </div>
-
-    <!-- Breaking/Fantasy/Transactions Tabs Section -->
-    <div class="news-section breaking-section">
-      <div class="news-section-header breaking-tabs-header">
-        <span class="news-tab active" data-tab="breaking">Breaking</span>
-        <span class="news-tab" data-tab="fantasy">Fantasy</span>
-        <span class="news-tab" data-tab="transactions">Transactions</span>
-      </div>
-      <div class="news-feed-content" id="breaking-feed">Loading breaking news...</div>
-      <div class="news-feed-content" id="fantasy-feed" style="display:none;">Loading fantasy news...</div>
-      <div class="news-feed-content" id="transactions-feed" style="display:none;">Loading transactions...</div>
-    </div>
-  </div> <!-- closes .news-main-container -->
-        <!-- MLB News Section -->
-        <div id="news-MLB" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-_6gzCeS4YQ4h2adTs">
-            <h4>MLB</h4>
-            <div class="feed-content">Loading MLB feed...</div>
-          </div>
-        </div>
-        <!-- NBA News Section -->
-        <div id="news-NBA" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-_ja3fYEA7yigAcmAk">
-            <h4>NBA</h4>
-            <div class="feed-content">Loading NBA feed...</div>
-          </div>
-        </div>
-        <!-- NFL News Section -->
-        <div id="news-NFL" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-_iiyR3EPoC5QXMnqt">
-            <h4>NFL</h4>
-            <div class="feed-content">Loading NFL feed...</div>
-          </div>
-        </div>
-        <!-- NHL News Section -->
-        <div id="news-NHL" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-_5c3ZcfSrwvdwdG2Z">
-            <h4>NHL</h4>
-            <div class="feed-content">Loading NHL feed...</div>
-          </div>
-        </div>
-        <!-- MLS News Section -->
-        <div id="news-MLS" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-_pBOHW7eyjbGkaiZq">
-            <h4>MLS</h4>
-            <div class="feed-content">Loading MLS feed...</div>
-          </div>
-        </div>
-        <!-- Premier League News Section -->
-        <div id="news-PremierLeague" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-PremierLeague">
-            <h4>Premier League</h4>
-            <div class="feed-content">Loading Premier League feed...</div>
-          </div>
-        </div>
-        <!-- UEFA Champions League News Section -->
-        <div id="news-UEFAChampionsLeague" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-UEFAChampionsLeague">
-            <h4>UEFA Champions League</h4>
-            <div class="feed-content">Loading UEFA Champions League feed...</div>
-          </div>
-        </div>
-        <!-- Serie A News Section -->
-        <div id="news-SerieA" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-SerieA">
-            <h4>Serie A</h4>
-            <div class="feed-content">Loading Serie A feed...</div>
-          </div>
-        </div>
-        <!-- Bundesliga News Section -->
-        <div id="news-Bundesliga" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-Bundesliga">
-            <h4>Bundesliga</h4>
-            <div class="feed-content">Loading Bundesliga feed...</div>
-          </div>
-        </div>
-        <!-- LaLiga News Section -->
-        <div id="news-LaLiga" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-LaLiga">
-            <h4>LaLiga</h4>
-            <div class="feed-content">Loading LaLiga feed...</div>
-          </div>
-        </div>
-        <!-- Other News Sections -->
-        <div id="news-Soccer" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-Soccer">
-            <h4>Soccer</h4>
-            <div class="feed-content">Loading Soccer feed...</div>
-          </div>
-        </div>
-        <div id="news-FACup" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-FACup">
-            <h4>FA Cup</h4>
-            <div class="feed-content">Loading FA Cup feed...</div>
-          </div>
-        </div>
-        <div id="news-LigaMX" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-LigaMX">
-            <h4>Liga MX</h4>
-            <div class="feed-content">Loading Liga MX feed...</div>
-          </div>
-        </div>
-        <div id="news-NWSL" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-NWSL">
-            <h4>NWSL</h4>
-            <div class="feed-content">Loading NWSL feed...</div>
-          </div>
-        </div>
-        <div id="news-Ligue1" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-Ligue1">
-            <h4>Ligue 1</h4>
-            <div class="feed-content">Loading Ligue 1 feed...</div>
-          </div>
-        </div>
-        <div id="news-UEFAEuropaLeague" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-UEFAEuropaLeague">
-            <h4>UEFA Europa League</h4>
-            <div class="feed-content">Loading UEFA Europa League feed...</div>
-          </div>
-        </div>
-        <div id="news-UEFAConferenceLeague" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-UEFAConferenceLeague">
-            <h4>UEFA Conference League</h4>
-            <div class="feed-content">Loading UEFA Conference League feed...</div>
-          </div>
-        </div>
-        <div id="news-FormulaOne" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-FormulaOne">
-            <h4>Formula One</h4>
-            <div class="feed-content">Loading Formula One feed...</div>
-          </div>
-        </div>
-        <div id="news-NCAAF" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-NCAAF">
-            <h4>NCAAF</h4>
-            <div class="feed-content">Loading NCAAF feed...</div>
-          </div>
-        </div>
-        <div id="news-PGATour" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-PGATour">
-            <h4>PGA Tour</h4>
-            <div class="feed-content">Loading PGA Tour feed...</div>
-          </div>
-        </div>
-        <!-- New UFC News Section -->
-        <div id="news-UFC" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-UFC">
-            <h4>UFC</h4>
-            <div class="feed-content">Loading UFC feed...</div>
-          </div>
-        </div>
-        <!-- New Boxing News Section -->
-        <div id="news-Boxing" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-Boxing">
-            <h4>Boxing</h4>
-            <div class="feed-content">Loading Boxing feed...</div>
-          </div>
-        </div>
-        <!-- New NASCAR Cup Series News Section -->
-        <div id="news-NASCARCupSeries" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-NASCARCupSeries">
-            <h4>NASCAR Cup Series</h4>
-            <div class="feed-content">Loading NASCAR Cup Series feed...</div>
-          </div>
-        </div>
-        <!-- New Tennis News Section -->
-        <div id="news-Tennis" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-Tennis">
-            <h4>Tennis</h4>
-            <div class="feed-content">Loading Tennis feed...</div>
-          </div>
-        </div>
-        <!-- New WNBA News Section -->
-        <div id="news-WNBA" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-WNBA">
-            <h4>WNBA</h4>
-            <div class="feed-content">Loading WNBA feed...</div>
-          </div>
-        </div>
-        <!-- New LIV Golf News Section -->
-        <div id="news-LIVGolf" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-LIVGolf">
-            <h4>LIV Golf</h4>
-            <div class="feed-content">Loading LIV Golf feed...</div>
-          </div>
-        </div>
-        <!-- New IndyCar News Section -->
-        <div id="news-IndyCar" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-IndyCar">
-            <h4>IndyCar</h4>
-            <div class="feed-content">Loading IndyCar feed...</div>
-          </div>
-        </div>
-        <!-- New NCAAM News Section -->
-        <div id="news-NCAAM" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-NCAAM">
-            <h4>NCAAM</h4>
-            <div class="feed-content">Loading NCAAM feed...</div>
-          </div>
-        </div>
-        <!-- New NCAAW News Section -->
-        <div id="news-NCAAW" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-NCAAW">
-            <h4>NCAAW</h4>
-            <div class="feed-content">Loading NCAAW feed...</div>
-          </div>
-        </div>
-        <!-- New UFL News Section -->
-        <div id="news-UFL" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-UFL">
-            <h4>UFL</h4>
-            <div class="feed-content">Loading UFL feed...</div>
-          </div>
-        </div>
-        <!-- New NCAA Baseball News Section -->
-        <div id="news-NCAABaseball" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-NCAABaseball">
-            <h4>NCAA Baseball</h4>
-            <div class="feed-content">Loading NCAA Baseball feed...</div>
-          </div>
-        </div>
-        <!-- New NCAA Softball News Section -->
-        <div id="news-NCAASoftball" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-NCAASoftball">
-            <h4>NCAA Softball</h4>
-            <div class="feed-content">Loading NCAA Softball feed...</div>
-          </div>
-        </div>
-        <!-- New MotoGP News Section -->
-        <div id="news-MotoGP" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-MotoGP">
-            <h4>MotoGP</h4>
-            <div class="feed-content">Loading MotoGP feed...</div>
-          </div>
-        </div>
-        <!-- New LPGA Tour News Section -->
-        <div id="news-LPGATour" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-LPGATour">
-            <h4>LPGA Tour</h4>
-            <div class="feed-content">Loading LPGA Tour feed...</div>
-          </div>
-        </div>
-        <!-- New Track & Field News Section -->
-        <div id="news-TrackAndField" class="content-section" style="display: none;">
-          <div class="rss-feed" id="feed-TrackAndField">
-            <h4>Track &amp; Field</h4>
-            <div class="feed-content">Loading Track &amp; Field feed...</div>
-          </div>
-        </div>
-      </div>
+  </div>
+  <div id="news-MLB" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-_6gzCeS4YQ4h2adTs"><h4>MLB</h4><div class="feed-content">Loading MLB feed...</div></div>
+  </div>
+  <div id="news-NBA" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-_ja3fYEA7yigAcmAk"><h4>NBA</h4><div class="feed-content">Loading NBA feed...</div></div>
+  </div>
+  <div id="news-NFL" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-_iiyR3EPoC5QXMnqt"><h4>NFL</h4><div class="feed-content">Loading NFL feed...</div></div>
+  </div>
+  <div id="news-NHL" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-_5c3ZcfSrwvdwdG2Z"><h4>NHL</h4><div class="feed-content">Loading NHL feed...</div></div>
+  </div>
+  <div id="news-MLS" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-_pBOHW7eyjbGkaiZq"><h4>MLS</h4><div class="feed-content">Loading MLS feed...</div></div>
+  </div>
+  <div id="news-PremierLeague" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-PremierLeague"><h4>Premier League</h4><div class="feed-content">Loading Premier League feed...</div></div>
+  </div>
+  <div id="news-UEFAChampionsLeague" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-UEFAChampionsLeague"><h4>UEFA Champions League</h4><div class="feed-content">Loading UEFA Champions League feed...</div></div>
+  </div>
+  <div id="news-SerieA" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-SerieA"><h4>Serie A</h4><div class="feed-content">Loading Serie A feed...</div></div>
+  </div>
+  <div id="news-Bundesliga" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-Bundesliga"><h4>Bundesliga</h4><div class="feed-content">Loading Bundesliga feed...</div></div>
+  </div>
+  <div id="news-LaLiga" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-LaLiga"><h4>LaLiga</h4><div class="feed-content">Loading LaLiga feed...</div></div>
+  </div>
+  <div id="news-Soccer" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-Soccer"><h4>Soccer</h4><div class="feed-content">Loading Soccer feed...</div></div>
+  </div>
+  <div id="news-FACup" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-FACup"><h4>FA Cup</h4><div class="feed-content">Loading FA Cup feed...</div></div>
+  </div>
+  <div id="news-LigaMX" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-LigaMX"><h4>Liga MX</h4><div class="feed-content">Loading Liga MX feed...</div></div>
+  </div>
+  <div id="news-NWSL" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-NWSL"><h4>NWSL</h4><div class="feed-content">Loading NWSL feed...</div></div>
+  </div>
+  <div id="news-Ligue1" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-Ligue1"><h4>Ligue 1</h4><div class="feed-content">Loading Ligue 1 feed...</div></div>
+  </div>
+  <div id="news-UEFAEuropaLeague" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-UEFAEuropaLeague"><h4>UEFA Europa League</h4><div class="feed-content">Loading UEFA Europa League feed...</div></div>
+  </div>
+  <div id="news-UEFAConferenceLeague" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-UEFAConferenceLeague"><h4>UEFA Conference League</h4><div class="feed-content">Loading UEFA Conference League feed...</div></div>
+  </div>
+  <div id="news-FormulaOne" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-FormulaOne"><h4>Formula One</h4><div class="feed-content">Loading Formula One feed...</div></div>
+  </div>
+  <div id="news-NCAAF" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-NCAAF"><h4>NCAAF</h4><div class="feed-content">Loading NCAAF feed...</div></div>
+  </div>
+  <div id="news-PGATour" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-PGATour"><h4>PGA Tour</h4><div class="feed-content">Loading PGA Tour feed...</div></div>
+  </div>
+  <div id="news-UFC" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-UFC"><h4>UFC</h4><div class="feed-content">Loading UFC feed...</div></div>
+  </div>
+  <div id="news-Boxing" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-Boxing"><h4>Boxing</h4><div class="feed-content">Loading Boxing feed...</div></div>
+  </div>
+  <div id="news-NASCARCupSeries" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-NASCARCupSeries"><h4>NASCAR Cup Series</h4><div class="feed-content">Loading NASCAR Cup Series feed...</div></div>
+  </div>
+  <div id="news-Tennis" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-Tennis"><h4>Tennis</h4><div class="feed-content">Loading Tennis feed...</div></div>
+  </div>
+  <div id="news-WNBA" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-WNBA"><h4>WNBA</h4><div class="feed-content">Loading WNBA feed...</div></div>
+  </div>
+  <div id="news-LIVGolf" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-LIVGolf"><h4>LIV Golf</h4><div class="feed-content">Loading LIV Golf feed...</div></div>
+  </div>
+  <div id="news-IndyCar" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-IndyCar"><h4>IndyCar</h4><div class="feed-content">Loading IndyCar feed...</div></div>
+  </div>
+  <div id="news-NCAAM" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-NCAAM"><h4>NCAAM</h4><div class="feed-content">Loading NCAAM feed...</div></div>
+  </div>
+  <div id="news-NCAAW" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-NCAAW"><h4>NCAAW</h4><div class="feed-content">Loading NCAAW feed...</div></div>
+  </div>
+  <div id="news-UFL" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-UFL"><h4>UFL</h4><div class="feed-content">Loading UFL feed...</div></div>
+  </div>
+  <div id="news-NCAABaseball" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-NCAABaseball"><h4>NCAA Baseball</h4><div class="feed-content">Loading NCAA Baseball feed...</div></div>
+  </div>
+  <div id="news-NCAASoftball" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-NCAASoftball"><h4>NCAA Softball</h4><div class="feed-content">Loading NCAA Softball feed...</div></div>
+  </div>
+  <div id="news-MotoGP" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-MotoGP"><h4>MotoGP</h4><div class="feed-content">Loading MotoGP feed...</div></div>
+  </div>
+  <div id="news-LPGATour" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-LPGATour"><h4>LPGA Tour</h4><div class="feed-content">Loading LPGA Tour feed...</div></div>
+  </div>
+  <div id="news-TrackAndField" class="content-section" style="display: none;">
+    <div class="rss-feed" id="feed-TrackAndField"><h4>Track &amp; Field</h4><div class="feed-content">Loading Track &amp; Field feed...</div></div>
+  </div>
+</div>
 
       <!-- DIVIDER BETWEEN NEWS PANEL AND SOCIAL PANEL -->
       <div class="divider"></div>
@@ -2947,7 +2810,29 @@ function setupTabSwitching() {
 
 document.addEventListener('DOMContentLoaded', setupTabSwitching);
 </script>
-	
+
+	  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll("#menuList li[data-section]").forEach(item => {
+    item.addEventListener("click", function() {
+      const section = item.dataset.section || "Home";
+      // Hide all news content sections
+      document.querySelectorAll(".column.news .content-section").forEach(s => {
+        s.style.display = "none";
+      });
+      // Show the correct news section
+      const news = document.getElementById("news-" + section);
+      if (news) {
+        news.style.display = "block";
+      } else {
+        // Fallback: show Home if no section found
+        const homeNews = document.getElementById("news-Home");
+        if (homeNews) homeNews.style.display = "block";
+      }
+    });
+  });
+});
+</script>
 	   
 
   </body>
