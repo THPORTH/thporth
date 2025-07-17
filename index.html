@@ -1530,11 +1530,18 @@
 
 
       <!-- NEWS PANEL -->
-<div class="column news">
-  <div class="news-header" style="width: 100%; height: 18px; background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif; font-size: 10px; display: flex; align-items: center; padding-left: 1px; z-index: 11; border-bottom: 1px solid #1f1f1f;">News</div>
-  <div id="news-Home" class="content-section" style="display: block;">
-    <div class="news-main-container">
-      <div class="news-section headlines-section">
+<div class="column news" style="height: 100%;">
+  <!-- News header -->
+  <div class="news-header" style="width: 100%; height: 18px;
+      background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif;
+      font-size: 10px; display: flex; align-items: center;
+      padding-left: 1px; z-index: 11; border-bottom: 1px solid #1f1f1f;">News</div>
+
+  <!-- Home News Section (Headlines + Breaking) -->
+  <div id="news-Home" class="content-section" style="display: block; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+      <!-- Headlines Section -->
+      <div class="news-section headlines-section" style="flex: 0 0 60%; min-height: 0;">
         <div class="news-section-header">Headlines</div>
         <div id="headlines-tabs">
           <div class="headlines-tab active" data-source="espn">ESPN</div>
@@ -1547,7 +1554,8 @@
         <div class="news-feed-content" id="yahoo-feed" style="display:none;">Loading Yahoo...</div>
         <div class="news-feed-content" id="fox-feed" style="display:none;">Loading FOX...</div>
       </div>
-      <div class="news-section breaking-section">
+      <!-- Breaking/Fantasy/Transactions Tabs Section -->
+      <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
         <div class="news-section-header breaking-tabs-header">
           <span class="news-tab active" data-tab="breaking">Breaking</span>
           <span class="news-tab" data-tab="fantasy">Fantasy</span>
@@ -1559,6 +1567,8 @@
       </div>
     </div>
   </div>
+
+  <!-- League-Specific News Sections (all hidden by default) -->
   <div id="news-MLB" class="content-section" style="display: none;">
     <div class="rss-feed" id="feed-_6gzCeS4YQ4h2adTs"><h4>MLB</h4><div class="feed-content">Loading MLB feed...</div></div>
   </div>
