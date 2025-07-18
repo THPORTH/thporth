@@ -1,6 +1,989 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+   <script>
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const host    = location.hostname; // e.g. "thporth.com" or "www.thporth.com"
+  if ( isMobile && !host.startsWith("m.") ) {
+    // build the mobile host dynamically
+    const mobileHost = "m." + host.replace(/^www\./, "");
+    location.replace(
+      location.protocol + "//" +
+      mobileHost +
+      location.pathname +
+      location.search +
+      location.hash
+    );
+  }
+</script>
+	  <style>.news-tab[data-tab="fantasy"],
+.news-tab[data-tab="transactions"],
+#fantasy-feed,
+#transactions-feed {
+  display: none !important;
+}</style>
+	  
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtVcKiDt0J-60_Psit5Ip2HCL7FN2NVgI",
+    authDomain: "flashlive-sports-scraper.firebaseapp.com",
+    projectId: "flashlive-sports-scraper",
+    storageBucket: "flashlive-sports-scraper.appspot.com",
+    messagingSenderId: "227831135271",
+    appId: "1:227831135271:web:29e655cac33b2e32d42202",
+    measurementId: "G-RMBDDB0MF2"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CBFZXZSG19"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-CBFZXZSG19');
+</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Get the latest sports news, social buzz, and live scores for NFL, NBA, MLB, and more — all in one place.">
+    <meta name="robots" content="index, follow" />
+    <title>THPORTH | All the latest sports news</title>
+   
+<link rel="icon" type="image/png" href="https://www.thporth.com/thporth_AllSportsNews_logo-black.png" />
+  
+    <link rel="canonical" href="https://www.thporth.com/" />
+    
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.thporth.com/" />
+<meta property="og:title" content="THPORTH | All the latest sports news" />
+<meta property="og:description" content="Get the latest sports news, social buzz, and live scores for NFL, NBA, MLB, and more — all in one place." />
+<meta property="og:image" content="https://github.com/ajolly2/ajolly2.github.io/blob/master/thporth_AllSportsNews_logo-red.png?raw=true" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content="https://www.thporth.com/" />
+<meta name="twitter:title" content="THPORTH | All the latest sports news" />
+<meta name="twitter:description" content="Get the latest sports news, social buzz, and live scores for NFL, NBA, MLB, and more — all in one place." />
+<meta name="twitter:image" content="https://github.com/ajolly2/ajolly2.github.io/blob/master/thporth_AllSportsNews_logo-red.png?raw=true" />
+   <style>
+  /* ────────────────────────────────────────────────────────── */
+  /*                        Global Resets                        */
+  /* ────────────────────────────────────────────────────────── */
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #151515;
+    color: white;
+  }
+
+  ul,
+  li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .spacer-line {
+    height: 10px;
+  }
+/* --- NEW: Styles for Sports Schedule Display --- */
+
+/* Loading indicator styling */
+.loading-indicator {
+    display: none; /* flex */
+    flex-direction: column; /* flex-col */
+    align-items: center; /* items-center */
+    justify-content: center; /* justify-center */
+    padding: 2.5rem; /* p-10 */
+    color: #9ca3af; /* text-gray-400 */
+}
+.loading-spinner {
+    display: none;
+    animation: spin 1s linear infinite; /* animate-spin */
+    height: 2.5rem; /* h-10 */
+    width: 2.5rem; /* w-10 */
+    color: #60a5fa; /* text-blue-400 */
+    margin-bottom: 0.75rem; /* mb-3 */
+}
+.loading-text {
+   display: none;
+    font-size: 1.125rem; /* text-lg */
+    line-height: 1.75rem; /* leading-7 */
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Error message styling */
+.error-message {
+     display: none;
+    background-color: #991b1b; /* bg-red-800 */
+    border-width: 1px; /* border */
+    border-color: #dc2626; /* border-red-600 */
+    color: #fecaca; /* text-red-200 */
+    padding: 0.75rem 1rem; /* py-3 px-4 */
+    border-radius: 0.25rem; /* rounded */
+    position: relative; /* relative */
+    margin-top: 1rem; /* mt-4 */
+}
+.error-message strong {
+    font-weight: 700; /* font-bold */
+}
+.error-message span {
+    display: block; /* block */
+}
+@media (min-width: 640px) { /* sm:inline */
+    .error-message span {
+        display: inline;
+    }
+}
+
+/* League section styling */
+.league-section {
+    margin-bottom: 16px; /* mb-4 */
+}
+.league-section:last-child {
+    margin-bottom: 16px;
+}
+
+/* League header styling (matches screenshot dark theme) */
+.league-header {
+    background-color: #2a2a2a; /* Darker gray for league headers */
+    color: #e0e0e0; /* Light text */
+    padding: 0.75rem 1rem;
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600; /* semi-bold */
+    border-bottom: 1px solid #4a4a4a;
+    border-top: 1px solid #4a4a4a;
+    margin-top: 32px; /* Spacing between leagues */
+    margin-bottom: 5px !important;;
+    border-radius: 0.5rem; /* Rounded corners */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Game entries wrapper */
+.game-entry-wrapper {
+    border-radius: 0.5rem; /* rounded-lg */
+    border-width: 1px; /* border */
+    border-color: #374151; /* border-gray-700 */
+    overflow: hidden; /* overflow-hidden */
+    background-color: #1f1f1f; /* bg-gray-800 */
+    padding-bottom: 32px;
+    margin-bottom: 32px;
+}
+.game-entry-wrapper .game-entry:not(:last-child) {
+    border-bottom: 1px solid #374151; /* divide-y divide-gray-700 */
+    margin-bottom: 0;
+}
+
+/* Individual game entry styling */
+.game-entry {
+    display: flex; /* flex */
+    align-items: center; /* items-center */
+    padding-top: 0; /* py-2 */
+    padding-bottom: 0; /* py-2 */
+    padding-left: 3px; /* px-4 */
+    margin-left: 0;
+    padding-right: 3px; /* px-4 */
+}
+.game-entry:hover {
+    background-color: #374151; /* hover:bg-gray-700 */
+}
+
+/* Status cell styling */
+
+.status-finished {
+    color: #22c55e; /* text-green-500 */
+}
+.status-live {
+    color: #ef4444; /* text-red-500 */
+}
+.status-scheduled {
+    color: #a0a0a0; /* text-gray-400 */
+}
+
+/* Time cell styling */
+.time-cell {
+    font-weight: 500; /* Medium weight */
+    text-align: center; /* Center align time */
+    width: 50px; /* Fixed width for time */
+    flex-shrink: 0;
+    padding-right: 0 !important;
+    text-align: left !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    color: #e0e0e0; /* Light text color */
+    font-size: 11px; /* text-sm */
+}
+
+/* Game details (teams) styling */
+.game-details {
+    flex-grow: 1; /* flex-grow */
+    padding-left: 3px; /* padding-left */
+    padding-right: 3px; /* padding-right */
+    color: #e5e7eb; /* text-gray-200 */
+}
+.team-name {
+    font-size: 12px; /* text-sm */
+    line-height: 1.25rem; /* leading-5 */
+    padding-top: 1px; /* py-0.25rem (simulated) */
+    padding-bottom: 1px; /* py-0.25rem (simulated) */
+    padding-left: 0 !important;
+}
+
+/* Game scores styling */
+.game-scores {
+    text-align: right; /* text-right */
+    padding-right: 1rem; /* padding-right */
+    width: 20px; /* fixed width */
+    flex-shrink: 0; /* flex-shrink-0 */
+    color: #e5e7eb; /* text-gray-200 */
+}
+.score-value {
+    font-size: 0.875rem; /* text-sm */
+    line-height: 1.25rem; /* leading-5 */
+    padding-top: 0.25rem; /* py-0.25rem (simulated) */
+    padding-bottom: 0.25rem; /* py-0.25rem (simulated) */
+}
+
+/* Game channel styling */
+.game-channel {
+    text-align: right; /* text-right */
+    width: 100px; /* fixed width */
+    flex-shrink: 0; /* flex-shrink-0 */
+    padding-right: 1rem; /* padding-right */
+    color: #9ca3af; /* text-gray-400 */
+    font-size: 0.875rem; /* text-sm */
+    line-height: 1.25rem; /* leading-5 */
+}
+
+/* Custom scrollbar for overflow-y-auto */
+.column.tv-listings::-webkit-scrollbar,
+.games-content::-webkit-scrollbar,
+.game-entry-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+.column.tv-listings::-webkit-scrollbar-thumb,
+.games-content::-webkit-scrollbar-thumb,
+.game-entry-wrapper::-webkit-scrollbar-thumb {
+    background-color: #4a4a4a; /* Darker gray */
+    border-radius: 4px;
+}
+.column.tv-listings::-webkit-scrollbar-track,
+.games-content::-webkit-scrollbar-track,
+.game-entry-wrapper::-webkit-scrollbar-track {
+    background-color: #2a2a2a; /* Even darker gray */
+}
+
+/* Utility class to hide elements */
+.hidden {
+    display: none !important;
+}
+/* ────── Today's MLB Games widget (scoped) ────── */
+#tv-listings-today #games .game-row {
+  display: grid;
+  /* col1=time • col2=teams • col3=scores • col4=channel */
+  grid-template-columns: 55px 1fr 15px 30px;
+  align-items: center;
+  padding: 0;
+  border-bottom: 1px solid #333;
+  font-size: 13px;
+  margin-bottom: 0;
+}
+
+#tv-listings-today #games .time {
+  color: #ccc;
+}
+#tv-listings-today #games .time.live {
+  color: #DC143C;
+  font-weight: bold;
+}
+
+#tv-listings-today #games .teams {
+  display: flex;
+  flex-direction: column;
+  padding-left: 8px;
+}
+
+#tv-listings-today #games .team-name {
+  line-height: 17px;
+}
+
+#tv-listings-today #games .score-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+}
+
+#tv-listings-today #games .channel-cell {
+  text-align: right;
+  font-size: 12px;
+}
+#tv-listings-today #games .channel-cell a {
+  color: #99f;
+  text-decoration: none;
+}
+#tv-listings-today #games .channel-cell a:hover {
+  text-decoration: underline;
+}
+/* ──────────────────────────────────────────────── */
+  /* ────────────────────────────────────────────────────────── */
+  /*                         Top Bars                          */
+  /* ────────────────────────────────────────────────────────── */
+  #topBar {
+    width: 100%;
+    height: 18px;
+    background-color: #3c3c3c;
+  }
+
+  #topDivider {
+    width: 100%;
+    height: 2px;
+    background-color: #151515;
+  }
+
+  #topBar,
+  #topDivider {
+    width: 100%;
+    max-width: 1415px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  /* ────────────────────────────────────────────────────────── */
+  /*                        Layout Containers                    */
+  /* ────────────────────────────────────────────────────────── */
+  .container {
+    display: flex;
+    width: 100%;
+    height: calc(100% - 20px); /* account for topBar + topDivider */
+    justify-content: center;
+  }
+
+  .column {
+    overflow: auto;
+    padding: 10px 0;
+  }
+
+  .column.tv-listings {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .column.tv-listings * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .main-menu {
+    background-color: #151515;
+    color: white;
+    flex: 0 0 165px;
+    font-size: 11px;
+    padding: 0;
+  }
+
+  .divider {
+    flex: 0 0 4px;
+    background-color: #151515;
+  }
+
+  .news {
+    flex: 0 0 370px; /* reduced to accommodate 110px Standings panel */
+    background-color: #fafaf9;
+    padding: 0;
+  }
+
+  .social {
+    flex: 0 0 350px;
+    background-color: #fff;
+  }
+
+  /* ────────────────────────────────────────────────────────── */
+  /*                        Main‐Menu Styling                     */
+  /* ────────────────────────────────────────────────────────── */
+  #menuTopBox {
+    width: 165px;
+    height: 18px;
+    background-color: #3c3c3c;
+    padding-left: 2px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  #menuTopBox img {
+    height: 18px;
+    display: block;
+  }
+
+  #menuSearch {
+    width: 165px;
+    height: 18px;
+    box-sizing: border-box;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #3c3c3c;
+    padding: 2px 5px 2px 25px;
+    font-size: 10px;
+    background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjYzRjNGM0IiBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49ImJldmVsIj48Y2lyY2xlIGN4PSIxMSIgY3k9IjExIiByPSI4Ij48L2NpcmNsZT48bGluZSB4MT0iMjEiIHkxPSIyMSIgeDI9IjE2LjY1IiB5Mj0iMTYuNjUiPjwvbGluZT48L3N2Zz4=')
+      no-repeat 5px center;
+    background-size: 14px 14px;
+  }
+
+  #menuFilters {
+    width: 165px;
+    display: flex;
+    margin-bottom: 10px;
+  }
+
+  .menu-filter {
+    flex: 1;
+    text-align: center;
+    padding: 1px;
+    border: 1px solid #444;
+    background-color: #222;
+    font-size: 9px;
+    font-family: Helvetica, Arial, sans-serif;
+    cursor: pointer;
+    color: #fff;
+  }
+
+  .menu-filter.active {
+    background-color: #3c3c3c;
+    color: white;
+    border-color: #3c3c3c;
+  }
+
+  .selected {
+    font-weight: bold;
+    background-color: #3c3c3c;
+    color: white;
+  }
+
+  #menuList ul {
+    padding-left: 0;
+    padding-top: 0;
+    margin: 0;
+  }
+
+  #menuList li {
+    cursor: pointer;
+    padding: 3px 0;
+  }
+
+  .nested {
+    margin-left: 10px;
+  }
+
+  .nested li {
+    margin-left: 10px;
+  }
+
+  #newsSubMenu {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    background-color: #3f3f3f;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .news-menu-item {
+    line-height: 18px;
+    height: 18px;
+    padding: 0 8px; /* Adjust horizontal only */
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .news-menu-item.active {
+    background-color: black;
+    color: white;
+  }
+
+  /* ────────────────────────────────────────────────────────── */
+  /*                        RSS‐Feed Links                       */
+  /* ────────────────────────────────────────────────────────── */
+  .news .rss-feed {
+    padding-left: 10px;
+  }
+
+  .rss-feed a {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    color: black;
+    text-decoration: none;
+  }
+
+  .rss-feed a.clicked {
+    color: lightgray;
+  }
+
+  .rss-feed ul li {
+    border-bottom: 1px solid #C9C8C7;
+    padding: 5px 0;
+  }
+
+  .rss-feed ul li:last-child {
+    border-bottom: none;
+  }
+
+  .rss-feed h4 {
+    color: black;
+  }
+
+  .rss-feed {
+    background-color: #fafaf9;
+  }
+
+  .content-section {
+    display: none;
+    padding: 10px;
+  }
+
+  .expand-button {
+    background-color: #3c3c3c;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  .expand-button:hover {
+    background-color: #555;
+  }
+
+  /* ────────────────────────────────────────────────────────── */
+  /*                   News Column (Split Scroll Areas)          */
+  /* ────────────────────────────────────────────────────────── */
+
+  /* 1) Keep "News" bar pinned at the top: */
+  .column.news .news-header {
+    position: sticky;
+    top: 0;
+    z-index: 30; /* above everything in news column */
+    background: #3c3c3c;
+    width: 100%;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    padding-left: 1px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    border-bottom: 1px solid #1f1f1f;
+  }
+
+  /* 2) Structure: headlines-section (60%) on top, breaking-section (40%) below */
+  .news-main-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 18px); /* Full column height minus "News" bar */
+  }
+
+  .headlines-section {
+    flex: 0 0 60%;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 2px solid #d4d4d4;
+    min-height: 120px;
+    max-height: 60%;
+    overflow: hidden;
+  }
+
+  .breaking-section {
+    flex: 1 1 40%;
+    display: flex;
+    flex-direction: column;
+    min-height: 80px;
+    max-height: 40%;
+    overflow: hidden;
+  }
+
+  /* 3) "Headlines" header pinned at top of headlines-section (no gap under "News"): */
+  .headlines-section .news-section-header {
+    position: sticky;
+    top: 0; /* directly under the "News" bar (no extra gap) */
+    z-index: 29;
+    background: #3c3c3c;
+    color: #fff;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-bottom: 1px solid #2a2a2a;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+
+  /* 4) ESPN │ CBS │ Yahoo │ FOX tabs pinned below "Headlines": */
+  #headlines-tabs {
+    position: sticky;
+    top: 18px; /* 18px ("Headlines") under the "News" bar */
+    z-index: 28;
+    display: flex;
+    height: 18px;
+    background-color: #2a2a2a;
+    margin: 0;
+  }
+
+  .headlines-tab {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    line-height: 18px;
+    color: #aaa;
+    cursor: pointer;
+    background-color: #2a2a2a;
+    border-right: 1px solid #1f1f1f;
+  }
+
+  .headlines-tab:last-child {
+    border-right: none;
+  }
+
+  .headlines-tab.active {
+    background-color: #3c3c3c;
+    color: #fff;
+  }
+
+  /* 5) Each feed area within headlines-section scrolls independently */
+  .headlines-section .news-feed-content {
+    flex: 1 1 auto; /* fill remaining area under header and tabs */
+    overflow-y: auto;
+    padding: 36px 10px 10px; 
+    background: #fafaf9;
+    font-size: 11px;
+    color: #111;
+  }
+
+  /* 5a) ESPN feed-entry styling */
+ /* Apply identical styling to ESPN, CBS, Yahoo and FOX feeds */
+#espn-feed ul,
+#cbs-feed ul,
+#yahoo-feed ul,
+#fox-feed ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#espn-feed ul li,
+#cbs-feed ul li,
+#yahoo-feed ul li,
+#fox-feed ul li {
+  margin-bottom: 0.5em;
+}
+
+#espn-feed ul li a,
+#cbs-feed ul li a,
+#yahoo-feed ul li a,
+#fox-feed ul li a {
+  color: black;
+  text-decoration: none;
+  line-height: 1;
+  word-break: break-word;
+}
+
+#espn-feed ul li a:visited,
+#cbs-feed ul li a:visited,
+#yahoo-feed ul li a:visited,
+#fox-feed ul li a:visited {
+  color: lightgray;
+}
+
+
+  /* 6) "Breaking" header pinned at top of breaking-section */
+  .breaking-section .news-section-header {
+    position: sticky;
+    top: 0; /* directly at top of breaking-section (under headlines-section) */
+    z-index: 27;
+    background: #3c3c3c;
+    color: #fff;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+
+  /* 7) Breaking │ Fantasy │ Transactions tabs pinned under "Breaking" header */
+  .breaking-tabs-header {
+    position: sticky;
+    top: 18px; /* just under the 18px-high "Breaking" header */
+    z-index: 26;
+    display: flex;
+    gap: 0;
+    padding: 0;
+    height: 18px;
+    background-color: #3c3c3c;
+  }
+
+  .news-tab {
+    flex: 1 1 0;
+    text-align: center;
+    cursor: pointer;
+    font-size: 10px;
+    color: #aaa;
+    background: #3c3c3c;
+    border-right: 1px solid #2a2a2a;
+    border-bottom: none;
+    transition: background 0.2s, color 0.2s;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .news-tab:last-child {
+    border-right: none;
+  }
+
+  .news-tab.active {
+    background: #fff;
+    color: #222;
+    font-weight: bold;
+    border-bottom: 2px solid #dc143c;
+  }
+
+  /* 8) Each feed area within breaking-section scrolls independently */
+  .breaking-section .news-feed-content {
+    flex: 1 1 auto; /* fill remaining area under header and tabs */
+    overflow-y: auto;
+    padding: 0 10px;
+    background: #fafaf9;
+    font-size: 11px;
+    color: #111;
+  }
+
+  /* ────────────────────────────────────────────────────────── */
+  /*                    TV-Listings (Games) Styling               */
+  /* ────────────────────────────────────────────────────────── */
+  .column.tv-listings #live-games-container {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .league-section {
+    margin-bottom: 14px !important;
+  }
+
+
+  .league-header {
+    display: flex;
+    align-items: center;      /* Vertically center */
+    justify-content: flex-start; /* Or 'center' if you want horizontal centering */
+    font-weight: bold;
+    color: #fff;
+    font-size: 14px;
+    line-height: 16px;
+    margin-bottom: 12px;
+    margin-top: 40px;
+    background: #2a2a2a;
+    border: 0px solid #1f1f1f;
+    border-radius: 0 0 0 0;
+    height: 25px;             /* Set your desired height */
+    padding-left: 1rem;       /* Optional: keep your horizontal padding */
+}
+
+.league-header:first-child {
+    margin-top: 0;
+}
+
+  /* the wrapper around all the rows for a league */
+  .games-list {}
+
+  .game-row {
+    display: grid;
+    grid-template-columns: 20px 1fr 15px 40px;
+    align-items: center;
+    padding: 4px 10px;
+    margin-bottom: 0;
+    background: transparent;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  .game-row:nth-child(odd) {
+    background: transparent;
+  }
+
+  .game-time {
+    font-size: 11px;
+    color: #ccc;
+  
+  }
+
+  .game-time.live {
+    color: #DC143C !important;
+    font-weight: bold;
+  }
+
+  .game-time-final {
+    padding-left: 12px !important;
+    text-align: left !important; /* Make sure it's not being centered */
+    color: #ccc; /* or whatever color you want for the F */
+    background: none;
+  }
+
+.game-teams {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;   /* same as old .game-matchup's padding */
+  font-size: 11px;
+  color: #ccc;
+  line-height: 1.2;
+}
+
+.game-teams .team {
+  margin: 0;
+  padding: 0;
+}
+
+  .game-channel {
+    text-align: right;
+    font-size: 11px;
+    color: #ccc;
+  }
+
+  .games-tab {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    line-height: 18px;
+    color: #aaa;
+    cursor: pointer;
+    background-color: #2a2a2a;
+    border-right: 1px solid #1f1f1f;
+  }
+
+  .games-tab.active {
+    background-color: #3c3c3c;
+    color: #fff;
+  }
+
+  .games-content {
+    display: none;
+  }
+
+  #tv-listings-scores,
+  #tv-listings-today,
+  #tv-listings-live {
+    padding: 5px;
+  }
+	   
+	   .winner {
+  font-weight: bold;
+}
+
+
+  /* ────────────────────────────────────────────────────────── */
+  /*                        Fonts (Owners)                       */
+  /* ────────────────────────────────────────────────────────── */
+  @font-face {
+    font-family: 'Owners';
+    src: url('https://www.thporth.com/fonts/Owners-XLight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Owners';
+    src: url('https://www.thporth.com/fonts/Owners-medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  /* Owners Wide */
+  @font-face {
+    font-family: 'Owners Wide';
+    src: url('https://www.thporth.com/fonts/OwnersWide-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Owners Wide';
+    src: url('https://www.thporth.com/fonts/OwnersWide-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  /* Owners XX Wide */
+  @font-face {
+    font-family: 'Owners XX Wide';
+    src: url('https://www.thporth.com/fonts/OwnersXXWide-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Owners XX Wide';
+    src: url('https://www.thporth.com/fonts/OwnersXXWide-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Owners XX Wide';
+    src: url('https://www.thporth.com/fonts/OwnersXXWide-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Owners XX Wide';
+    src: url('https://www.thporth.com/fonts/OwnersXXWide-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Owners XX Wide';
+    src: url('https://www.thporth.com/fonts/OwnersXXWide-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Owners XXWideXBlack';
+    src: url('https://www.thporth.com/fonts/OwnersXXWide-XBlack.woff') format('woff');
+    font-weight: 950;
+    font-style: normal;
+  }
+</style>
 	  <style>
 		  /* ───────────── Header Styling ───────────── */
 #resp-header {
