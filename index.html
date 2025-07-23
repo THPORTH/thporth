@@ -270,12 +270,8 @@
     background-color: #2a2a2a; /* Even darker gray */
 }
 
-/* Utility class to hide elements */
-.hidden {
-    display: none !important;
-}
 /* ────── Today's MLB Games widget (scoped) ────── */
-#tv-listings-today #games .game-row {
+#tv-listings-today #todayGamesWrapper .game-row {
   display: grid;
   /* col1=time • col2=teams • col3=scores • col4=channel */
   grid-template-columns: 55px 1fr 15px 30px;
@@ -286,41 +282,43 @@
   margin-bottom: 0;
 }
 
-#tv-listings-today #games .time {
+#tv-listings-today #todayGamesWrapper .time {
   color: #ccc;
 }
-#tv-listings-today #games .time.live {
+#tv-listings-today #todayGamesWrapper .time.live {
   color: #DC143C;
   font-weight: bold;
 }
 
-#tv-listings-today #games .teams {
+#tv-listings-today #todayGamesWrapper .teams {
   display: flex;
   flex-direction: column;
   padding-left: 8px;
 }
 
-#tv-listings-today #games .team-name {
+#tv-listings-today #todayGamesWrapper .team-name {
   line-height: 17px;
 }
 
-#tv-listings-today #games .score-cell {
+#tv-listings-today #todayGamesWrapper .score-cell {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-variant-numeric: tabular-nums;
 }
 
-#tv-listings-today #games .channel-cell {
+#tv-listings-today #todayGamesWrapper .channel-cell {
   text-align: right;
   font-size: 12px;
 }
-#tv-listings-today #games .channel-cell a {
+#tv-listings-today #todayGamesWrapper .channel-cell a {
   color: #99f;
   text-decoration: none;
 }
-#tv-listings-today #games .channel-cell a:hover {
+#tv-listings-today #todayGamesWrapper .channel-cell a:hover {
   text-decoration: underline;
+}
+
 }
 /* ──────────────────────────────────────────────── */
   /* ────────────────────────────────────────────────────────── */
@@ -1482,39 +1480,65 @@
     ">
     <strong>Games</strong>
   </div>
+
   <div id="games-tabs" style="display: flex; height: 18px; background-color: #2a2a2a;">
     <div class="games-tab active" data-tab="scores">SCORES</div>
     <div class="games-tab" data-tab="today">TODAY</div>
     <div class="games-tab" data-tab="live">LIVE</div>
   </div>
+
   <div id="tv-listings-container">
-    <div id="tv-listings-scores" class="games-content" style="display: block;"></div>
+    <!-- SCORES TAB -->
+    <div id="tv-listings-scores" class="games-content" style="display: block;">
+      <div id="scoresWrapper">
+        <!-- Loading Indicator for Scores -->
+        <div id="scoresLoading" class="loading-indicator hidden">
+          <svg class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p class="loading-text">Loading yesterday's scores...</p>
+        </div>
+
+        <!-- Error Message for Scores -->
+        <div id="scoresErrorMessage" class="error-message hidden" role="alert">
+          <strong>Error!</strong>
+          <span id="scoresErrorText"></span>
+        </div>
+
+        <!-- Score content injected here -->
+        <div id="dynamicScoresContent"></div>
+      </div>
+    </div>
+
+    <!-- TODAY TAB -->
     <div id="tv-listings-today" class="games-content" style="display: none;">
-  <!-- The game listings from the CSV will be injected here -->
-            <div id="games">
-                <!-- Loading Indicator for Games -->
-                <div id="gamesLoading" class="loading-indicator hidden">
-                    <svg class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <p class="loading-text">Loading sports data...</p>
-                </div>
-                <!-- Error Message for Games -->
-                <div id="gamesErrorMessage" class="error-message hidden" role="alert">
-                    <strong>Error!</strong>
-                    <span id="gamesErrorText"></span>
-                </div>
-                <!-- This div will hold the dynamically loaded game content -->
-                <div id="dynamicTodayGamesContent"></div>
-            </div>
-            <div id="games-today" style="display: none;">Loading…</div>
+      <div id="todayGamesWrapper">
+        <!-- Loading Indicator for Games -->
+        <div id="gamesLoading" class="loading-indicator hidden">
+          <svg class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p class="loading-text">Loading sports data...</p>
+        </div>
 
+        <!-- Error Message for Games -->
+        <div id="gamesErrorMessage" class="error-message hidden" role="alert">
+          <strong>Error!</strong>
+          <span id="gamesErrorText"></span>
+        </div>
 
-</div>
+        <!-- This div will hold the dynamically loaded game content -->
+        <div id="dynamicTodayGamesContent"></div>
+      </div>
+    </div>
+
+    <!-- LIVE TAB (placeholder) -->
     <div id="tv-listings-live" class="games-content" style="display: none;"></div>
   </div>
 </div>
+
 
 
 
@@ -2665,9 +2689,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // fetchTodayGames function
     async function fetchTodayGames() {
-        const loadingElement = document.getElementById('todayGamesLoading');
-        const errorMessageDiv = document.getElementById('todayGamesErrorMessage');
-        const errorTextSpan = document.getElementById('todayGamesErrorText');
+        const loadingElement = document.getElementById('gamesLoading');
+	const errorMessageDiv = document.getElementById('gamesErrorMessage');
+	const errorTextSpan = document.getElementById('gamesErrorText');
         const contentDiv = document.getElementById('dynamicTodayGamesContent');
 
         if (loadingElement) loadingElement.classList.remove('hidden');
