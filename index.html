@@ -23,21 +23,7 @@
   display: none !important;
 }</style>
 	  
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAtVcKiDt0J-60_Psit5Ip2HCL7FN2NVgI",
-    authDomain: "flashlive-sports-scraper.firebaseapp.com",
-    projectId: "flashlive-sports-scraper",
-    storageBucket: "flashlive-sports-scraper.appspot.com",
-    messagingSenderId: "227831135271",
-    appId: "1:227831135271:web:29e655cac33b2e32d42202",
-    measurementId: "G-RMBDDB0MF2"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-</script>
+
 
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CBFZXZSG19"></script>
@@ -2395,6 +2381,317 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 </script>
+
+	  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Your Firebase project configuration
+        // YOU MUST REPLACE THESE PLACEHOLDER VALUES WITH YOUR ACTUAL CONFIG FROM YOUR
+        // FLASHLIVE-DAILY-SCRAPER FIREBASE PROJECT.
+        // Go to Firebase Console -> Project settings -> General -> Your apps -> Web app -> Config
+          const firebaseConfig = {
+            apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
+            authDomain: "flashlive-daily-scraper.firebaseapp.com",
+            projectId: "flashlive-daily-scraper",
+            storageBucket: "flashlive-daily-scraper.firebasestorage.app",
+            messagingSenderId: "124291936014",
+            appId: "1:124291936014:web:acadcaa791d6046849315f",
+            measurementId: "G-R146KS92QJ" // measurementId is for Analytics, not strictly needed for Firestore
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Reference to the Firestore collection where games are stored by your Cloud Run service
+        // This path is specific to your Cloud Run data structure
+        const gamesCollectionRef = db.collection('artifacts/flashlive-daily-scraper/public/data/sportsGames');
+
+        // Mapping of original league names to display names (exact matches)
+        const leagueNameMap = {
+            "USA: WNBA": "WNBA",
+            "USA: NBA Salt Lake City Summer League": "NBA Summer League",
+            "USA: MLB": "MLB",
+            "World: Club Friendly": "Club Friendly",
+            "Euro Women": "FIFA Women's Euro",
+            "Europe: Euro Women": "FIFA Women's Euro",
+            // Add more as needed
+        };
+
+        // Mapping for "contains" keywords
+        const leagueNameContainsMap = [
+            { keyword: "Tour de France", display: "Tour de France" },
+            { keyword: "Wimbledon", display: "Wimbledon" },
+            // Add more as needed
+        ];
+
+        // Function to get display name for a league
+        function getDisplayLeagueName(originalName) {
+            // 1. Exact match mapping
+            if (leagueNameMap[originalName]) {
+                return leagueNameMap[originalName];
+            }
+            // 2. Contains mapping
+            if (originalName) {
+                for (const rule of leagueNameContainsMap) {
+                    if (originalName.toLowerCase().includes(rule.keyword.toLowerCase())) {
+                        return rule.display;
+                    }
+                    if (originalName.toLowerCase().includes("summer league")) { // Generic for Summer Leagues
+                        return "Summer League";
+                    }
+                }
+            }
+            // 3. Generic: remove prefix before colon
+            return originalName && originalName.includes(':') ? originalName.split(':')[1].trim() : originalName;
+        }
+
+        // --- NEW FUNCTIONS FOR TODAY'S AND YESTERDAY'S GAMES ---
+
+        // This function will populate the TODAY tab of your Games panel.
+        async function fetchTodayGames() {
+            const loadingElement = document.getElementById('todayGamesLoading');
+            const errorMessageDiv = document.getElementById('todayGamesErrorMessage');
+            const errorTextSpan = document.getElementById('todayGamesErrorText');
+            const contentDiv = document.getElementById('dynamicTodayGamesContent');
+
+            if (loadingElement) loadingElement.classList.remove('hidden');
+            if (contentDiv) {
+                contentDiv.classList.add('hidden');
+                contentDiv.innerHTML = ''; // Clear previous content
+            }
+            if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
+
+            const today = new Date();
+            const todayDateString = today.toISOString().split('T')[0]; // e.g., '2025-07-23'
+
+            const LIVE_OR_UPCOMING_STATUSES = [
+                'Scheduled', 'In Progress', 'Live', 'Playing', 'First Half', 'Second Half',
+                'Overtime', 'Break', 'Penalty Shootout', 'Extra Time', 'Interrupted', 'Abandoned', 'Postponed'
+            ];
+
+            try {
+                // Use a real-time listener for today's games for live updates
+                gamesCollectionRef
+                    .where('gameDate', '==', todayDateString)
+                    .where('Match Status', 'in', LIVE_OR_UPCOMING_STATUSES)
+                    .orderBy('Start Time')
+                    .onSnapshot((snapshot) => {
+                        const games = snapshot.docs.map(doc => doc.data());
+
+                        if (games.length === 0) {
+                            if (errorTextSpan) errorTextSpan.textContent = 'No live or upcoming games for today.';
+                            if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+                            if (loadingElement) loadingElement.classList.add('hidden');
+                            if (contentDiv) contentDiv.classList.add('hidden'); // Ensure content is hidden if empty
+                            return;
+                        }
+
+                        const groupedGames = games.reduce((acc, game) => {
+                            const league = game.League || 'Other';
+                            if (!acc[league]) acc[league] = [];
+                            acc[league].push(game);
+                            return acc;
+                        }, {});
+
+                        const sortedLeagueNames = Object.keys(groupedGames).sort();
+
+                        if (contentDiv) {
+                            contentDiv.innerHTML = ''; // Clear previous content
+                            sortedLeagueNames.forEach(leagueName => {
+                                const leagueGames = groupedGames[leagueName];
+                                leagueGames.sort((a, b) => (a['Start Time Unix'] || 0) - (b['Start Time Unix'] || 0));
+
+                                const leagueSection = document.createElement('div');
+                                leagueSection.classList.add('league-section');
+                                const leagueHeader = document.createElement('h2');
+                                leagueHeader.classList.add('league-header');
+                                leagueHeader.textContent = getDisplayLeagueName(leagueName);
+                                leagueSection.appendChild(leagueHeader);
+
+                                const gamesListContainer = document.createElement('div');
+                                gamesListContainer.classList.add('game-entry-wrapper');
+
+                                leagueGames.forEach(game => {
+                                    const row = document.createElement('div');
+                                    row.className = 'game-row';
+
+                                    const timeDiv = document.createElement('div');
+                                    timeDiv.className = 'game-time';
+                                    let timeText = '';
+                                    if (LIVE_OR_UPCOMING_STATUSES.includes(game['Match Status'])) {
+                                        if (game['Match Status'] === 'Scheduled' || game['Match Status'] === 'Postponed' || game['Match Status'] === 'N/A') {
+                                            // Extract HH:MM from 'Start Time' which is like '15:00'
+                                            timeText = game['Start Time'] || '';
+                                            timeDiv.classList.add('status-scheduled');
+                                        } else {
+                                            // For live games, show the status itself (e.g., '1st Half', 'Live')
+                                            timeText = game.Status || game['Match Status'];
+                                            timeDiv.classList.add('status-live');
+                                        }
+                                    }
+                                    timeDiv.textContent = timeText;
+                                    row.appendChild(timeDiv);
+
+                                    const teamsDiv = document.createElement('div');
+                                    teamsDiv.className = 'game-teams';
+                                    teamsDiv.innerHTML = `<div>${game['Home Team'] || ''}</div><div>${game['Away Team'] || ''}</div>`;
+                                    row.appendChild(teamsDiv);
+
+                                    const scoreDiv = document.createElement('div');
+                                    scoreDiv.className = 'score-cell';
+                                    let homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
+                                    let awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
+                                    // Only show scores for live/finished games, not for scheduled
+                                    if (game['Match Status'] === 'Scheduled' || game['Match Status'] === 'Postponed' || game['Match Status'] === 'N/A') {
+                                        homeScore = '';
+                                        awayScore = '';
+                                    }
+                                    scoreDiv.innerHTML = `<div>${homeScore}</div><div>${awayScore}</div>`;
+                                    row.appendChild(scoreDiv);
+
+                                    const channelDiv = document.createElement('div');
+                                    channelDiv.className = 'channel-cell';
+                                    channelDiv.textContent = game.Channels || ''; // Assuming 'Channels' field exists
+                                    row.appendChild(channelDiv);
+
+                                    gamesListContainer.appendChild(row);
+                                });
+
+                                leagueSection.appendChild(gamesListContainer);
+                                contentDiv.appendChild(leagueSection);
+                            });
+                            contentDiv.classList.remove('hidden');
+                        }
+                        if (loadingElement) loadingElement.classList.add('hidden');
+                    },
+                    (error) => {
+                        console.error('Failed to fetch or parse today\'s sports data:', error);
+                        if (errorTextSpan) errorTextSpan.textContent = `Failed to load today's data: ${error.message}. Please check Firestore or try again later.`;
+                        if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+                        if (loadingElement) loadingElement.classList.add('hidden');
+                        if (contentDiv) contentDiv.classList.add('hidden');
+                    }
+                );
+
+            } catch (error) {
+                console.error('Error setting up listener for today\'s games:', error);
+                if (errorTextSpan) errorTextSpan.textContent = `Setup error: ${error.message}.`;
+                if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+                if (loadingElement) loadingElement.classList.add('hidden');
+                if (contentDiv) contentDiv.classList.add('hidden');
+            }
+        }
+
+        // This function will populate the SCORES tab of your Games panel.
+        async function fetchYesterdayScores() {
+            const loadingElement = document.getElementById('scoresLoading');
+            const errorMessageDiv = document.getElementById('scoresErrorMessage');
+            const errorTextSpan = document.getElementById('scoresErrorText');
+            const contentDiv = document.getElementById('dynamicScoresContent');
+
+            if (loadingElement) loadingElement.classList.remove('hidden');
+            if (contentDiv) {
+                contentDiv.classList.add('hidden');
+                contentDiv.innerHTML = ''; // Clear previous content
+            }
+            if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
+
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+            const yesterdayDateString = yesterday.toISOString().split('T')[0];
+
+            const FINAL_STATUSES = ['Final', 'Completed', 'Finished'];
+
+            try {
+                // Use .get() for yesterday's games as they won't change after being final
+                const snapshot = await gamesCollectionRef
+                    .where('gameDate', '==', yesterdayDateString)
+                    .where('Match Status', 'in', FINAL_STATUSES)
+                    .orderBy('Start Time')
+                    .get();
+
+                const games = snapshot.docs.map(doc => doc.data());
+
+                if (games.length === 0) {
+                    if (errorTextSpan) errorTextSpan.textContent = 'No final scores from yesterday.';
+                    if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+                    if (loadingElement) loadingElement.classList.add('hidden');
+                    if (contentDiv) contentDiv.classList.add('hidden');
+                    return;
+                }
+
+                const groupedGames = games.reduce((acc, game) => {
+                    const league = game.League || 'Other';
+                    if (!acc[league]) acc[league] = [];
+                    acc[league].push(game);
+                    return acc;
+                }, {});
+
+                const sortedLeagueNames = Object.keys(groupedGames).sort();
+
+                if (contentDiv) {
+                    contentDiv.innerHTML = ''; // Clear previous content
+                    sortedLeagueNames.forEach(leagueName => {
+                        const leagueGames = groupedGames[leagueName];
+                        leagueGames.sort((a, b) => (a['Start Time Unix'] || 0) - (b['Start Time Unix'] || 0));
+
+                        const leagueSection = document.createElement('div');
+                        leagueSection.classList.add('league-section');
+                        const leagueHeader = document.createElement('h2');
+                        leagueHeader.classList.add('league-header');
+                        leagueHeader.textContent = getDisplayLeagueName(leagueName);
+                        leagueSection.appendChild(leagueHeader);
+
+                        const gamesListContainer = document.createElement('div');
+                        gamesListContainer.classList.add('game-entry-wrapper');
+
+                        leagueGames.forEach(game => {
+                            const row = document.createElement('div');
+                            row.className = 'game-row';
+
+                            const timeDiv = document.createElement('div');
+                            timeDiv.className = 'game-time status-finished'; // Always 'F' and red for finished games
+                            timeDiv.textContent = 'F';
+                            row.appendChild(timeDiv);
+
+                            const teamsDiv = document.createElement('div');
+                            teamsDiv.className = 'game-teams';
+                            teamsDiv.innerHTML = `<div>${game['Home Team'] || ''}</div><div>${game['Away Team'] || ''}</div>`;
+                            row.appendChild(teamsDiv);
+
+                            const scoreDiv = document.createElement('div');
+                            scoreDiv.className = 'score-cell';
+                            let homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
+                            let awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
+                            scoreDiv.innerHTML = `<div>${homeScore}</div><div>${awayScore}</div>`;
+                            row.appendChild(scoreDiv);
+
+                            const channelDiv = document.createElement('div');
+                            channelDiv.className = 'channel-cell';
+                            channelDiv.textContent = game.Channels || '';
+                            row.appendChild(channelDiv);
+
+                            gamesListContainer.appendChild(row);
+                        });
+
+                        leagueSection.appendChild(gamesListContainer);
+                        contentDiv.appendChild(leagueSection);
+                    });
+                    contentDiv.classList.remove('hidden');
+                }
+                if (loadingElement) loadingElement.classList.add('hidden');
+
+            } catch (error) {
+                console.error('Error fetching yesterday\'s scores:', error);
+                if (errorTextSpan) errorTextSpan.textContent = `Failed to load yesterday's scores: ${error.message}. Please check Firestore or try again later.`;
+                if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+                if (loadingElement) loadingElement.classList.add('hidden');
+                if (contentDiv) contentDiv.classList.add('hidden');
+            }
+        }
+    </script>
  
 <script>
   document.addEventListener("DOMContentLoaded", () => {
@@ -2683,164 +2980,55 @@ function getDisplayLeagueName(originalName) {
 }
 	    </script>
 	    
-<script>
-function fetchAndDisplaySportsData() {
-  const gamesLoadingElement = document.getElementById('gamesLoading');
-  const gamesErrorMessageDiv = document.getElementById('gamesErrorMessage');
-  const gamesErrorTextSpan = document.getElementById('gamesErrorText');
-  const dynamicGamesContent = document.getElementById('dynamicGamesContent');
 
-  if (gamesLoadingElement) gamesLoadingElement.classList.remove('hidden');
-  if (dynamicGamesContent) {
-    dynamicGamesContent.classList.add('hidden');
-    dynamicGamesContent.innerHTML = '';
-  }
-  if (gamesErrorMessageDiv) gamesErrorMessageDiv.classList.add('hidden');
-
-  // Set up Firestore real-time listener
-  db
-    .collection('artifacts')
-    .doc('flashlive-sports-scraper')
-    .collection('public')
-    .doc('data')
-    .collection('sportsGames')
-    .orderBy('Start Time Unix')
-    .onSnapshot(
-      (snapshot) => {
-        const games = snapshot.docs.map(doc => doc.data());
-
-        if (games.length === 0) {
-          if (gamesErrorTextSpan) gamesErrorTextSpan.textContent = 'No sports data found in Firestore.';
-          if (gamesErrorMessageDiv) gamesErrorMessageDiv.classList.remove('hidden');
-          if (gamesLoadingElement) gamesLoadingElement.classList.add('hidden');
-          return;
-        }
-
-        // Group games by league
-        const groupedGames = games.reduce((acc, game) => {
-          const league = game.League || 'Other';
-          if (!acc[league]) acc[league] = [];
-          acc[league].push(game);
-          return acc;
-        }, {});
-
-        // Sort league names alphabetically
-        const sortedLeagueNames = Object.keys(groupedGames).sort();
-
-        if (dynamicGamesContent) {
-          dynamicGamesContent.innerHTML = '';
-          sortedLeagueNames.forEach(leagueName => {
-            const leagueGames = groupedGames[leagueName];
-            leagueGames.sort((a, b) => (a['Start Time Unix'] || 0) - (b['Start Time Unix'] || 0));
-
-            const leagueSection = document.createElement('div');
-            leagueSection.classList.add('league-section');
-            const leagueHeader = document.createElement('h2');
-            leagueHeader.classList.add('league-header');
-            leagueHeader.textContent = getDisplayLeagueName(leagueName);
-            leagueSection.appendChild(leagueHeader);
-
-            const gamesListContainer = document.createElement('div');
-            gamesListContainer.classList.add('game-entry-wrapper');
-
-            leagueGames.forEach(game => {
-              const row = document.createElement('div');
-              row.className = 'game-row';
-
-              // 1. Time/Status
-              const timeDiv = document.createElement('div');
-              timeDiv.className = 'game-time';
-              let timeText = '';
-              if (game.Status === 'FINISHED') {
-                timeText = 'F';
-                timeDiv.classList.add('status-finished');
-              } else if (game.Status && game.Status !== 'SCHEDULED' && game.Status !== 'N/A') {
-                timeText = game.Status;
-                timeDiv.classList.add('status-live');
-              } else {
-                const startTime = game['Start Time'] || '';
-                timeText = startTime;
-                timeDiv.classList.add('status-scheduled');
-              }
-              timeDiv.textContent = timeText;
-              row.appendChild(timeDiv);
-
-              // 2. Teams
-              const teamsDiv = document.createElement('div');
-              teamsDiv.className = 'game-teams';
-              teamsDiv.innerHTML = `<div>${game['Home Team'] || ''}</div><div>${game['Away Team'] || ''}</div>`;
-              row.appendChild(teamsDiv);
-
-              // 3. Score
-              const scoreDiv = document.createElement('div');
-              scoreDiv.className = 'score-cell';
-              let homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
-              let awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
-              if (game.Status === 'SCHEDULED' || game.Status === 'N/A') {
-                homeScore = '';
-                awayScore = '';
-              }
-              scoreDiv.innerHTML = `<div>${homeScore}</div><div>${awayScore}</div>`;
-              row.appendChild(scoreDiv);
-
-              // 4. Channel (if you have this info in Firestore)
-              const channelDiv = document.createElement('div');
-              channelDiv.className = 'channel-cell';
-              channelDiv.textContent = game.Channels || '';
-              row.appendChild(channelDiv);
-
-              gamesListContainer.appendChild(row);
-            });
-
-            leagueSection.appendChild(gamesListContainer);
-            dynamicGamesContent.appendChild(leagueSection);
-          });
-
-          dynamicGamesContent.classList.remove('hidden');
-        }
-
-        if (gamesLoadingElement) gamesLoadingElement.classList.add('hidden');
-      },
-      (error) => {
-        console.error('Failed to fetch or parse sports data:', error);
-        if (gamesErrorTextSpan) gamesErrorTextSpan.textContent = `Failed to load data: ${error.message}. Please check Firestore or try again later.`;
-        if (gamesErrorMessageDiv) gamesErrorMessageDiv.classList.remove('hidden');
-        if (gamesLoadingElement) gamesLoadingElement.classList.add('hidden');
-      }
-    );
-}
-</script>
 
 	    <script>
 function setupTabSwitching() {
     const gamesTabs = document.querySelectorAll('.games-tab');
     const gamesContents = document.querySelectorAll('.games-content');
+    let todayGamesIntervalId = null; // To store the interval ID for today's games
 
     gamesTabs.forEach(tab => {
         tab.addEventListener('click', () => {
             const targetTabId = tab.dataset.tab;
 
+            // Deactivate all tabs and hide all content divs
             gamesTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-
             gamesContents.forEach(content => {
-                if (content.id === `tv-listings-${targetTabId}`) {
-                    content.style.display = 'block';
-                } else {
-                    content.style.display = 'none';
-                }
+                content.style.display = 'none';
             });
 
-            // If the "TODAY" tab is clicked, fetch and display data
-            if (targetTabId === 'today') {
-                fetchAndDisplaySportsData();
+            // Activate the clicked tab and show its content
+            tab.classList.add('active');
+            const targetContentDiv = document.getElementById(`tv-listings-${targetTabId}`);
+            if (targetContentDiv) {
+                targetContentDiv.style.display = 'block';
+            }
+
+            // Clear any existing interval for today's games when switching tabs
+            if (todayGamesIntervalId) {
+                clearInterval(todayGamesIntervalId);
+                todayGamesIntervalId = null;
+            }
+
+            // Call appropriate data fetching function based on tab clicked
+            if (targetTabId === 'scores') {
+                fetchYesterdayScores(); // Populates the SCORES tab
+            } else if (targetTabId === 'today') {
+                fetchTodayGames(); // Populates the TODAY tab
+                // Set interval for today's games for live updates
+                todayGamesIntervalId = setInterval(fetchTodayGames, 30000); // Poll every 30 seconds
+            } else if (targetTabId === 'live') {
+                // For 'LIVE' tab: you might want to fetch a *subset* of today's games that are specifically live.
+                // For now, this tab will just display its placeholder message as per your HTML.
+                // If you want live-only from Firestore, you'd need another query here, or filter `fetchTodayGames` output.
             }
         });
     });
 
-    // Trigger the initial load for the "TODAY" tab when the page loads
-    const todayTab = document.querySelector('.games-tab[data-tab="today"]');
-    if (todayTab) todayTab.click();
+    // Trigger the initial load for the "SCORES" tab when the page loads, as it's the default active tab
+    const scoresTab = document.querySelector('.games-tab[data-tab="scores"]');
+    if (scoresTab) scoresTab.click(); // This will also call fetchYesterdayScores
 }
 
 document.addEventListener('DOMContentLoaded', setupTabSwitching);
