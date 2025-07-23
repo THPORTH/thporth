@@ -1487,38 +1487,33 @@
     <div class="games-tab" data-tab="today">TODAY</div>
     <div class="games-tab" data-tab="live">LIVE</div>
   </div>
- <div id="tv-listings-container">
-    <div id="tv-listings-scores" class="games-content" style="display: block;">
-        <div id="scoresLoading" class="loading-indicator hidden">
-            <svg class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p class="loading-text">Loading scores...</p>
-        </div>
-        <div id="scoresErrorMessage" class="error-message hidden" role="alert">
-            <strong>Error!</strong>
-            <span id="scoresErrorText"></span>
-        </div>
-        <div id="dynamicScoresContent"></div>
-    </div>
-
+  <div id="tv-listings-container">
+    <div id="tv-listings-scores" class="games-content" style="display: block;"></div>
     <div id="tv-listings-today" class="games-content" style="display: none;">
-        <div id="todayGamesLoading" class="loading-indicator hidden">
-            <svg class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p class="loading-text">Loading today's games...</p>
-        </div>
-        <div id="todayGamesErrorMessage" class="error-message hidden" role="alert">
-            <strong>Error!</strong>
-            <span id="todayGamesErrorText"></span>
-        </div>
-        <div id="dynamicTodayGamesContent"></div>
-    </div>
+  <!-- The game listings from the CSV will be injected here -->
+            <div id="games">
+                <!-- Loading Indicator for Games -->
+                <div id="gamesLoading" class="loading-indicator hidden">
+                    <svg class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p class="loading-text">Loading sports data...</p>
+                </div>
+                <!-- Error Message for Games -->
+                <div id="gamesErrorMessage" class="error-message hidden" role="alert">
+                    <strong>Error!</strong>
+                    <span id="gamesErrorText"></span>
+                </div>
+                <!-- This div will hold the dynamically loaded game content -->
+                <div id="dynamicGamesContent"></div>
+            </div>
+            <div id="games-today" style="display: none;">Loading…</div>
 
+
+</div>
     <div id="tv-listings-live" class="games-content" style="display: none;"></div>
+  </div>
 </div>
 
 
@@ -2989,4 +2984,3 @@ document.addEventListener("DOMContentLoaded", function() {
 
   </body>
 </html> 
-
