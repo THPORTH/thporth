@@ -1,10 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World</title>
-  </head>
-  <body>
-    <h1>Hello, world!</h1>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <title>Firestore Debug Viewer (No Date Filter)</title>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      background-color: #111;
+      color: #e0e0e0;
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+    .game-row {
+      border-bottom: 1px solid #444;
+      padding: 1rem 0;
+    }
+    .error {
+      color: red;
+    }
+    pre {
+      background: #222;
+      color: #ccc;
+      padding: 10px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>All Firestore Games (No Date Filter)</h1>
+  <div id="games"></div>
+  <div id="error" class="error"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
+      authDomain: "flashlive-daily-scraper.firebaseapp.com",
+      projectId: "flashlive-daily-scraper",
+      storageBucket: "flashlive-daily-scraper.appspot.com",
+      messagingSenderId: "124291936014",
+      appId: "1:124291936014:web:acadcaa791d6046849315f",
+      measurementId: "G-R146KS92QJ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const collectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
+
+    async function fetchGamesNoFilter() {
+      const container = document.getElementById("games");
+      const errorDiv = document.getElementById("error");
+      container.innerHTML = "";
+      errorDiv.textContent = "";
+
+      try {
+        const snapshot = await collectionRef
+          .orderBy("Start Time")
+          .limit(50)
+          .get();
+
+        if (snapshot.empty) {
+          container.innerHTML = "<p>No games found in Firestore collection.</p>";
+          return;
+        }
+
+        snapshot.docs.forEach(doc => {
+          const data = doc.data();
+          const row = document.createElement("div");
+          row.className = "game-row";
+          row.innerHTML = `
+            <strong>Doc ID:</strong> ${doc.id}<br>
+            <strong>League:</strong> ${data.League || "N/A"}<br>
+            <strong>Home:</strong> ${data["Home Team"] || ""} vs ${data["Away Team"] || ""}<br>
+            <strong>Time:</strong> ${data["Start Time"] || "N/A"}<br>
+            <strong>Status:</strong> ${data["Match Status"] || "N/A"}<br>
+            <strong>Date:</strong> ${data["gameDate"] || "N/A"}<br>
+            <details><summary>Raw Data</summary><pre>${JSON.stringify(data, null, 2)}</pre></details>
+          `;
+          container.appendChild(row);
+        });
+
+      } catch (err) {
+        console.error("Error fetching games:", err);
+        errorDiv.textContent = "Failed to load Firestore data: " + err.message;
+      }
+    }
+
+    fetchGamesNoFilter();
+  </script>
+</body>
 </html>
