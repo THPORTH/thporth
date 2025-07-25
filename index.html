@@ -2520,277 +2520,180 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 </script>
 
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
-  <script>
-    // Your web app's Firebase configuration - FILLED IN WITH YOUR VALUES
-    const firebaseConfig = {
-        apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
-        authDomain: "flashlive-daily-scraper.firebaseapp.com",
-        projectId: "flashlive-daily-scraper",
-        storageBucket: "flashlive-daily-scraper.firebasestorage.app",
-        messagingSenderId: "124291936014",
-        appId: "1:124291936014:web:acadcaa791d6046849315f",
-        measurementId: "G-R146KS92QJ" // This is for Analytics, not directly used by Firestore logic
-    };
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script> <!-- ✅ NEW -->
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
+    authDomain: "flashlive-daily-scraper.firebaseapp.com",
+    projectId: "flashlive-daily-scraper",
+    storageBucket: "flashlive-daily-scraper.firebasestorage.app",
+    messagingSenderId: "124291936014",
+    appId: "1:124291936014:web:acadcaa791d6046849315f",
+    measurementId: "G-R146KS92QJ"
+  };
 
-    // Initialize Firebase and Firestore DB instance
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore(); // This defines 'db' correctly
+  firebase.initializeApp(firebaseConfig);
 
-    // Reference to the Firestore collection where games are stored
-    const gamesCollectionRef = db.collection('artifacts/flashlive-daily-scraper/public/data/sportsGames');
+  // ✅ NEW — Sign in anonymously to allow Firestore real-time updates
+  firebase.auth().signInAnonymously().catch((error) => {
+    console.error("Anonymous sign-in failed:", error);
+  });
 
-    // Mapping of original league names to display names
-    const leagueNameMap = {
-        "USA: WNBA": "WNBA",
-        "USA: NBA Salt Lake City Summer League": "NBA Summer League",
-        "USA: MLB": "MLB",
-        "World: Club Friendly": "Club Friendly",
-        "Euro Women": "FIFA Women's Euro",
-        "Europe: Euro Women": "FIFA Women's Euro",
-        // Add more as needed
-    };
-    const leagueNameContainsMap = [
-        { keyword: "Tour de France", display: "Tour de France" },
-        { keyword: "Wimbledon", display: "Wimbledon" },
+  const db = firebase.firestore();
+  const gamesCollectionRef = db.collection('artifacts/flashlive-daily-scraper/public/data/sportsGames');
+
+  const leagueNameMap = {
+    "USA: WNBA": "WNBA",
+    "USA: NBA Salt Lake City Summer League": "NBA Summer League",
+    "USA: MLB": "MLB",
+    "World: Club Friendly": "Club Friendly",
+    "Euro Women": "FIFA Women's Euro",
+    "Europe: Euro Women": "FIFA Women's Euro",
+  };
+
+  const leagueNameContainsMap = [
+    { keyword: "Tour de France", display: "Tour de France" },
+    { keyword: "Wimbledon", display: "Wimbledon" },
+  ];
+
+  function getDisplayLeagueName(originalName) {
+    if (leagueNameMap[originalName]) return leagueNameMap[originalName];
+    if (originalName) {
+      for (const rule of leagueNameContainsMap) {
+        if (originalName.toLowerCase().includes(rule.keyword.toLowerCase())) return rule.display;
+        if (originalName.toLowerCase().includes("summer league")) return "Summer League";
+      }
+    }
+    return originalName && originalName.includes(':') ? originalName.split(':')[1].trim() : originalName;
+  }
+
+  async function fetchTodayGames() {
+    const loadingElement = document.getElementById('gamesLoading');
+    const errorMessageDiv = document.getElementById('gamesErrorMessage');
+    const errorTextSpan = document.getElementById('gamesErrorText');
+    const contentDiv = document.getElementById('dynamicTodayGamesContent');
+
+    if (loadingElement) loadingElement.classList.remove('hidden');
+    if (contentDiv) { contentDiv.classList.add('hidden'); contentDiv.innerHTML = ''; }
+    if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
+
+    const today = new Date();
+    const todayDateString = today.toISOString().split('T')[0];
+    const LIVE_OR_UPCOMING_STATUSES = [
+      'Scheduled', 'In Progress', 'Live', 'Playing', 'First Half', 'Second Half',
+      'Overtime', 'Break', 'Penalty Shootout', 'Extra Time', 'Interrupted', 'Abandoned', 'Postponed'
     ];
-    function getDisplayLeagueName(originalName) {
-        if (leagueNameMap[originalName]) return leagueNameMap[originalName];
-        if (originalName) {
-            for (const rule of leagueNameContainsMap) {
-                if (originalName.toLowerCase().includes(rule.keyword.toLowerCase())) return rule.display;
-                if (originalName.toLowerCase().includes("summer league")) return "Summer League";
-            }
-        }
-        return originalName && originalName.includes(':') ? originalName.split(':')[1].trim() : originalName;
-    }
 
-    // fetchTodayGames function
-    async function fetchTodayGames() {
-        const loadingElement = document.getElementById('gamesLoading');
-	const errorMessageDiv = document.getElementById('gamesErrorMessage');
-	const errorTextSpan = document.getElementById('gamesErrorText');
-        const contentDiv = document.getElementById('dynamicTodayGamesContent');
+    try {
+      gamesCollectionRef
+        .where('gameDate', '==', todayDateString)
+        .where('Match Status', 'in', LIVE_OR_UPCOMING_STATUSES)
+        .orderBy('Start Time')
+        .onSnapshot((snapshot) => {
+          const games = snapshot.docs.map(doc => doc.data());
+          if (games.length === 0) {
+            if (errorTextSpan) errorTextSpan.textContent = 'No live or upcoming games for today.';
+            if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+            if (loadingElement) loadingElement.classList.add('hidden');
+            if (contentDiv) contentDiv.classList.add('hidden');
+            return;
+          }
 
-        if (loadingElement) loadingElement.classList.remove('hidden');
-        if (contentDiv) { contentDiv.classList.add('hidden'); contentDiv.innerHTML = ''; }
-        if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
+          const groupedGames = games.reduce((acc, game) => {
+            const league = game.League || 'Other';
+            if (!acc[league]) acc[league] = [];
+            acc[league].push(game);
+            return acc;
+          }, {});
 
-        const today = new Date();
-        const todayDateString = today.toISOString().split('T')[0];
-        const LIVE_OR_UPCOMING_STATUSES = [
-            'Scheduled', 'In Progress', 'Live', 'Playing', 'First Half', 'Second Half',
-            'Overtime', 'Break', 'Penalty Shootout', 'Extra Time', 'Interrupted', 'Abandoned', 'Postponed'
-        ];
+          const sortedLeagueNames = Object.keys(groupedGames).sort();
 
-        try {
-            gamesCollectionRef
-                .where('gameDate', '==', todayDateString)
-                .where('Match Status', 'in', LIVE_OR_UPCOMING_STATUSES)
-                .orderBy('Start Time')
-                .onSnapshot((snapshot) => {
-                    const games = snapshot.docs.map(doc => doc.data());
-                    if (games.length === 0) {
-                        if (errorTextSpan) errorTextSpan.textContent = 'No live or upcoming games for today.';
-                        if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-                        if (loadingElement) loadingElement.classList.add('hidden');
-                        if (contentDiv) contentDiv.classList.add('hidden');
-                        return;
-                    }
+          if (contentDiv) {
+            contentDiv.innerHTML = '';
+            sortedLeagueNames.forEach(leagueName => {
+              const leagueSection = document.createElement('div');
+              leagueSection.classList.add('league-section');
+              const leagueHeader = document.createElement('h2');
+              leagueHeader.classList.add('league-header');
+              leagueHeader.textContent = getDisplayLeagueName(leagueName);
+              leagueSection.appendChild(leagueHeader);
+              const gamesListContainer = document.createElement('div');
+              gamesListContainer.classList.add('game-entry-wrapper');
 
-                    const groupedGames = games.reduce((acc, game) => {
-                        const league = game.League || 'Other';
-                        if (!acc[league]) acc[league] = [];
-                        acc[league].push(game);
-                        return acc;
-                    }, {});
+              const leagueGames = groupedGames[leagueName];
+              leagueGames.forEach(game => {
+                const row = document.createElement('div');
+                row.className = 'game-row';
 
-                    const sortedLeagueNames = Object.keys(groupedGames).sort();
-
-                    if (contentDiv) {
-                        contentDiv.innerHTML = '';
-                        sortedLeagueNames.forEach(leagueName => {
-                            const leagueSection = document.createElement('div');
-                            leagueSection.classList.add('league-section');
-                            const leagueHeader = document.createElement('h2');
-                            leagueHeader.classList.add('league-header');
-                            leagueHeader.textContent = getDisplayLeagueName(leagueName);
-                            leagueSection.appendChild(leagueHeader);
-                            const gamesListContainer = document.createElement('div');
-                            gamesListContainer.classList.add('game-entry-wrapper');
-
-                            // Use groupedGames[leagueName] for league-specific games
-                            const leagueGames = groupedGames[leagueName]; 
-                            leagueGames.forEach(game => {
-                                const row = document.createElement('div');
-                                row.className = 'game-row';
-                                const timeDiv = document.createElement('div');
-                                timeDiv.className = 'game-time';
-                                let timeText = '';
-                                if (LIVE_OR_UPCOMING_STATUSES.includes(game['Match Status'])) {
-                                    if (game['Match Status'] === 'Scheduled' || game['Match Status'] === 'Postponed' || game['Match Status'] === 'N/A') {
-                                        timeText = game['Start Time'] || '';
-                                        timeDiv.classList.add('status-scheduled');
-                                    } else {
-                                        timeText = game.Status || game['Match Status'];
-                                        timeDiv.classList.add('status-live');
-                                    }
-                                }
-                                timeDiv.textContent = timeText;
-                                row.appendChild(timeDiv);
-
-                                const teamsDiv = document.createElement('div');
-                                teamsDiv.className = 'game-teams';
-                                teamsDiv.innerHTML = `<div>${game['Home Team'] || ''}</div><div>${game['Away Team'] || ''}</div>`;
-                                row.appendChild(teamsDiv);
-
-                                const scoreDiv = document.createElement('div');
-                                scoreDiv.className = 'score-cell';
-                                let homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
-                                let awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
-                                if (game['Match Status'] === 'Scheduled' || game['Match Status'] === 'Postponed' || game['Match Status'] === 'N/A') {
-                                    homeScore = '';
-                                    awayScore = '';
-                                }
-                                scoreDiv.innerHTML = `<div>${homeScore}</div><div>${awayScore}</div>`;
-                                row.appendChild(scoreDiv);
-
-                                const channelDiv = document.createElement('div');
-                                channelDiv.className = 'channel-cell';
-                                channelDiv.textContent = game.Channels || '';
-                                row.appendChild(channelDiv);
-
-                                gamesListContainer.appendChild(row);
-                            });
-
-                            leagueSection.appendChild(gamesListContainer);
-                            contentDiv.appendChild(leagueSection);
-                        });
-                        contentDiv.classList.remove('hidden');
-                    }
-                    if (loadingElement) loadingElement.classList.add('hidden');
-                },
-                (error) => {
-                    console.error('Failed to fetch or parse today\'s sports data:', error);
-                    if (errorTextSpan) errorTextSpan.textContent = `Failed to load today's data: ${error.message}. Please check Firestore or try again later.`;
-                    if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-                    if (loadingElement) loadingElement.classList.add('hidden');
-                    if (contentDiv) contentDiv.classList.add('hidden');
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'game-time';
+                let timeText = '';
+                if (LIVE_OR_UPCOMING_STATUSES.includes(game['Match Status'])) {
+                  if (['Scheduled', 'Postponed', 'N/A'].includes(game['Match Status'])) {
+                    timeText = game['Start Time'] || '';
+                    timeDiv.classList.add('status-scheduled');
+                  } else {
+                    timeText = game.Status || game['Match Status'];
+                    timeDiv.classList.add('status-live');
+                  }
                 }
-            );
+                timeDiv.textContent = timeText;
+                row.appendChild(timeDiv);
 
-        } catch (error) {
-            console.error('Error setting up listener for today\'s games:', error);
-            if (errorTextSpan) errorTextSpan.textContent = `Setup error: ${error.message}.`;
-            if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-            if (loadingElement) loadingElement.classList.add('hidden');
-            if (contentDiv) contentDiv.classList.add('hidden');
-        }
+                const teamsDiv = document.createElement('div');
+                teamsDiv.className = 'game-teams';
+                teamsDiv.innerHTML = `<div>${game['Home Team'] || ''}</div><div>${game['Away Team'] || ''}</div>`;
+                row.appendChild(teamsDiv);
+
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'score-cell';
+                let homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
+                let awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
+                if (['Scheduled', 'Postponed', 'N/A'].includes(game['Match Status'])) {
+                  homeScore = '';
+                  awayScore = '';
+                }
+                scoreDiv.innerHTML = `<div>${homeScore}</div><div>${awayScore}</div>`;
+                row.appendChild(scoreDiv);
+
+                const channelDiv = document.createElement('div');
+                channelDiv.className = 'channel-cell';
+                channelDiv.textContent = game.Channels || '';
+                row.appendChild(channelDiv);
+
+                gamesListContainer.appendChild(row);
+              });
+
+              leagueSection.appendChild(gamesListContainer);
+              contentDiv.appendChild(leagueSection);
+            });
+            contentDiv.classList.remove('hidden');
+          }
+
+          if (loadingElement) loadingElement.classList.add('hidden');
+        },
+        (error) => {
+          console.error("onSnapshot failed:", error);
+          if (errorTextSpan) errorTextSpan.textContent = `Failed to load today's data: ${error.message}`;
+          if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+          if (loadingElement) loadingElement.classList.add('hidden');
+          if (contentDiv) contentDiv.classList.add('hidden');
+        });
+    } catch (error) {
+      console.error("Error setting up snapshot listener:", error);
+      if (errorTextSpan) errorTextSpan.textContent = `Setup error: ${error.message}.`;
+      if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+      if (loadingElement) loadingElement.classList.add('hidden');
+      if (contentDiv) contentDiv.classList.add('hidden');
     }
+  }
 
-    // fetchYesterdayScores function
-    async function fetchYesterdayScores() {
-        const loadingElement = document.getElementById('scoresLoading');
-        const errorMessageDiv = document.getElementById('scoresErrorMessage');
-        const errorTextSpan = document.getElementById('scoresErrorText');
-        const contentDiv = document.getElementById('dynamicScoresContent');
+  // fetchYesterdayScores function — unchanged
+  // Keep your fetchYesterdayScores() function exactly as-is beneath this
+</script>
 
-        if (loadingElement) loadingElement.classList.remove('hidden');
-        if (contentDiv) { contentDiv.classList.add('hidden'); contentDiv.innerHTML = ''; }
-        if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
-
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-        const yesterdayDateString = yesterday.toISOString().split('T')[0];
-
-        const FINAL_STATUSES = ['Final', 'Completed', 'Finished'];
-
-        try {
-            const snapshot = await gamesCollectionRef
-                .where('gameDate', '==', yesterdayDateString)
-                .where('Match Status', 'in', FINAL_STATUSES)
-                .orderBy('Start Time')
-                .get();
-
-            const games = snapshot.docs.map(doc => doc.data());
-
-            if (games.length === 0) {
-                if (errorTextSpan) errorTextSpan.textContent = 'No final scores from yesterday.';
-                if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-                if (loadingElement) loadingElement.classList.add('hidden');
-                if (contentDiv) contentDiv.classList.add('hidden');
-                return;
-            }
-
-            const groupedGames = games.reduce((acc, game) => {
-                const league = game.League || 'Other';
-                if (!acc[league]) acc[league] = [];
-                acc[league].push(game);
-                return acc;
-            }, {});
-
-            const sortedLeagueNames = Object.keys(groupedGames).sort();
-
-            if (contentDiv) {
-                contentDiv.innerHTML = '';
-                sortedLeagueNames.forEach(leagueName => {
-                    const leagueSection = document.createElement('div');
-                    leagueSection.classList.add('league-section');
-                    const leagueHeader = document.createElement('h2');
-                    leagueHeader.classList.add('league-header');
-                    leagueHeader.textContent = getDisplayLeagueName(leagueName);
-                    leagueSection.appendChild(leagueHeader);
-                    const gamesListContainer = document.createElement('div');
-                    gamesListContainer.classList.add('game-entry-wrapper');
-
-                    // Use groupedGames[leagueName] for league-specific games
-                    const leagueGames = groupedGames[leagueName];
-                    leagueGames.forEach(game => {
-                        const row = document.createElement('div');
-                        row.className = 'game-row';
-                        const timeDiv = document.createElement('div');
-                        timeDiv.className = 'game-time status-finished';
-                        timeDiv.textContent = 'F';
-                        row.appendChild(timeDiv);
-
-                        const teamsDiv = document.createElement('div');
-                        teamsDiv.className = 'game-teams';
-                        teamsDiv.innerHTML = `<div>${game['Home Team'] || ''}</div><div>${game['Away Team'] || ''}</div>`;
-                        row.appendChild(teamsDiv);
-
-                        const scoreDiv = document.createElement('div');
-                        scoreDiv.className = 'score-cell';
-                        let homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
-                        let awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
-                        scoreDiv.innerHTML = `<div>${homeScore}</div><div>${awayScore}</div>`;
-                        row.appendChild(scoreDiv);
-
-                        const channelDiv = document.createElement('div');
-                        channelDiv.className = 'channel-cell';
-                        channelDiv.textContent = game.Channels || '';
-                        row.appendChild(channelDiv);
-
-                        gamesListContainer.appendChild(row);
-                    });
-
-                    leagueSection.appendChild(gamesListContainer);
-                    contentDiv.appendChild(leagueSection);
-                });
-                contentDiv.classList.remove('hidden');
-            }
-            if (loadingElement) loadingElement.classList.add('hidden');
-
-        } catch (error) {
-            console.error('Error fetching yesterday\'s scores:', error);
-            if (errorTextSpan) errorTextSpan.textContent = `Failed to load yesterday's scores: ${error.message}. Please check Firestore or try again later.`;
-            if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-            if (loadingElement) loadingElement.classList.add('hidden');
-            if (contentDiv) contentDiv.classList.add('hidden');
-        }
-    }
-  </script>
 
  <script>
   function setupTabSwitching() {
