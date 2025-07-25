@@ -2792,93 +2792,99 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   </script>
 
-  <script>
-    function setupTabSwitching() {
-        const gamesTabs = document.querySelectorAll('.games-tab');
-        const gamesContents = document.querySelectorAll('.games-content');
-        let todayGamesIntervalId = null;
+ <script>
+  function setupTabSwitching() {
+    const gamesTabs = document.querySelectorAll('.games-tab');
+    const gamesContents = document.querySelectorAll('.games-content');
+    let todayGamesIntervalId = null;
 
-        gamesTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const targetTabId = tab.dataset.tab;
+    gamesTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetTabId = tab.dataset.tab;
 
-                // Remove 'active' from all tabs and hide all content divs
-                gamesTabs.forEach(t => t.classList.remove('active'));
-                gamesContents.forEach(content => {
-                    content.style.display = 'none';
-                });
-
-                // Add 'active' to the clicked tab and show its corresponding content div
-                tab.classList.add('active');
-                const targetContentDiv = document.getElementById(`tv-listings-${targetTabId}`);
-                if (targetContentDiv) {
-                    targetContentDiv.style.display = 'block';
-                }
-
-                // Clear any existing interval for "Today" games if switching tabs
-                if (todayGamesIntervalId) {
-                    clearInterval(todayGamesIntervalId);
-                    todayGamesIntervalId = null;
-                }
-
-                // Fetch data based on the active tab
-                if (targetTabId === 'scores') {
-                    fetchYesterdayScores();
-                } else if (targetTabId === 'today') {
-                    fetchTodayGames();
-                    // Set up interval to refresh "Today" games every 30 seconds
-                    todayGamesIntervalId = setInterval(fetchTodayGames, 30000);
-                } else if (targetTabId === 'live') {
-                    // Placeholder for 'live' tab logic - you'd add fetchLiveGames() here
-                }
-            });
+        // Remove 'active' from all tabs and hide all content divs
+        gamesTabs.forEach(t => t.classList.remove('active'));
+        gamesContents.forEach(content => {
+          content.style.display = 'none';
         });
 
-        // Trigger the initial load for the "SCORES" tab when the page loads, as it's the default active tab
-        const scoresTab = document.querySelector('.games-tab[data-tab="scores"]');
-        if (scoresTab) scoresTab.click(); // This calls fetchYesterdayScores and makes the tab active
-    }
-  </script>
+        // Activate the clicked tab and its content
+        tab.classList.add('active');
+        const targetContentDiv = document.getElementById(`tv-listings-${targetTabId}`);
+        if (targetContentDiv) {
+          targetContentDiv.style.display = 'block';
+        }
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Your existing menu and games toggle logic
-        const menuBtn  = document.getElementById('menu-toggle');
-        const gamesBtn = document.getElementById('games-toggle');
-        const menuCol  = document.querySelector('.column.main-menu');
-        const gamesCol = document.querySelector('.column.tv-listings');
+        // Clear existing interval for "today" tab
+        if (todayGamesIntervalId) {
+          clearInterval(todayGamesIntervalId);
+          todayGamesIntervalId = null;
+        }
 
-        if (menuBtn) menuBtn.addEventListener('click', () => {
-            if (menuCol) menuCol.classList.toggle('open');
-        });
-        if (gamesBtn) gamesBtn.addEventListener('click', () => {
-            if (gamesCol) gamesCol.classList.toggle('open');
-        });
-
-        // Initialize menu content switching
-        document.querySelectorAll("#menuList li[data-section]").forEach(item => {
-            item.addEventListener("click", function() {
-                const section = item.dataset.section || "Home"; // Default to 'Home' if data-section is missing
-                document.querySelectorAll(".column.news .content-section").forEach(s => {
-                    s.style.display = "none"; // Hide all news content sections
-                });
-                const news = document.getElementById("news-" + section); // Find the target news section
-                if (news) {
-                    news.style.display = "block"; // Show the target news section
-                } else {
-                    // Fallback to Home if the target section is not found
-                    const homeNews = document.getElementById("news-Home");
-                    if (homeNews) homeNews.style.display = "block";
-                }
-            });
-        });
-
-        // Finally, call setupTabSwitching to initialize the games panel
-        // This must be called AFTER all the functions it depends on (fetchTodayGames, fetchYesterdayScores)
-        // are defined and AFTER the HTML elements it queries (like .games-tab) are loaded.
-        setupTabSwitching();
+        // Trigger fetches for the selected tab
+        if (targetTabId === 'scores') {
+          fetchYesterdayScores();
+        } else if (targetTabId === 'today') {
+          fetchTodayGames();
+          todayGamesIntervalId = setInterval(fetchTodayGames, 30000);
+        } else if (targetTabId === 'live') {
+          // TODO: Add fetchLiveGames() if needed
+        }
+      });
     });
-  </script>
+
+    // ✅ Default to loading the TODAY tab
+    const todayTab = document.querySelector('.games-tab[data-tab="today"]');
+    if (todayTab) {
+      todayTab.click();
+    } else {
+      const fallbackTab = document.querySelector('.games-tab[data-tab="scores"]');
+      if (fallbackTab) fallbackTab.click();
+    }
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const menuBtn = document.getElementById('menu-toggle');
+    const gamesBtn = document.getElementById('games-toggle');
+    const menuCol = document.querySelector('.column.main-menu');
+    const gamesCol = document.querySelector('.column.tv-listings');
+
+    if (menuBtn) {
+      menuBtn.addEventListener('click', () => {
+        if (menuCol) menuCol.classList.toggle('open');
+      });
+    }
+
+    if (gamesBtn) {
+      gamesBtn.addEventListener('click', () => {
+        if (gamesCol) gamesCol.classList.toggle('open');
+      });
+    }
+
+    // News panel switching
+    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
+      item.addEventListener("click", function () {
+        const section = item.dataset.section || "Home";
+        document.querySelectorAll(".column.news .content-section").forEach(s => {
+          s.style.display = "none";
+        });
+        const news = document.getElementById("news-" + section);
+        if (news) {
+          news.style.display = "block";
+        } else {
+          const homeNews = document.getElementById("news-Home");
+          if (homeNews) homeNews.style.display = "block";
+        }
+      });
+    });
+
+    // ✅ Init games panel switching (after DOM and fetch functions are ready)
+    setupTabSwitching();
+  });
+</script>
+
 
   </body>
 </html>
