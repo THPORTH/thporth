@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-	  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script> <!-- ✅ NEW -->
-<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
-
    <script>
   const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   const host    = location.hostname; // e.g. "thporth.com" or "www.thporth.com"
   if ( isMobile && !host.startsWith("m.") ) {
     // build the mobile host dynamically
-    const mobileHost = "m." + host.replace(/^www\./, "");
+    const mobileHost = "m." + host.replace(/^www\\./, "");
     location.replace(
       location.protocol + "//" +
       mobileHost +
@@ -27,7 +23,6 @@
   display: none !important;
 }</style>
 	  
-
 
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CBFZXZSG19"></script>
@@ -62,7 +57,7 @@
 <meta name="twitter:image" content="https://github.com/ajolly2/ajolly2.github.io/blob/master/thporth_AllSportsNews_logo-red.png?raw=true" />
    <style>
   /* ────────────────────────────────────────────────────────── */
-  /*                        Global Resets                        */
+  /* Global Resets                        */
   /* ────────────────────────────────────────────────────────── */
   html,
   body {
@@ -84,11 +79,17 @@
   .spacer-line {
     height: 10px;
   }
+
 /* --- NEW: Styles for Sports Schedule Display --- */
+
+/* Add this new class to control visibility */
+.hidden {
+    display: none !important;
+}
 
 /* Loading indicator styling */
 .loading-indicator {
-    display: none; /* flex */
+    display: flex; /* Always display flex by default, hidden class will override */
     flex-direction: column; /* flex-col */
     align-items: center; /* items-center */
     justify-content: center; /* justify-center */
@@ -96,7 +97,7 @@
     color: #9ca3af; /* text-gray-400 */
 }
 .loading-spinner {
-    display: none;
+    display: block; /* Always display block by default, hidden class will override */
     animation: spin 1s linear infinite; /* animate-spin */
     height: 2.5rem; /* h-10 */
     width: 2.5rem; /* w-10 */
@@ -104,7 +105,7 @@
     margin-bottom: 0.75rem; /* mb-3 */
 }
 .loading-text {
-   display: none;
+   display: block; /* Always display block by default, hidden class will override */
     font-size: 1.125rem; /* text-lg */
     line-height: 1.75rem; /* leading-7 */
 }
@@ -115,7 +116,7 @@
 
 /* Error message styling */
 .error-message {
-     display: none;
+     display: block; /* Always display block by default, hidden class will override */
     background-color: #991b1b; /* bg-red-800 */
     border-width: 1px; /* border */
     border-color: #dc2626; /* border-red-600 */
@@ -247,13 +248,13 @@
 
 /* Game channel styling */
 .game-channel {
-    text-align: right; /* text-right */
+    text-align: right;
     width: 100px; /* fixed width */
-    flex-shrink: 0; /* flex-shrink-0 */
-    padding-right: 1rem; /* padding-right */
-    color: #9ca3af; /* text-gray-400 */
-    font-size: 0.875rem; /* text-sm */
-    line-height: 1.25rem; /* leading-5 */
+    flex-shrink: 0;
+    padding-right: 1rem;
+    color: #9ca3af;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
 }
 
 /* Custom scrollbar for overflow-y-auto */
@@ -318,15 +319,14 @@
 #tv-listings-today #todayGamesWrapper .channel-cell a {
   color: #99f;
   text-decoration: none;
-}
+  }
 #tv-listings-today #todayGamesWrapper .channel-cell a:hover {
   text-decoration: underline;
 }
 
-}
 /* ──────────────────────────────────────────────── */
   /* ────────────────────────────────────────────────────────── */
-  /*                         Top Bars                          */
+  /* Top Bars                          */
   /* ────────────────────────────────────────────────────────── */
   #topBar {
     width: 100%;
@@ -349,7 +349,7 @@
   }
 
   /* ────────────────────────────────────────────────────────── */
-  /*                        Layout Containers                    */
+  /* Layout Containers                    */
   /* ────────────────────────────────────────────────────────── */
   .container {
     display: flex;
@@ -400,7 +400,7 @@
   }
 
   /* ────────────────────────────────────────────────────────── */
-  /*                        Main‐Menu Styling                     */
+  /* Main‐Menu Styling                     */
   /* ────────────────────────────────────────────────────────── */
   #menuTopBox {
     width: 165px;
@@ -515,7 +515,7 @@
   }
 
   /* ────────────────────────────────────────────────────────── */
-  /*                        RSS‐Feed Links                       */
+  /* RSS‐Feed Links                       */
   /* ────────────────────────────────────────────────────────── */
   .news .rss-feed {
     padding-left: 10px;
@@ -523,7 +523,6 @@
 
   .rss-feed a {
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 11px;
     color: black;
     text-decoration: none;
   }
@@ -569,7 +568,7 @@
   }
 
   /* ────────────────────────────────────────────────────────── */
-  /*                   News Column (Split Scroll Areas)          */
+  /* News Column (Split Scroll Areas)          */
   /* ────────────────────────────────────────────────────────── */
 
   /* 1) Keep "News" bar pinned at the top: */
@@ -777,7 +776,7 @@
   }
 
   /* ────────────────────────────────────────────────────────── */
-  /*                    TV-Listings (Games) Styling               */
+  /* TV-Listings (Games) Styling               */
   /* ────────────────────────────────────────────────────────── */
   .column.tv-listings #live-games-container {
     margin: 0;
@@ -883,7 +882,8 @@
   }
 
   .games-content {
-    display: none;
+    /* No inline display property here. Rely on .hidden class */
+    /* display: none; */ /* This was the problem! */
   }
 
   #tv-listings-scores,
@@ -898,7 +898,7 @@
 
 
   /* ────────────────────────────────────────────────────────── */
-  /*                        Fonts (Owners)                       */
+  /* Fonts (Owners)                       */
   /* ────────────────────────────────────────────────────────── */
   @font-face {
     font-family: 'Owners';
@@ -1292,7 +1292,7 @@
 <!--
             <li data-section="USOpenCup">U.S. Open Cup</li> -->
             <li data-section="UFC">UFC</li>
-            <!--<li data-section="UFL">UFL</li>-->
+            <!--<li data-section="UFL">UFL;-->
             <li data-section="UEFAChampionsLeague">UEFA Champions League</li>
             <li data-section="UEFAConferenceLeague">UEFA Conference League</li>
             <li data-section="UEFAEuropaLeague">UEFA Europa League</li>
@@ -1305,167 +1305,6 @@
             <li class="spacer-line"></li>
             <li class="spacer-line"></li>
             <li class="spacer-line"></li>
-          </ul>
-          <!-- GROUP FILTER LIST -->
-          <ul id="menuList-group" style="display: none;">
-          <li data-section="Home"><span style="font-weight: bold;">Home</span></li>            
-            <li class="spacer-line"></li>
-            <li><strong>FOOTBALL</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="NFL">NFL</li>
-               <!-- <li data-section="NCAAF">NCAAF</li> -->
-             <!-- <li data-section="UFL">UFL</li> -->
-              <!-- <li data-section="CFL">CFL</li> -->
-            </ul>
-            <li class="spacer-line"></li>
-            <li><strong>BASEBALL</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="MLB">MLB</li>
-              <li data-section="NCAABaseball">NCAA Baseball</li>
-              <!-- <li data-section="LittleLeagueWorldSeries">Little League World Series</li> -->
-            </ul>
-            <li class="spacer-line"></li>
-            <li><strong>BASKETBALL</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="NBA">NBA</li>
-              <li data-section="WNBA">WNBA</li>
-              <li data-section="NCAAM">NCAAM</li>
-              <li data-section="NCAAW">NCAAW</li>
-             <!--  <li data-section="NBAGLeague">NBA G League</li> -->
-             <!--  <li data-section="EuroLeague">EuroLeague</li> -->
-            </ul>
-            <li class="spacer-line"></li>
-            <li data-section="Soccer"><span style="font-weight: bold;">SOCCER</span></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="UEFAChampionsLeague">UEFA Champions League</li>
-              <li data-section="PremierLeague">Premier League</li>
-              <li data-section="MLS">MLS</li>
-              <li data-section="LaLiga">LaLiga</li>
-              <li data-section="SerieA">Serie A</li>
-              <li data-section="Bundesliga">Bundesliga</li>
-              <li data-section="FACup">FA Cup</li>
-              <li data-section="LigaMX">Liga MX</li>
-              <li data-section="NWSL">NWSL</li>
-              <li data-section="Ligue1">Ligue 1</li>
-              <li data-section="UEFAEuropaLeague">UEFA Europa League</li>
-              <li data-section="UEFAConferenceLeague">UEFA Conference League</li>
-             <!--  <li class="soccer-more-toggle" style="cursor: pointer; color: #bebebe;" onclick="toggleSoccerMore()">More…</li>
-            </ul>
-            <div id="soccer-more" style="display: none;">
-              <ul style="padding-left: 10px;">
-                <li data-section="CarabaoCup">Carabao Cup</li>
-                <li data-section="UEFANationsLeague">UEFA Nations League</li>
-                <li data-section="CONCACAFNationsLeague">Concacaf Nations League</li>
-                <li data-section="SaudiProLeague">Saudi Pro League</li>
-                <li data-section="EFLChampionship">EFL Championship</li>
-                <li data-section="CopaDelRey">Copa del Rey</li>
-                <li data-section="FIFAClubWorldCup">FIFA Club World Cup</li>
-                <li data-section="Brasileirao">Brasileirão</li>
-                <li data-section="AFCChampionsLeagueElite">AFC Champions League Elite</li>
-                <li data-section="CopaLibertadores">Copa Libertadores</li>
-                <li data-section="CONCACAFGoldCup">Concacaf Gold Cup</li>
-                <li data-section="CONCACAFWGoldCup">Concacaf W Gold Cup</li>
-                <li data-section="CopaSudamericana">Copa Sudamericana</li>
-                <li data-section="CanadianPremierLeague">Canadian Premier League</li>
-                <li data-section="CoppaItalia">Coppa Italia</li>
-                <li data-section="DFBPokal">DFB-Pokal</li>
-                <li data-section="ScottishPremiership">Scottish Premiership</li>
-                <li data-section="UEFAWChampionsLeague">UEFA W Champions League</li>
-                <li data-section="CAFChampionsLeague">CAF Champions League</li>
-                <li data-section="AfricaCupOfNations">Africa Cup of Nations</li>
-                <li data-section="CONCACAFChampionsCup">Concacaf Champions Cup</li>
-                <li data-section="ArgentinePrimera">Argentine Primera</li>
-                <li data-section="BelgianProLeague">Belgian Pro League</li>
-                <li data-section="WomensSuperLeague">Women's Super League</li>
-                <li data-section="LigaPortugal">Liga Portugal</li>
-                <li data-section="USOpenCup">U.S. Open Cup</li>
-              </ul>
-            </div> -->
-            <li class="spacer-line"></li>
-            <li><strong>HOCKEY</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="NHL">NHL</li>
-             <!--  <li data-section="NCAAMensHockey">NCAA Men's Hockey</li> -->
-            </ul>
-            <li class="spacer-line"></li>
-            <li><strong>MOTORSPORTS</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="FormulaOne">Formula 1</li>
-              <li data-section="NASCARCupSeries">NASCAR Cup Series</li>
-              <li data-section="IndyCar">IndyCar</li>
-              <li data-section="MotoGP">MotoGP</li>
-           <!--    <li data-section="NHRA">NHRA</li>
-              <li data-section="NASCARXfinitySeries">NASCAR Xfinity Series</li>
-              <li data-section="NASCARTruckSeries">NASCAR Truck Series</li>
-              <li data-section="Formula2">Formula 2</li>
-              <li data-section="Formula3">Formula 3</li>
-              <li data-section="ARCAMenards">ARCA Menards</li> -->
-            </ul>
-            <li class="spacer-line"></li>
-            <li><strong>GOLF</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="PGATour">PGA Tour</li>
-              <li data-section="LIVGolf">LIV Golf</li>
-           <!--    <li data-section="TGL">TGL</li> -->
-              <li data-section="LPGATour">LPGA Tour</li>
-         <!--      <li data-section="PGAChampions">PGA Champions</li>
-              <li data-section="DPWorldTour">DP World Tour</li>
-              <li data-section="KornFerryTour">Korn Ferry Tour</li> -->
-            </ul>
-            <li class="spacer-line"></li>
-            <li><strong>FIGHTING</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="UFC">UFC</li>
-              <li data-section="Boxing">Boxing</li>
-            <!--   <li data-section="MMA">MMA</li> -->
-            </ul>
-            <li class="spacer-line"></li>
-           <!--  <li><strong>TENNIS</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="ATP">ATP</li>
-              <li data-section="WTA">WTA</li>
-            </ul> 
-            <li class="spacer-line"></li> -->
-            <li><strong>SOFTBALL</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="NCAASoftball">NCAA Softball</li>
-             <!--  <li data-section="LittleLeagueSoftballWorldSeries">Little League Softball</li> -->
-            </ul>
-            <li class="spacer-line"></li>
-              <!-- Placeholder for Tennis for right now until new leagues are added 
-              <ul style="padding-left: 10px;">
-              <li data-section="Tennis">Tennis</li>
-            </ul> -->
-           <!--  <li><strong>RUGBY</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="RugbyUnion">Rugby Union</li>
-              <li data-section="PremiershipRugby">Premiership Rugby</li>
-              <li data-section="MajorLeagueRugby">Major League Rugby</li>
-            </ul>
-            <li class="spacer-line"></li>
-            <li><strong>CRICKET</strong></li>
-            <ul style="padding-left: 10px;">
-              <li data-section="BigBashLeague">Big Bash League</li>
-            </ul> 
-            <li class="spacer-line"></li>-->
-            <li><strong>OTHER</strong></li>
-            <ul style="padding-left: 10px;">
-<!--
-              <li data-section="AFL">AFL</li>
-              <li data-section="Cycling">Cycling</li>
-              <li data-section="FigureSkating">Figure Skating</li>
-              <li data-section="Gymnastics">Gymnastics</li>
-              <li data-section="HorseRacing">Horse Racing</li>
-              <li data-section="Olympics">Olympics</li> -->
-             <li data-section="TrackAndField">Tennis</li>
-              <li data-section="TrackAndField">Track &amp; Field</li>
-               <!--
-              <li data-section="Volleyball">Volleyball</li>
-              <li data-section="XGames">X Games</li>  -->
-              <li class="spacer-line"></li>
-              <li class="spacer-line"></li>
-              <li class="spacer-line"></li>
-            </ul>
           </ul>
         </div>
       </div>
@@ -1493,7 +1332,7 @@
 
   <div id="tv-listings-container">
     <!-- SCORES TAB -->
-    <div id="tv-listings-scores" class="games-content" style="display: block;">
+    <div id="tv-listings-scores" class="games-content hidden">
       <div id="scoresWrapper">
         <!-- Loading Indicator for Scores -->
         <div id="scoresLoading" class="loading-indicator hidden">
@@ -1511,12 +1350,12 @@
         </div>
 
         <!-- Score content injected here -->
-        <div id="dynamicScoresContent"></div>
+        <div id="dynamicScoresContent" class="hidden"></div>
       </div>
     </div>
 
     <!-- TODAY TAB -->
-    <div id="tv-listings-today" class="games-content" style="display: none;">
+    <div id="tv-listings-today" class="games-content hidden">
       <div id="todayGamesWrapper">
         <!-- Loading Indicator for Games -->
         <div id="gamesLoading" class="loading-indicator hidden">
@@ -1534,12 +1373,12 @@
         </div>
 
         <!-- This div will hold the dynamically loaded game content -->
-        <div id="dynamicTodayGamesContent"></div>
+        <div id="dynamicTodayGamesContent" class="hidden"></div>
       </div>
     </div>
 
     <!-- LIVE TAB (placeholder) -->
-    <div id="tv-listings-live" class="games-content" style="display: none;"></div>
+    <div id="tv-listings-live" class="games-content hidden"></div>
   </div>
 </div>
 
@@ -2360,10 +2199,10 @@ document.addEventListener("DOMContentLoaded", function() {
 	    <script>
   /**
    * Turn a raw headline into a normalized array of words.
-   *  - Lowercase
-   *  - Remove punctuation
-   *  - Split on whitespace
-   *  - Filter out empty tokens
+   * - Lowercase
+   * - Remove punctuation
+   * - Split on whitespace
+   * - Filter out empty tokens
    */
   function headlineToWordArray(str) {
     return str
@@ -2375,7 +2214,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   /**
    * Compute Jaccard similarity of two arrays of words:
-   *    |Intersection(words1, words2)| / |Union(words1, words2)|
+   * |Intersection(words1, words2)| / |Union(words1, words2)|
    */
   function jaccardSimilarity(wordsA, wordsB) {
     const setA = new Set(wordsA);
@@ -2524,27 +2363,40 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 </script>
 
+<!-- Firebase SDKs - Load these ONCE and early, ideally in head or at top of body -->
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+
 <script>
+  // Your Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
     authDomain: "flashlive-daily-scraper.firebaseapp.com",
     projectId: "flashlive-daily-scraper",
-    storageBucket: "flashlive-daily-scraper.firebasestorage.app",
+    storageBucket: "flashlive-daily-scraper.appspot.com", // Corrected storageBucket based on testing_testing.html
     messagingSenderId: "124291936014",
     appId: "1:124291936014:web:acadcaa791d6046849315f",
     measurementId: "G-R146KS92QJ"
   };
 
+  // Initialize Firebase App
+  console.log("Firebase: Initializing app...");
   firebase.initializeApp(firebaseConfig);
 
-  // ✅ NEW — Sign in anonymously to allow Firestore real-time updates
-  firebase.auth().signInAnonymously().catch((error) => {
-    console.error("Anonymous sign-in failed:", error);
-  });
-
+  // Get service instances
   const db = firebase.firestore();
-  const gamesCollectionRef = db.collection('artifacts/flashlive-daily-scraper/public/data/sportsGames');
+  const auth = firebase.auth(); // Get auth instance
 
+  // Make them globally accessible for other scripts if needed
+  window.db = db;
+  window.auth = auth;
+
+  // Define gamesCollectionRef here, after db is initialized
+  const gamesCollectionRef = db.collection('artifacts/flashlive-daily-scraper/public/data/sportsGames');
+  console.log("Firebase: gamesCollectionRef defined.");
+
+  // Define your leagueNameMap and getDisplayLeagueName function here
   const leagueNameMap = {
     "USA: WNBA": "WNBA",
     "USA: NBA Salt Lake City Summer League": "NBA Summer League",
@@ -2570,134 +2422,296 @@ document.addEventListener("DOMContentLoaded", function() {
     return originalName && originalName.includes(':') ? originalName.split(':')[1].trim() : originalName;
   }
 
+  // Define LIVE_OR_UPCOMING_STATUSES globally or within fetchTodayGames
+  const LIVE_OR_UPCOMING_STATUSES = [
+    'Scheduled', 'In Progress', 'Live', 'Playing', 'First Half', 'Second Half',
+    'Overtime', 'Break', 'Penalty Shootout', 'Extra Time', 'Interrupted', 'Abandoned', 'Postponed'
+  ];
+
+
+  // Define fetchTodayGames and fetchYesterdayScores functions
   async function fetchTodayGames() {
+    console.log("fetchTodayGames: Function called.");
     const loadingElement = document.getElementById('gamesLoading');
     const errorMessageDiv = document.getElementById('gamesErrorMessage');
     const errorTextSpan = document.getElementById('gamesErrorText');
     const contentDiv = document.getElementById('dynamicTodayGamesContent');
 
+    // Show loading, hide content and error
     if (loadingElement) loadingElement.classList.remove('hidden');
     if (contentDiv) { contentDiv.classList.add('hidden'); contentDiv.innerHTML = ''; }
     if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
+    console.log("fetchTodayGames: Initial visibility set (loading shown, content/error hidden).");
 
     const today = new Date();
     const todayDateString = today.toISOString().split('T')[0];
-    const LIVE_OR_UPCOMING_STATUSES = [
-      'Scheduled', 'In Progress', 'Live', 'Playing', 'First Half', 'Second Half',
-      'Overtime', 'Break', 'Penalty Shootout', 'Extra Time', 'Interrupted', 'Abandoned', 'Postponed'
-    ];
+    console.log(`fetchTodayGames: Today's date string: ${todayDateString}`);
 
     try {
-      gamesCollectionRef
-        .where('gameDate', '==', todayDateString)
-        .where('Match Status', 'in', LIVE_OR_UPCOMING_STATUSES)
-        .orderBy('Start Time')
-        .onSnapshot((snapshot) => {
-          const games = snapshot.docs.map(doc => doc.data());
-          if (games.length === 0) {
-            if (errorTextSpan) errorTextSpan.textContent = 'No live or upcoming games for today.';
-            if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-            if (loadingElement) loadingElement.classList.add('hidden');
-            if (contentDiv) contentDiv.classList.add('hidden');
-            return;
-          }
+      // Ensure authentication is complete before fetching
+      await auth.signInAnonymously(); // Ensure anonymous sign-in is awaited
+      console.log("fetchTodayGames: Anonymous sign-in successful (or already signed in).");
 
-          const groupedGames = games.reduce((acc, game) => {
+      const snapshot = await gamesCollectionRef
+          .where('gameDate', '==', todayDateString)
+          .orderBy('Start Time')
+          .get(); // Changed from onSnapshot to get()
+      console.log("fetchTodayGames: Data fetched from Firestore using .get().");
+
+      const games = snapshot.docs.map(doc => doc.data());
+      if (games.length === 0) {
+        console.log("fetchTodayGames: No games found for today.");
+        if (errorTextSpan) errorTextSpan.textContent = 'No live or upcoming games for today.';
+        if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+        if (loadingElement) loadingElement.classList.add('hidden');
+        if (contentDiv) contentDiv.classList.add('hidden');
+        return;
+      }
+
+      const groupedGames = games.reduce((acc, game) => {
+        const league = game.League || 'Other';
+        if (!acc[league]) acc[league] = [];
+        acc[league].push(game);
+        return acc;
+      }, {});
+
+      const sortedLeagueNames = Object.keys(groupedGames).sort();
+      console.log(`fetchTodayGames: Found ${games.length} games. Rendering...`);
+
+      if (contentDiv) {
+        contentDiv.innerHTML = '';
+        sortedLeagueNames.forEach(leagueName => {
+          const leagueSection = document.createElement('div');
+          leagueSection.classList.add('league-section');
+          const leagueHeader = document.createElement('h2');
+          leagueHeader.classList.add('league-header');
+          leagueHeader.textContent = getDisplayLeagueName(leagueName);
+          leagueSection.appendChild(leagueHeader);
+          const gamesListContainer = document.createElement('div');
+          gamesListContainer.classList.add('game-entry-wrapper');
+
+          const leagueGames = groupedGames[leagueName];
+          leagueGames.forEach(game => {
+            const row = document.createElement('div');
+            row.className = 'game-row';
+
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'game-time';
+            let timeText = '';
+            // For the TODAY tab, we show scheduled time or live status
+            if (LIVE_OR_UPCOMING_STATUSES.includes(game['Match Status'])) {
+              if (['Scheduled', 'Postponed', 'N/A'].includes(game['Match Status'])) {
+                timeText = game['Start Time'] || '';
+                timeDiv.classList.add('status-scheduled');
+              } else {
+                timeText = game.Status || game['Match Status'];
+                timeDiv.classList.add('status-live');
+              }
+            } else {
+                // If status is not live/upcoming, show 'F' for finished games
+                timeText = game['Match Status'] === 'Finished' ? 'F' : (game['Start Time'] || '');
+                if (game['Match Status'] === 'Finished') timeDiv.classList.add('game-time-final');
+            }
+            timeDiv.textContent = timeText;
+            row.appendChild(timeDiv);
+
+            const teamsDiv = document.createElement('div');
+            teamsDiv.className = 'game-teams';
+            teamsDiv.innerHTML = `<div>${game['Home Team'] || ''}</div><div>${game['Away Team'] || ''}</div>`;
+            row.appendChild(teamsDiv);
+
+            const scoreDiv = document.createElement('div');
+            scoreDiv.className = 'score-cell';
+            let homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
+            let awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
+            
+            // Only show scores if game is not scheduled/postponed
+            if (!['Scheduled', 'Postponed', 'N/A'].includes(game['Match Status'])) {
+                // Determine winner for styling if game is finished
+                let homeClass = '';
+                let awayClass = '';
+                if (game['Match Status'] === 'Finished') {
+                    if (homeScore > awayScore) {
+                        homeClass = 'winner';
+                    } else if (awayScore > homeScore) {
+                        awayClass = 'winner';
+                    }
+                }
+                scoreDiv.innerHTML = `
+                    <div class="score-value ${homeClass}">${homeScore}</div>
+                    <div class="score-value ${awayClass}">${awayScore}</div>
+                `;
+            } else {
+                scoreDiv.innerHTML = `<div></div><div></div>`; // Empty scores for scheduled games
+            }
+            row.appendChild(scoreDiv);
+
+            const channelDiv = document.createElement('div');
+            channelDiv.className = 'channel-cell';
+            channelDiv.textContent = game.Channels || '';
+            row.appendChild(channelDiv);
+
+            gamesListContainer.appendChild(row);
+          });
+
+          leagueSection.appendChild(gamesListContainer);
+          contentDiv.appendChild(leagueSection);
+        });
+        contentDiv.classList.remove('hidden'); // Show content after rendering
+        console.log("fetchTodayGames: Content rendered and displayed.");
+      }
+
+      if (loadingElement) loadingElement.classList.add('hidden'); // Hide loading
+      console.log("fetchTodayGames: Loading indicator hidden.");
+
+    } catch (error) {
+      console.error("Error fetching today's games:", error);
+      if (errorTextSpan) errorTextSpan.textContent = `Failed to load today's data: ${error.message}.`;
+      if (errorMessageDiv) errorMessageDiv.classList.remove('hidden'); // Show error
+      if (loadingElement) loadingElement.classList.add('hidden'); // Hide loading
+      if (contentDiv) contentDiv.classList.add('hidden'); // Hide content on error
+      console.log("fetchTodayGames: Error message displayed.");
+    }
+  }
+
+  async function fetchYesterdayScores() {
+    console.log("fetchYesterdayScores: Function called.");
+    const loadingElement = document.getElementById('scoresLoading');
+    const errorMessageDiv = document.getElementById('scoresErrorMessage');
+    const errorTextSpan = document.getElementById('scoresErrorText');
+    const contentDiv = document.getElementById('dynamicScoresContent');
+
+    // Show loading, hide content and error
+    if (loadingElement) loadingElement.classList.remove('hidden');
+    if (contentDiv) { contentDiv.classList.add('hidden'); contentDiv.innerHTML = ''; }
+    if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
+    console.log("fetchYesterdayScores: Initial visibility set (loading shown, content/error hidden).");
+
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayDateString = yesterday.toISOString().split('T')[0];
+    console.log(`fetchYesterdayScores: Yesterday's date string: ${yesterdayDateString}`);
+
+    try {
+        // Ensure authentication is complete before fetching
+        await auth.signInAnonymously(); // Ensure anonymous sign-in is awaited
+        console.log("fetchYesterdayScores: Anonymous sign-in successful (or already signed in).");
+
+        const snapshot = await gamesCollectionRef
+            .where('gameDate', '==', yesterdayDateString)
+            .orderBy('Start Time')
+            .get(); // Use .get() for one-time fetch
+        console.log("fetchYesterdayScores: Data fetched from Firestore.");
+
+        if (snapshot.empty) {
+            console.log("fetchYesterdayScores: No scores found for yesterday.");
+            contentDiv.innerHTML = "<p>No scores found for yesterday.</p>";
+            if (contentDiv) contentDiv.classList.remove('hidden'); // Show content
+            if (loadingElement) loadingElement.classList.add('hidden'); // Hide loading
+            return;
+        }
+
+        const games = snapshot.docs.map(doc => doc.data());
+        const groupedGames = games.reduce((acc, game) => {
             const league = game.League || 'Other';
             if (!acc[league]) acc[league] = [];
             acc[league].push(game);
             return acc;
-          }, {});
+        }, {});
 
-          const sortedLeagueNames = Object.keys(groupedGames).sort();
+        const sortedLeagueNames = Object.keys(groupedGames).sort();
+        console.log(`fetchYesterdayScores: Found ${games.length} scores. Rendering...`);
 
-          if (contentDiv) {
+        if (contentDiv) {
             contentDiv.innerHTML = '';
             sortedLeagueNames.forEach(leagueName => {
-              const leagueSection = document.createElement('div');
-              leagueSection.classList.add('league-section');
-              const leagueHeader = document.createElement('h2');
-              leagueHeader.classList.add('league-header');
-              leagueHeader.textContent = getDisplayLeagueName(leagueName);
-              leagueSection.appendChild(leagueHeader);
-              const gamesListContainer = document.createElement('div');
-              gamesListContainer.classList.add('game-entry-wrapper');
+                const leagueSection = document.createElement('div');
+                leagueSection.classList.add('league-section');
+                const leagueHeader = document.createElement('h2');
+                leagueHeader.classList.add('league-header');
+                leagueHeader.textContent = getDisplayLeagueName(leagueName);
+                leagueSection.appendChild(leagueHeader);
+                const gamesListContainer = document.createElement('div');
+                gamesListContainer.classList.add('game-entry-wrapper');
 
-              const leagueGames = groupedGames[leagueName];
-              leagueGames.forEach(game => {
-                const row = document.createElement('div');
-                row.className = 'game-row';
+                const leagueGames = groupedGames[leagueName];
+                leagueGames.forEach(game => {
+                    const row = document.createElement('div');
+                    row.className = 'game-row';
 
-                const timeDiv = document.createElement('div');
-                timeDiv.className = 'game-time';
-                let timeText = '';
-                if (LIVE_OR_UPCOMING_STATUSES.includes(game['Match Status'])) {
-                  if (['Scheduled', 'Postponed', 'N/A'].includes(game['Match Status'])) {
-                    timeText = game['Start Time'] || '';
-                    timeDiv.classList.add('status-scheduled');
-                  } else {
-                    timeText = game.Status || game['Match Status'];
-                    timeDiv.classList.add('status-live');
-                  }
-                }
-                timeDiv.textContent = timeText;
-                row.appendChild(timeDiv);
+                    const timeDiv = document.createElement('div');
+                    timeDiv.className = 'game-time';
+                    // For scores, always show "F" or "Final" if game is finished
+                    let timeText = game['Match Status'] === 'Finished' ? 'F' : (game['Start Time'] || '');
+                    timeDiv.textContent = timeText;
+                    timeDiv.classList.add('game-time-final'); // Add class for styling finished games
+                    row.appendChild(timeDiv);
 
-                const teamsDiv = document.createElement('div');
-                teamsDiv.className = 'game-teams';
-                teamsDiv.innerHTML = `<div>${game['Home Team'] || ''}</div><div>${game['Away Team'] || ''}</div>`;
-                row.appendChild(teamsDiv);
+                    const teamsDiv = document.createElement('div');
+                    teamsDiv.className = 'game-teams';
+                    teamsDiv.innerHTML = `
+                        <div class="team">${game['Home Team'] || ''}</div>
+                        <div class="team">${game['Away Team'] || ''}</div>
+                    `;
+                    row.appendChild(teamsDiv);
 
-                const scoreDiv = document.createElement('div');
-                scoreDiv.className = 'score-cell';
-                let homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
-                let awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
-                if (['Scheduled', 'Postponed', 'N/A'].includes(game['Match Status'])) {
-                  homeScore = '';
-                  awayScore = '';
-                }
-                scoreDiv.innerHTML = `<div>${homeScore}</div><div>${awayScore}</div>`;
-                row.appendChild(scoreDiv);
+                    const scoreDiv = document.createElement('div');
+                    scoreDiv.className = 'score-cell';
+                    let homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
+                    let awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
 
-                const channelDiv = document.createElement('div');
-                channelDiv.className = 'channel-cell';
-                channelDiv.textContent = game.Channels || '';
-                row.appendChild(channelDiv);
+                    // Determine winner for styling
+                    let homeClass = '';
+                    let awayClass = '';
+                    if (game['Match Status'] === 'Finished') {
+                        if (homeScore > awayScore) {
+                            homeClass = 'winner';
+                        } else if (awayScore > homeScore) {
+                            awayClass = 'winner';
+                        }
+                    }
 
-                gamesListContainer.appendChild(row);
-              });
+                    scoreDiv.innerHTML = `
+                        <div class="score-value ${homeClass}">${homeScore}</div>
+                        <div class="score-value ${awayClass}">${awayScore}</div>
+                    `;
+                    row.appendChild(scoreDiv);
 
-              leagueSection.appendChild(gamesListContainer);
-              contentDiv.appendChild(leagueSection);
+                    const channelDiv = document.createElement('div');
+                    channelDiv.className = 'channel-cell';
+                    channelDiv.textContent = game.Channels || '';
+                    row.appendChild(channelDiv);
+
+                    gamesListContainer.appendChild(row);
+                });
+
+                leagueSection.appendChild(gamesListContainer);
+                contentDiv.appendChild(leagueSection);
             });
-            contentDiv.classList.remove('hidden');
-          }
+            contentDiv.classList.remove('hidden'); // Show content after rendering
+            console.log("fetchYesterdayScores: Content rendered and displayed.");
+        }
 
-          if (loadingElement) loadingElement.classList.add('hidden');
-        },
-        (error) => {
-          console.error("onSnapshot failed:", error);
-          if (errorTextSpan) errorTextSpan.textContent = `Failed to load today's data: ${error.message}`;
-          if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-          if (loadingElement) loadingElement.classList.add('hidden');
-          if (contentDiv) contentDiv.classList.add('hidden');
-        });
-    } catch (error) {
-      console.error("Error setting up snapshot listener:", error);
-      if (errorTextSpan) errorTextSpan.textContent = `Setup error: ${error.message}.`;
-      if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-      if (loadingElement) loadingElement.classList.add('hidden');
-      if (contentDiv) contentDiv.classList.add('hidden');
+        if (loadingElement) loadingElement.classList.add('hidden'); // Hide loading
+        console.log("fetchYesterdayScores: Loading indicator hidden.");
+
+    } catch (err) {
+        console.error("Error fetching yesterday's games:", err);
+        if (errorTextSpan) errorTextSpan.textContent = "Failed to load yesterday's scores: " + err.message;
+        if (errorMessageDiv) errorMessageDiv.classList.remove('hidden'); // Show error
+        if (loadingElement) loadingElement.classList.add('hidden'); // Hide loading
+        if (contentDiv) contentDiv.classList.add('hidden'); // Hide content on error
+        console.log("fetchYesterdayScores: Error message displayed.");
     }
   }
 
-  // fetchYesterdayScores function — unchanged
-  // Keep your fetchYesterdayScores() function exactly as-is beneath this
 </script>
 
 
  <script>
   function setupTabSwitching() {
+    console.log("setupTabSwitching: Function called.");
     const gamesTabs = document.querySelectorAll('.games-tab');
     const gamesContents = document.querySelectorAll('.games-content');
     let todayGamesIntervalId = null;
@@ -2705,24 +2719,28 @@ document.addEventListener("DOMContentLoaded", function() {
     gamesTabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const targetTabId = tab.dataset.tab;
+        console.log(`Tab clicked: ${targetTabId}`);
 
         // Remove 'active' from all tabs and hide all content divs
         gamesTabs.forEach(t => t.classList.remove('active'));
         gamesContents.forEach(content => {
-          content.style.display = 'none';
+          content.classList.add('hidden'); // Ensure all content divs are hidden
+          console.log(`setupTabSwitching: Hiding content div: ${content.id}`);
         });
 
         // Activate the clicked tab and its content
         tab.classList.add('active');
         const targetContentDiv = document.getElementById(`tv-listings-${targetTabId}`);
         if (targetContentDiv) {
-          targetContentDiv.style.display = 'block';
+          targetContentDiv.classList.remove('hidden'); // Show the target content div
+          console.log(`setupTabSwitching: Showing content div: ${targetContentDiv.id}`);
         }
 
         // Clear existing interval for "today" tab
         if (todayGamesIntervalId) {
           clearInterval(todayGamesIntervalId);
           todayGamesIntervalId = null;
+          console.log("setupTabSwitching: Cleared existing interval.");
         }
 
         // Trigger fetches for the selected tab
@@ -2730,8 +2748,11 @@ document.addEventListener("DOMContentLoaded", function() {
           fetchYesterdayScores();
         } else if (targetTabId === 'today') {
           fetchTodayGames();
-          todayGamesIntervalId = setInterval(fetchTodayGames, 30000);
+          // We are using .get() now, so no need for interval unless explicit real-time is requested later
+          // todayGamesIntervalId = setInterval(fetchTodayGames, 30000); 
+          console.log("setupTabSwitching: Today tab clicked, fetching games (one-time).");
         } else if (targetTabId === 'live') {
+          console.log("setupTabSwitching: Live tab clicked (no fetch implemented yet).");
           // TODO: Add fetchLiveGames() if needed
         }
       });
@@ -2740,8 +2761,10 @@ document.addEventListener("DOMContentLoaded", function() {
     // ✅ Default to loading the TODAY tab
     const todayTab = document.querySelector('.games-tab[data-tab="today"]');
     if (todayTab) {
-      todayTab.click();
+      console.log("setupTabSwitching: Programmatically clicking 'TODAY' tab.");
+      todayTab.click(); // Programmatically click the TODAY tab on load
     } else {
+      console.log("setupTabSwitching: 'TODAY' tab not found, falling back to 'SCORES'.");
       const fallbackTab = document.querySelector('.games-tab[data-tab="scores"]');
       if (fallbackTab) fallbackTab.click();
     }
@@ -2750,6 +2773,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    console.log("DOMContentLoaded: Event fired.");
     const menuBtn = document.getElementById('menu-toggle');
     const gamesBtn = document.getElementById('games-toggle');
     const menuCol = document.querySelector('.column.main-menu');
@@ -2758,12 +2782,14 @@ document.addEventListener("DOMContentLoaded", function() {
     if (menuBtn) {
       menuBtn.addEventListener('click', () => {
         if (menuCol) menuCol.classList.toggle('open');
+        console.log("Menu toggle clicked.");
       });
     }
 
     if (gamesBtn) {
       gamesBtn.addEventListener('click', () => {
         if (gamesCol) gamesCol.classList.toggle('open');
+        console.log("Games toggle clicked.");
       });
     }
 
@@ -2771,6 +2797,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll("#menuList li[data-section]").forEach(item => {
       item.addEventListener("click", function () {
         const section = item.dataset.section || "Home";
+        console.log(`News section clicked: ${section}`);
         document.querySelectorAll(".column.news .content-section").forEach(s => {
           s.style.display = "none";
         });
@@ -2786,66 +2813,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // ✅ Init games panel switching (after DOM and fetch functions are ready)
     setupTabSwitching();
+    console.log("DOMContentLoaded: setupTabSwitching called.");
   });
 </script>
 
-     <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
-      authDomain: "flashlive-daily-scraper.firebaseapp.com",
-      projectId: "flashlive-daily-scraper",
-      storageBucket: "flashlive-daily-scraper.appspot.com",
-      messagingSenderId: "124291936014",
-      appId: "1:124291936014:web:acadcaa791d6046849315f",
-      measurementId: "G-R146KS92QJ"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const collectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
-
-    async function fetchGamesNoFilter() {
-      const container = document.getElementById("games");
-      const errorDiv = document.getElementById("error");
-      container.innerHTML = "";
-      errorDiv.textContent = "";
-
-      try {
-        const snapshot = await collectionRef
-          .orderBy("Start Time")
-          .limit(50)
-          .get();
-
-        if (snapshot.empty) {
-          container.innerHTML = "<p>No games found in Firestore collection.</p>";
-          return;
-        }
-
-        snapshot.docs.forEach(doc => {
-          const data = doc.data();
-          const row = document.createElement("div");
-          row.className = "game-row";
-          row.innerHTML = `
-            <strong>Doc ID:</strong> ${doc.id}<br>
-            <strong>League:</strong> ${data.League || "N/A"}<br>
-            <strong>Home:</strong> ${data["Home Team"] || ""} vs ${data["Away Team"] || ""}<br>
-            <strong>Time:</strong> ${data["Start Time"] || "N/A"}<br>
-            <strong>Status:</strong> ${data["Match Status"] || "N/A"}<br>
-            <strong>Date:</strong> ${data["gameDate"] || "N/A"}<br>
-            <details><summary>Raw Data</summary><pre>${JSON.stringify(data, null, 2)}</pre></details>
-          `;
-          container.appendChild(row);
-        });
-
-      } catch (err) {
-        console.error("Error fetching games:", err);
-        errorDiv.textContent = "Failed to load Firestore data: " + err.message;
-      }
-    }
-
-    fetchGamesNoFilter();
-  </script>
 
   </body>
 </html>
-
