@@ -67,7 +67,6 @@
           return;
         }
 
-        // Group games by League
         const leagueGroups = {};
         snapshot.docs.forEach(doc => {
           const data = doc.data();
@@ -78,7 +77,6 @@
           leagueGroups[league].push(data);
         });
 
-        // Display each league section
         for (const [leagueName, games] of Object.entries(leagueGroups)) {
           const leagueSection = document.createElement("div");
           leagueSection.className = "league-section";
@@ -96,18 +94,24 @@
             const away = data["Away Team"] || "";
             const status = data["Match Status"] || "";
             const score = data["Score"] || "";
-            const startTimeRaw = data["Start Time"];
+            const rawStart = data["Start Time"];
             let displayTime = "TBD";
 
             if (status.toLowerCase().includes("live") || status.includes("inning") || score) {
               displayTime = `${status}${score ? " | " + score : ""}`;
-            } else if (startTimeRaw) {
-              const localTimeOnly = new Date(startTimeRaw).toLocaleTimeString(undefined, {
+            } else if (rawStart) {
+              let gameDate;
+              if (typeof rawStart.toDate === 'function') {
+                gameDate = rawStart.toDate(); // Firestore Timestamp
+              } else {
+                gameDate = new Date(rawStart); // ISO 8601 or timestamp string
+              }
+
+              displayTime = gameDate.toLocaleTimeString(undefined, {
                 hour: 'numeric',
                 minute: '2-digit',
                 hour12: true
               });
-              displayTime = localTimeOnly;
             }
 
             row.innerHTML = `
