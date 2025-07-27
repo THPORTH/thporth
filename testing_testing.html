@@ -103,11 +103,13 @@
               // Show status + score if live
               displayTime = `${status}${score ? " | " + score : ""}`;
             } else if (startTimeRaw) {
-              const localTime = new Date(startTimeRaw).toLocaleTimeString([], {
-                hour: '2-digit',
+              const localTime = new Date(startTimeRaw).toLocaleString(undefined, {
+                weekday: 'short',
+                hour: 'numeric',
                 minute: '2-digit',
+                hour12: true
               });
-              displayTime = localTime;
+              displayTime = `Starts: ${localTime}`;
             }
 
             row.innerHTML = `
