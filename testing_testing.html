@@ -100,16 +100,14 @@
             let displayTime = "TBD";
 
             if (status.toLowerCase().includes("live") || status.includes("inning") || score) {
-              // Show status + score if live
               displayTime = `${status}${score ? " | " + score : ""}`;
             } else if (startTimeRaw) {
-              const localTime = new Date(startTimeRaw).toLocaleString(undefined, {
-                weekday: 'short',
+              const localTimeOnly = new Date(startTimeRaw).toLocaleTimeString(undefined, {
                 hour: 'numeric',
                 minute: '2-digit',
                 hour12: true
               });
-              displayTime = `Starts: ${localTime}`;
+              displayTime = localTimeOnly;
             }
 
             row.innerHTML = `
