@@ -21,9 +21,19 @@
       border-bottom: 2px solid #555;
       padding-bottom: 0.3rem;
     }
+    .game-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .game-table td {
+      padding: 4px 10px;
+      vertical-align: top;
+    }
     .game-row {
       border-bottom: 1px solid #333;
-      padding: 0.5rem 0;
+    }
+    .team-cell {
+      white-space: nowrap;
     }
     .error {
       color: red;
@@ -86,55 +96,69 @@
           title.textContent = leagueName;
           leagueSection.appendChild(title);
 
-          games.forEach(data => {
-            const row = document.createElement("div");
-            row.className = "game-row";
+          const table = document.createElement("table");
+          table.className = "game-table";
 
+          games.forEach(data => {
             const home = data["Home Team"] || "";
             const away = data["Away Team"] || "";
             const homeScore = data["Home Score"];
             const awayScore = data["Away Score"];
-            const matchStatus = data["Match Status"] || "";
-            const inningStatus = data["Status"] || "";
+            const matchStatus = (data["Match Status"] || "").toUpperCase();
+            const inningStatus = (data["Status"] || "").toUpperCase();
             const rawStart = data["Start Time"];
 
-            const isLive =
-              matchStatus.toUpperCase() === "LIVE" ||
-              inningStatus.toUpperCase().includes("INNING");
+            const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING");
+            const isFinal = matchStatus === "FINAL";
 
-            let displayText = "";
+            let timeLabel = "";
 
             if (isLive) {
-              const liveStatus = inningStatus || matchStatus;
-              const scoreLine = (homeScore !== undefined && awayScore !== undefined)
-                ? `${home} ${homeScore} – ${awayScore} ${away}`
-                : `${home} vs ${away}`;
-              displayText = `${liveStatus} | ${scoreLine}`;
+              timeLabel = inningStatus || matchStatus;
+            } else if (isFinal) {
+              timeLabel = "FINAL";
             } else if (rawStart) {
               let gameDate;
               if (typeof rawStart?.toDate === "function") {
                 gameDate = rawStart.toDate();
               } else if (typeof rawStart === "number") {
-                gameDate = new Date(rawStart * 1000); // Convert seconds → ms
+                gameDate = new Date(rawStart * 1000); // convert UNIX sec to ms
               } else {
                 gameDate = new Date(rawStart);
               }
 
-              const localTime = gameDate.toLocaleTimeString(undefined, {
+              timeLabel = gameDate.toLocaleTimeString(undefined, {
                 hour: "numeric",
                 minute: "2-digit",
                 hour12: true
               });
-
-              displayText = `${home} vs ${away} | ${localTime}`;
             } else {
-              displayText = `${home} vs ${away}`;
+              timeLabel = "TBD";
             }
 
-            row.innerHTML = `<span>${displayText}</span>`;
-            leagueSection.appendChild(row);
+            const row1 = document.createElement("tr");
+            row1.className = "game-row";
+            row1.innerHTML = `
+              <td>${timeLabel}</td>
+              <td class="team-cell">${away}</td>
+              <td>${typeof awayScore !== "undefined" ? awayScore : ""}</td>
+              <td></td>
+            `;
+
+            const row2 = document.createElement("tr");
+            row2.className = "game-row";
+            row2.innerHTML = `
+              <td></td>
+              <td class="team-cell">${home}</td>
+              <td>${typeof homeScore !== "undefined" ? homeScore : ""}</td>
+              <td></td>
+            `;
+
+            table.appendChild(row1);
+            table.appendChild(row2);
           });
 
+          leagueSection.appendChild(table);
           container.appendChild(leagueSection);
         }
 
