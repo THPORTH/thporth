@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Firestore Debug Viewer (No Date Filter)</title>
+  <title>Firestore Live Games Viewer</title>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
   <style>
@@ -12,23 +12,26 @@
       font-family: sans-serif;
       padding: 2rem;
     }
+    .league-section {
+      margin-bottom: 3rem;
+    }
+    .league-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #555;
+      padding-bottom: 0.3rem;
+    }
     .game-row {
-      border-bottom: 1px solid #444;
-      padding: 1rem 0;
+      border-bottom: 1px solid #333;
+      padding: 0.5rem 0;
     }
     .error {
       color: red;
     }
-    pre {
-      background: #222;
-      color: #ccc;
-      padding: 10px;
-      overflow-x: auto;
-    }
   </style>
 </head>
 <body>
-  <h1>All Firestore Games (No Date Filter)</h1>
+  <h1>Live & Upcoming Games</h1>
   <div id="games"></div>
   <div id="error" class="error"></div>
 
@@ -56,7 +59,7 @@
       try {
         const snapshot = await collectionRef
           .orderBy("Start Time")
-          .limit(50)
+          .limit(100)
           .get();
 
         if (snapshot.empty) {
@@ -64,21 +67,58 @@
           return;
         }
 
+        // Group games by League
+        const leagueGroups = {};
         snapshot.docs.forEach(doc => {
           const data = doc.data();
-          const row = document.createElement("div");
-          row.className = "game-row";
-          row.innerHTML = `
-            <strong>Doc ID:</strong> ${doc.id}<br>
-            <strong>League:</strong> ${data.League || "N/A"}<br>
-            <strong>Home:</strong> ${data["Home Team"] || ""} vs ${data["Away Team"] || ""}<br>
-            <strong>Time:</strong> ${data["Start Time"] || "N/A"}<br>
-            <strong>Status:</strong> ${data["Match Status"] || "N/A"}<br>
-            <strong>Date:</strong> ${data["gameDate"] || "N/A"}<br>
-            <details><summary>Raw Data</summary><pre>${JSON.stringify(data, null, 2)}</pre></details>
-          `;
-          container.appendChild(row);
+          const league = data.League || "Other";
+          if (!leagueGroups[league]) {
+            leagueGroups[league] = [];
+          }
+          leagueGroups[league].push(data);
         });
+
+        // Display each league section
+        for (const [leagueName, games] of Object.entries(leagueGroups)) {
+          const leagueSection = document.createElement("div");
+          leagueSection.className = "league-section";
+
+          const title = document.createElement("div");
+          title.className = "league-title";
+          title.textContent = leagueName;
+          leagueSection.appendChild(title);
+
+          games.forEach(data => {
+            const row = document.createElement("div");
+            row.className = "game-row";
+
+            const home = data["Home Team"] || "";
+            const away = data["Away Team"] || "";
+            const status = data["Match Status"] || "";
+            const score = data["Score"] || "";
+            const startTimeRaw = data["Start Time"];
+            let displayTime = "TBD";
+
+            if (status.toLowerCase().includes("live") || status.includes("inning") || score) {
+              // Show status + score if live
+              displayTime = `${status}${score ? " | " + score : ""}`;
+            } else if (startTimeRaw) {
+              const localTime = new Date(startTimeRaw).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+              displayTime = localTime;
+            }
+
+            row.innerHTML = `
+              <strong>${home}</strong> vs <strong>${away}</strong><br>
+              <span>${displayTime}</span>
+            `;
+            leagueSection.appendChild(row);
+          });
+
+          container.appendChild(leagueSection);
+        }
 
       } catch (err) {
         console.error("Error fetching games:", err);
