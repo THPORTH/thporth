@@ -112,8 +112,10 @@
               displayText = `${liveStatus} | ${scoreLine}`;
             } else if (rawStart) {
               let gameDate;
-              if (typeof rawStart.toDate === "function") {
+              if (typeof rawStart?.toDate === "function") {
                 gameDate = rawStart.toDate();
+              } else if (typeof rawStart === "number") {
+                gameDate = new Date(rawStart * 1000); // Convert seconds → ms
               } else {
                 gameDate = new Date(rawStart);
               }
