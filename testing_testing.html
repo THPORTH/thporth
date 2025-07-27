@@ -92,32 +92,44 @@
 
             const home = data["Home Team"] || "";
             const away = data["Away Team"] || "";
-            const status = data["Match Status"] || "";
-            const score = data["Score"] || "";
+            const homeScore = data["Home Score"];
+            const awayScore = data["Away Score"];
+            const matchStatus = data["Match Status"] || "";
+            const inningStatus = data["Status"] || "";
             const rawStart = data["Start Time"];
-            let displayTime = "TBD";
 
-            if (status.toLowerCase().includes("live") || status.includes("inning") || score) {
-              displayTime = `${status}${score ? " | " + score : ""}`;
+            const isLive =
+              matchStatus.toUpperCase() === "LIVE" ||
+              inningStatus.toUpperCase().includes("INNING");
+
+            let displayText = "";
+
+            if (isLive) {
+              const liveStatus = inningStatus || matchStatus;
+              const scoreLine = (homeScore !== undefined && awayScore !== undefined)
+                ? `${home} ${homeScore} – ${awayScore} ${away}`
+                : `${home} vs ${away}`;
+              displayText = `${liveStatus} | ${scoreLine}`;
             } else if (rawStart) {
               let gameDate;
-              if (typeof rawStart.toDate === 'function') {
-                gameDate = rawStart.toDate(); // Firestore Timestamp
+              if (typeof rawStart.toDate === "function") {
+                gameDate = rawStart.toDate();
               } else {
-                gameDate = new Date(rawStart); // ISO 8601 or timestamp string
+                gameDate = new Date(rawStart);
               }
 
-              displayTime = gameDate.toLocaleTimeString(undefined, {
-                hour: 'numeric',
-                minute: '2-digit',
+              const localTime = gameDate.toLocaleTimeString(undefined, {
+                hour: "numeric",
+                minute: "2-digit",
                 hour12: true
               });
+
+              displayText = `${home} vs ${away} | ${localTime}`;
+            } else {
+              displayText = `${home} vs ${away}`;
             }
 
-            row.innerHTML = `
-              <strong>${home}</strong> vs <strong>${away}</strong><br>
-              <span>${displayTime}</span>
-            `;
+            row.innerHTML = `<span>${displayText}</span>`;
             leagueSection.appendChild(row);
           });
 
