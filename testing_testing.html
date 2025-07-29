@@ -70,7 +70,7 @@
                 "SPAIN: LALIGA": "LaLiga",
                 "ITALY: SERIE A": "Serie A",
                 "FRANCE: LIGUE 1": "Ligue 1",
-                "USA: MLS": "MLS",
+                "USA: MLS": "MLS"
                 // Add all your specific mappings here. Examples:
                 // "ARGENTINA: LIGA PROFESIONAL": "Argentine Primera División",
                 // "BRAZIL: SERIE A": "Brasileirão Série A",
@@ -162,9 +162,11 @@
                     title.textContent = leagueName;
                     leagueSection.appendChild(title);
 
-                    // Create a table for games within this league
                     const table = document.createElement("table");
                     table.className = "game-table";
+
+                    // Variable to track the last displayed time label within this league
+                    let lastDisplayedTimeLabel = null;
 
                     // Iterate through games in the current league and add them to the table
                     games.forEach(data => {
@@ -181,13 +183,13 @@
                         const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING");
                         const isFinal = matchStatus === "FINISHED"; // Correctly checks for "FINISHED" from Firestore
 
-                        let timeLabel = ""; // Variable to hold the text for the first column
+                        let currentTimeLabel = ""; // Variable to hold the text for the first column for THIS game
 
-                        // Logic to determine the time/status label
+                        // Logic to determine the time/status label for the current game
                         if (isLive) {
-                            timeLabel = inningStatus || matchStatus; // Show inning or LIVE status
+                            currentTimeLabel = inningStatus || matchStatus; // Show inning or LIVE status
                         } else if (isFinal) {
-                            timeLabel = "F"; // Show "F" for finished games
+                            currentTimeLabel = "F"; // Show "F" for finished games
                         } else if (rawStart) {
                             // Convert Firestore timestamp to a Date object
                             let gameDateFromFirestore;
@@ -204,16 +206,25 @@
 
                             // Format the time using Luxon, converting to the user's local timezone
                             const startTimeLuxon = DateTime.fromJSDate(gameDateFromFirestore).setZone(DateTime.local().zoneName);
-                            timeLabel = startTimeLuxon.toFormat('h:mm a'); // e.g., "3:30 PM"
+                            currentTimeLabel = startTimeLuxon.toFormat('h:mm a'); // e.g., "3:30 PM"
                         } else {
-                            timeLabel = "TBD"; // If no start time available
+                            currentTimeLabel = "TBD"; // If no start time available
                         }
+
+                        // --- NEW LOGIC FOR DEDUPLICATING TIME LABELS ---
+                        let displayTimeLabel = currentTimeLabel;
+                        if (currentTimeLabel === lastDisplayedTimeLabel) {
+                            displayTimeLabel = ""; // If same as last, display empty
+                        } else {
+                            lastDisplayedTimeLabel = currentTimeLabel; // Update for next iteration
+                        }
+                        // --- END NEW LOGIC ---
 
                         // Create table rows for the away team and home team
                         const row1 = document.createElement("tr");
                         row1.className = "game-row";
                         row1.innerHTML = `
-                            <td>${timeLabel}</td>
+                            <td>${displayTimeLabel}</td>
                             <td class="team-cell">${away}</td>
                             <td>${typeof awayScore !== "undefined" ? awayScore : ""}</td>
                             <td></td>
