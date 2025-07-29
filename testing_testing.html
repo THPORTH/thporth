@@ -134,7 +134,7 @@
                             }
 
                             // Format the time using Luxon for consistency
-                            const startTimeLuxon = DateTime.fromJSDate(gameDateFromFirestore).setZone('America/New_York');
+                            const startTimeLuxon = DateTime.fromJSDate(gameDateFromFirestore).setZone(DateTime.local().zoneName);
                             timeLabel = startTimeLuxon.toFormat('h:mm a'); // e.g., "3:30 PM"
                         } else {
                             timeLabel = "TBD";
