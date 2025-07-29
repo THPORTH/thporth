@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Firestore Live Games Viewer</title>
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+    <!-- Luxon for date/time handling -->
     <script src="https://cdn.jsdelivr.net/npm/luxon@3.x/build/global/luxon.min.js"></script>
     <style>
         body {
@@ -47,16 +49,17 @@
     <div id="error" class="error"></div>
 
     <script>
-        // Start of the simple exact-match function to add
+        // Function to map original league names from Firestore to desired display names
         function getLeagueDisplayName(originalLeagueName) {
             // Define your exact mapping rules here.
             // The keys (left side) MUST EXACTLY match the league names as they appear in your Firestore.
             // The values (right side) are the desired display names on your site.
+            // IMPORTANT: Ensure keys match the exact casing from your Firestore data.
             const exactLeagueMaps = {
                 "USA: WNBA": "WNBA",
                 "USA: MLB": "MLB",
                 "EUROPE: UEFA CHAMPIONS LEAGUE": "UEFA Champions League",
-                "EUROPE: UEFA WOMEN'S CHAMPIONS LEAGUE": "UEFA Women's Champions League", // Example for women's
+                "EUROPE: UEFA WOMEN'S CHAMPIONS LEAGUE": "UEFA Women's Champions League",
                 "USA: NBA": "NBA",
                 "USA: NHL": "NHL",
                 "USA: NFL": "NFL",
@@ -68,9 +71,11 @@
                 "ITALY: SERIE A": "Serie A",
                 "FRANCE: LIGUE 1": "Ligue 1",
                 "USA: MLS": "MLS",
-                // ADD ALL YOUR SPECIFIC MAPPINGS HERE
-                // Example: "ARGENTINA: LIGA PROFESIONAL": "Argentine Primera División",
-                // Example: "BRAZIL: SERIE A": "Brasileirão Série A"
+                // Add all your specific mappings here. Examples:
+                // "ARGENTINA: LIGA PROFESIONAL": "Argentine Primera División",
+                // "BRAZIL: SERIE A": "Brasileirão Série A",
+                // "SPAIN: COPA DEL REY": "Copa del Rey",
+                // "AUSTRALIA: A-LEAGUE": "A-League"
             };
 
             // Check if the exact originalLeagueName exists as a key in our map
@@ -81,8 +86,8 @@
             // Fallback: If no exact match found, return the original name from Firestore
             return originalLeagueName;
         }
-        // End of the function to add
 
+        // Firebase Configuration (YOUR PROJECT SPECIFIC CONFIG)
         const firebaseConfig = {
             apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
             authDomain: "flashlive-daily-scraper.firebaseapp.com",
@@ -93,89 +98,118 @@
             measurementId: "G-R146KS92QJ"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        // Reference to your Firestore collection where game data is stored
         const collectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
 
-        async function fetchGames() { // Renamed from fetchGamesNoFilter for clarity
+        /**
+         * Fetches games from Firestore, filters by today's Eastern Time date,
+         * groups them by mapped league name, and displays them on the page.
+         */
+        async function fetchGames() {
             const container = document.getElementById("games");
             const errorDiv = document.getElementById("error");
-            container.innerHTML = "";
-            errorDiv.textContent = "";
+            container.innerHTML = ""; // Clear previous content
+            errorDiv.textContent = ""; // Clear previous errors
 
             try {
                 // Get today's date in Eastern Time, consistent with your backend
-                const { DateTime } = luxon; // Access Luxon from the global object
+                // Luxon is available globally via the CDN script
+                const { DateTime } = luxon;
                 const nowInEastern = DateTime.now().setZone('America/New_York');
-                const todayStr = nowInEastern.toISODate(); // 'YYYY-MM-DD'
+                const todayStr = nowInEastern.toISODate(); // 'YYYY-MM-DD' format
+                console.log(`[Frontend] Calculated todayStr in Eastern Time: ${todayStr}`);
 
+                // Query Firestore for games matching today's date in Eastern Time
+                // and order them by Start Time
                 const snapshot = await collectionRef
-                    .where('gameDate', '==', todayStr) // <--- ADD THIS FILTER!
+                    .where('gameDate', '==', todayStr)
                     .orderBy("Start Time")
-                    .get(); // Removed limit, as we only want today's games
+                    .get();
 
+                // If no documents are found for today, display a message
                 if (snapshot.empty) {
                     container.innerHTML = `<p>No games found for today (${todayStr}) in Firestore collection.</p>`;
                     return;
                 }
 
-                const leagueGroups = {};
+                const leagueGroups = {}; // Object to group games by their display league name
+
+                // Iterate through each document in the snapshot
                 snapshot.docs.forEach(doc => {
-                    const data = doc.data();
-                    const league = data.League || "Other";
-                    if (!leagueGroups[league]) {
-                        leagueGroups[league] = [];
+                    const data = doc.data(); // Get the document data
+
+                    // Get the display name for the league using the mapping function
+                    const leagueDisplayName = getLeagueDisplayName(data.League) || "Other";
+
+                    // Initialize array for the league if it doesn't exist
+                    if (!leagueGroups[leagueDisplayName]) {
+                        leagueGroups[leagueDisplayName] = [];
                     }
-                    leagueGroups[league].push(data);
+                    leagueGroups[leagueDisplayName].push(data); // Add game to its league group
                 });
 
+                // Iterate through the grouped leagues and display them
                 for (const [leagueName, games] of Object.entries(leagueGroups)) {
                     const leagueSection = document.createElement("div");
                     leagueSection.className = "league-section";
 
+                    // Create and append the league title
                     const title = document.createElement("div");
                     title.className = "league-title";
                     title.textContent = leagueName;
                     leagueSection.appendChild(title);
 
+                    // Create a table for games within this league
                     const table = document.createElement("table");
                     table.className = "game-table";
 
+                    // Iterate through games in the current league and add them to the table
                     games.forEach(data => {
                         const home = data["Home Team"] || "";
                         const away = data["Away Team"] || "";
                         const homeScore = data["Home Score"];
                         const awayScore = data["Away Score"];
+                        // Convert status strings to uppercase for consistent comparison
                         const matchStatus = (data["Match Status"] || "").toUpperCase();
                         const inningStatus = (data["Status"] || "").toUpperCase();
-                        const rawStart = data["Start Time"];
+                        const rawStart = data["Start Time"]; // Unix timestamp from Firestore
 
+                        // Determine game status
                         const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING");
-                        const isFinal = matchStatus === "FINISHED";
+                        const isFinal = matchStatus === "FINISHED"; // Correctly checks for "FINISHED" from Firestore
 
-                        let timeLabel = "";
+                        let timeLabel = ""; // Variable to hold the text for the first column
 
+                        // Logic to determine the time/status label
                         if (isLive) {
-                            timeLabel = inningStatus || matchStatus;
+                            timeLabel = inningStatus || matchStatus; // Show inning or LIVE status
                         } else if (isFinal) {
-                            timeLabel = "F";
+                            timeLabel = "F"; // Show "F" for finished games
                         } else if (rawStart) {
+                            // Convert Firestore timestamp to a Date object
                             let gameDateFromFirestore;
                             if (typeof rawStart?.toDate === "function") {
+                                // If it's a Firestore Timestamp object
                                 gameDateFromFirestore = rawStart.toDate();
                             } else if (typeof rawStart === "number") {
-                                gameDateFromFirestore = new Date(rawStart * 1000); // convert UNIX sec to ms
+                                // If it's a Unix timestamp (seconds), convert to milliseconds
+                                gameDateFromFirestore = new Date(rawStart * 1000);
                             } else {
+                                // Fallback for other formats, though less expected
                                 gameDateFromFirestore = new Date(rawStart);
                             }
 
-                            // Format the time using Luxon for consistency
+                            // Format the time using Luxon, converting to the user's local timezone
                             const startTimeLuxon = DateTime.fromJSDate(gameDateFromFirestore).setZone(DateTime.local().zoneName);
                             timeLabel = startTimeLuxon.toFormat('h:mm a'); // e.g., "3:30 PM"
                         } else {
-                            timeLabel = "TBD";
+                            timeLabel = "TBD"; // If no start time available
                         }
 
+                        // Create table rows for the away team and home team
                         const row1 = document.createElement("tr");
                         row1.className = "game-row";
                         row1.innerHTML = `
@@ -203,6 +237,7 @@
                 }
 
             } catch (err) {
+                // Log and display any errors during fetching or rendering
                 console.error("Error fetching games:", err);
                 errorDiv.textContent = "Failed to load Firestore data: " + err.message;
             }
