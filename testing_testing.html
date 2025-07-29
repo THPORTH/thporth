@@ -1,174 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Firestore Live Games Viewer</title>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
-  <style>
-    body {
-      background-color: #111;
-      color: #e0e0e0;
-      font-family: sans-serif;
-      padding: 2rem;
-    }
-    .league-section {
-      margin-bottom: 3rem;
-    }
-    .league-title {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid #555;
-      padding-bottom: 0.3rem;
-    }
-    .game-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .game-table td {
-      padding: 4px 10px;
-      vertical-align: top;
-    }
-    .game-row {
-      border-bottom: 1px solid #333;
-    }
-    .team-cell {
-      white-space: nowrap;
-    }
-    .error {
-      color: red;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Firestore Live Games Viewer</title>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.x/build/global/luxon.min.js"></script>
+    <style>
+        body {
+            background-color: #111;
+            color: #e0e0e0;
+            font-family: sans-serif;
+            padding: 2rem;
+        }
+        .league-section {
+            margin-bottom: 3rem;
+        }
+        .league-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #555;
+            padding-bottom: 0.3rem;
+        }
+        .game-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .game-table td {
+            padding: 4px 10px;
+            vertical-align: top;
+        }
+        .game-row {
+            border-bottom: 1px solid #333;
+        }
+        .team-cell {
+            white-space: nowrap;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
-  <h1>Live & Upcoming Games</h1>
-  <div id="games"></div>
-  <div id="error" class="error"></div>
+    <h1>Live & Upcoming Games</h1>
+    <div id="games"></div>
+    <div id="error" class="error"></div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
-      authDomain: "flashlive-daily-scraper.firebaseapp.com",
-      projectId: "flashlive-daily-scraper",
-      storageBucket: "flashlive-daily-scraper.appspot.com",
-      messagingSenderId: "124291936014",
-      appId: "1:124291936014:web:acadcaa791d6046849315f",
-      measurementId: "G-R146KS92QJ"
-    };
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
+            authDomain: "flashlive-daily-scraper.firebaseapp.com",
+            projectId: "flashlive-daily-scraper",
+            storageBucket: "flashlive-daily-scraper.appspot.com",
+            messagingSenderId: "124291936014",
+            appId: "1:124291936014:web:acadcaa791d6046849315f",
+            measurementId: "G-R146KS92QJ"
+        };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const collectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const collectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
 
-    async function fetchGamesNoFilter() {
-      const container = document.getElementById("games");
-      const errorDiv = document.getElementById("error");
-      container.innerHTML = "";
-      errorDiv.textContent = "";
+        async function fetchGames() { // Renamed from fetchGamesNoFilter for clarity
+            const container = document.getElementById("games");
+            const errorDiv = document.getElementById("error");
+            container.innerHTML = "";
+            errorDiv.textContent = "";
 
-      try {
-        const snapshot = await collectionRef
-          .orderBy("Start Time")
-          .limit(100)
-          .get();
+            try {
+                // Get today's date in Eastern Time, consistent with your backend
+                const { DateTime } = luxon; // Access Luxon from the global object
+                const nowInEastern = DateTime.now().setZone('America/New_York');
+                const todayStr = nowInEastern.toISODate(); // 'YYYY-MM-DD'
 
-        if (snapshot.empty) {
-          container.innerHTML = "<p>No games found in Firestore collection.</p>";
-          return;
-        }
+                const snapshot = await collectionRef
+                    .where('gameDate', '==', todayStr) // <--- ADD THIS FILTER!
+                    .orderBy("Start Time")
+                    .get(); // Removed limit, as we only want today's games
 
-        const leagueGroups = {};
-        snapshot.docs.forEach(doc => {
-          const data = doc.data();
-          const league = data.League || "Other";
-          if (!leagueGroups[league]) {
-            leagueGroups[league] = [];
-          }
-          leagueGroups[league].push(data);
-        });
+                if (snapshot.empty) {
+                    container.innerHTML = `<p>No games found for today (${todayStr}) in Firestore collection.</p>`;
+                    return;
+                }
 
-        for (const [leagueName, games] of Object.entries(leagueGroups)) {
-          const leagueSection = document.createElement("div");
-          leagueSection.className = "league-section";
+                const leagueGroups = {};
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const league = data.League || "Other";
+                    if (!leagueGroups[league]) {
+                        leagueGroups[league] = [];
+                    }
+                    leagueGroups[league].push(data);
+                });
 
-          const title = document.createElement("div");
-          title.className = "league-title";
-          title.textContent = leagueName;
-          leagueSection.appendChild(title);
+                for (const [leagueName, games] of Object.entries(leagueGroups)) {
+                    const leagueSection = document.createElement("div");
+                    leagueSection.className = "league-section";
 
-          const table = document.createElement("table");
-          table.className = "game-table";
+                    const title = document.createElement("div");
+                    title.className = "league-title";
+                    title.textContent = leagueName;
+                    leagueSection.appendChild(title);
 
-          games.forEach(data => {
-            const home = data["Home Team"] || "";
-            const away = data["Away Team"] || "";
-            const homeScore = data["Home Score"];
-            const awayScore = data["Away Score"];
-            const matchStatus = (data["Match Status"] || "").toUpperCase();
-            const inningStatus = (data["Status"] || "").toUpperCase();
-            const rawStart = data["Start Time"];
+                    const table = document.createElement("table");
+                    table.className = "game-table";
 
-            const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING");
-            const isFinal = matchStatus === "FINAL";
+                    games.forEach(data => {
+                        const home = data["Home Team"] || "";
+                        const away = data["Away Team"] || "";
+                        const homeScore = data["Home Score"];
+                        const awayScore = data["Away Score"];
+                        const matchStatus = (data["Match Status"] || "").toUpperCase();
+                        const inningStatus = (data["Status"] || "").toUpperCase();
+                        const rawStart = data["Start Time"];
 
-            let timeLabel = "";
+                        const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING");
+                        const isFinal = matchStatus === "FINAL";
 
-            if (isLive) {
-              timeLabel = inningStatus || matchStatus;
-            } else if (isFinal) {
-              timeLabel = "FINAL";
-            } else if (rawStart) {
-              let gameDate;
-              if (typeof rawStart?.toDate === "function") {
-                gameDate = rawStart.toDate();
-              } else if (typeof rawStart === "number") {
-                gameDate = new Date(rawStart * 1000); // convert UNIX sec to ms
-              } else {
-                gameDate = new Date(rawStart);
-              }
+                        let timeLabel = "";
 
-              timeLabel = gameDate.toLocaleTimeString(undefined, {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true
-              });
-            } else {
-              timeLabel = "TBD";
+                        if (isLive) {
+                            timeLabel = inningStatus || matchStatus;
+                        } else if (isFinal) {
+                            timeLabel = "FINAL";
+                        } else if (rawStart) {
+                            let gameDateFromFirestore;
+                            if (typeof rawStart?.toDate === "function") {
+                                gameDateFromFirestore = rawStart.toDate();
+                            } else if (typeof rawStart === "number") {
+                                gameDateFromFirestore = new Date(rawStart * 1000); // convert UNIX sec to ms
+                            } else {
+                                gameDateFromFirestore = new Date(rawStart);
+                            }
+
+                            // Format the time using Luxon for consistency
+                            const startTimeLuxon = DateTime.fromJSDate(gameDateFromFirestore).setZone('America/New_York');
+                            timeLabel = startTimeLuxon.toFormat('h:mm a'); // e.g., "3:30 PM"
+                        } else {
+                            timeLabel = "TBD";
+                        }
+
+                        const row1 = document.createElement("tr");
+                        row1.className = "game-row";
+                        row1.innerHTML = `
+                            <td>${timeLabel}</td>
+                            <td class="team-cell">${away}</td>
+                            <td>${typeof awayScore !== "undefined" ? awayScore : ""}</td>
+                            <td></td>
+                        `;
+
+                        const row2 = document.createElement("tr");
+                        row2.className = "game-row";
+                        row2.innerHTML = `
+                            <td></td>
+                            <td class="team-cell">${home}</td>
+                            <td>${typeof homeScore !== "undefined" ? homeScore : ""}</td>
+                            <td></td>
+                        `;
+
+                        table.appendChild(row1);
+                        table.appendChild(row2);
+                    });
+
+                    leagueSection.appendChild(table);
+                    container.appendChild(leagueSection);
+                }
+
+            } catch (err) {
+                console.error("Error fetching games:", err);
+                errorDiv.textContent = "Failed to load Firestore data: " + err.message;
             }
-
-            const row1 = document.createElement("tr");
-            row1.className = "game-row";
-            row1.innerHTML = `
-              <td>${timeLabel}</td>
-              <td class="team-cell">${away}</td>
-              <td>${typeof awayScore !== "undefined" ? awayScore : ""}</td>
-              <td></td>
-            `;
-
-            const row2 = document.createElement("tr");
-            row2.className = "game-row";
-            row2.innerHTML = `
-              <td></td>
-              <td class="team-cell">${home}</td>
-              <td>${typeof homeScore !== "undefined" ? homeScore : ""}</td>
-              <td></td>
-            `;
-
-            table.appendChild(row1);
-            table.appendChild(row2);
-          });
-
-          leagueSection.appendChild(table);
-          container.appendChild(leagueSection);
         }
 
-      } catch (err) {
-        console.error("Error fetching games:", err);
-        errorDiv.textContent = "Failed to load Firestore data: " + err.message;
-      }
-    }
-
-    fetchGamesNoFilter();
-  </script>
+        // Initial fetch when the page loads
+        fetchGames();
+    </script>
 </body>
 </html>
