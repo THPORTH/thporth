@@ -47,54 +47,81 @@
     <div id="error" class="error"></div>
 
     <script>
-         function getLeagueDisplayName(originalLeagueName) {
-            const nameToSearch = (originalLeagueName || "").toLowerCase(); // Convert to lowercase once for case-insensitive searching
+        <script>
+        function getLeagueDisplayName(originalLeagueName) {
+            const nameToSearch = (originalLeagueName || ""); // Keep original casing initially for specific checks
+            const nameToSearchLower = nameToSearch.toLowerCase(); // Lowercase for general includes checks
 
             // Define your mapping rules. Order matters for prioritization!
-            // Put more specific or common keywords higher in the list.
+            // Put more specific or unique keywords higher in the list.
             const leagueMaps = [
-                // Specific Football/Soccer Leagues (more complex string matches)
-                { keyword: "uefa champions league", displayName: "UEFA Champions League" }, // Will match "Europe: UEFA Champions League" but not "UEFA Women's Champions League"
+                // === Specific, complex keyword matches (e.g., exact phrase, but not part of another specific phrase) ===
+                {
+                    keyword: "UEFA Champions League", // Use the exact case/phrase you're looking for
+                    displayName: "UEFA Champions League",
+                    matchLogic: (name) => {
+                        // This regex looks for "UEFA Champions League" as a contiguous phrase,
+                        // not directly preceded by "Women's " (case-insensitive).
+                        // It uses a negative lookbehind `(?<!women's\s)` (if browser supports it well)
+                        // OR a simpler check for substring existence and then exclusion.
+                        // For broader browser compatibility, a two-step check is safer.
+                        const keywordLower = "uefa champions league";
+                        const womenKeywordLower = "women's";
 
-                // Major US Sports Leagues (simple substring match)
+                        // First, check if the desired keyword is present contiguously
+                        if (name.toLowerCase().includes(keywordLower)) {
+                            // Then, check if the "women's" interruptor is also present right before it,
+                            // or generally within the name.
+                            if (name.toLowerCase().includes(`${womenKeywordLower} ${keywordLower}`)) {
+                                return false; // Contains "women's UEFA Champions League", so this rule doesn't apply
+                            }
+                            return true; // Contains "UEFA Champions League" and not the women's version
+                        }
+                        return false; // Does not contain "UEFA Champions League"
+                    }
+                },
+
+                // === General keyword matches (simple contiguous substring check) ===
+                // Keywords here should be defined consistently (e.g., lowercase for includes, or match expected case).
+                // If your Firestore is "USA: WNBA", use "WNBA" as keyword if you want to be case sensitive in map,
+                // or 'wnba' and use lowercased check. Sticking with lowercase keywords for `includes` is common practice.
                 { keyword: "wnba", displayName: "WNBA" },
                 { keyword: "mlb", displayName: "MLB" },
                 { keyword: "nba", displayName: "NBA" },
                 { keyword: "nhl", displayName: "NHL" },
                 { keyword: "nfl", displayName: "NFL" },
-
-                // College Sports (simple substring match)
                 { keyword: "ncaab", displayName: "NCAAB" }, // College Basketball
                 { keyword: "ncaaf", displayName: "NCAAF" }, // College Football
-
-                // Other prominent Soccer Leagues (simple substring match)
                 { keyword: "premier league", displayName: "Premier League" },
                 { keyword: "bundesliga", displayName: "Bundesliga" },
                 { keyword: "laliga", displayName: "LaLiga" },
                 { keyword: "serie a", displayName: "Serie A" },
                 { keyword: "ligue 1", displayName: "Ligue 1" },
-                { keyword: "uefa champions league", displayName: "UEFA Champions League" },
                 { keyword: "mls", displayName: "MLS" }
                 // Add more keyword mappings here based on your Google Sheet data
             ];
 
             for (const map of leagueMaps) {
-                // Check if the original (lowercased) name contains the keyword
-                if (nameToSearch.includes(map.keyword)) {
-                    // For the "UEFA Champions League" specific exclusion:
-                    // If the keyword is "uefa champions league", we add an extra check
-                    // to ensure it's not "women's" version.
-                    if (map.keyword === "uefa champions league" && nameToSearch.includes("women's")) {
-                        continue; // Skip this match if "women's" is present, continue to next map
+                if (map.matchLogic) {
+                    // Use custom match logic for specific cases (like UEFA Champions League)
+                    if (map.matchLogic(nameToSearch)) {
+                        return map.displayName;
                     }
-                    return map.displayName; // Found a match based on keyword inclusion
+                } else {
+                    // Default for most cases: simple substring inclusion (case-insensitive via lowercasing)
+                    if (nameToSearchLower.includes(map.keyword.toLowerCase())) {
+                        return map.displayName;
+                    }
                 }
             }
 
             // Fallback: If no match found, return the original name
             return originalLeagueName;
         }
-        // End of the function to add
+
+        const firebaseConfig = {
+            // ... your existing firebaseConfig ...
+        };
         
         const firebaseConfig = {
             apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
