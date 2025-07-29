@@ -115,14 +115,14 @@
                         const rawStart = data["Start Time"];
 
                         const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING");
-                        const isFinal = matchStatus === "FINAL";
+                        const isFinal = matchStatus === "FINISHED";
 
                         let timeLabel = "";
 
                         if (isLive) {
                             timeLabel = inningStatus || matchStatus;
                         } else if (isFinal) {
-                            timeLabel = "FINAL";
+                            timeLabel = "F";
                         } else if (rawStart) {
                             let gameDateFromFirestore;
                             if (typeof rawStart?.toDate === "function") {
