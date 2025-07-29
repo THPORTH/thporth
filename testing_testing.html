@@ -47,6 +47,55 @@
     <div id="error" class="error"></div>
 
     <script>
+         function getLeagueDisplayName(originalLeagueName) {
+            const nameToSearch = (originalLeagueName || "").toLowerCase(); // Convert to lowercase once for case-insensitive searching
+
+            // Define your mapping rules. Order matters for prioritization!
+            // Put more specific or common keywords higher in the list.
+            const leagueMaps = [
+                // Specific Football/Soccer Leagues (more complex string matches)
+                { keyword: "uefa champions league", displayName: "UEFA Champions League" }, // Will match "Europe: UEFA Champions League" but not "UEFA Women's Champions League"
+
+                // Major US Sports Leagues (simple substring match)
+                { keyword: "wnba", displayName: "WNBA" },
+                { keyword: "mlb", displayName: "MLB" },
+                { keyword: "nba", displayName: "NBA" },
+                { keyword: "nhl", displayName: "NHL" },
+                { keyword: "nfl", displayName: "NFL" },
+
+                // College Sports (simple substring match)
+                { keyword: "ncaab", displayName: "NCAAB" }, // College Basketball
+                { keyword: "ncaaf", displayName: "NCAAF" }, // College Football
+
+                // Other prominent Soccer Leagues (simple substring match)
+                { keyword: "premier league", displayName: "Premier League" },
+                { keyword: "bundesliga", displayName: "Bundesliga" },
+                { keyword: "laliga", displayName: "LaLiga" },
+                { keyword: "serie a", displayName: "Serie A" },
+                { keyword: "ligue 1", displayName: "Ligue 1" },
+                { keyword: "uefa champions league", displayName: "UEFA Champions League" },
+                { keyword: "mls", displayName: "MLS" }
+                // Add more keyword mappings here based on your Google Sheet data
+            ];
+
+            for (const map of leagueMaps) {
+                // Check if the original (lowercased) name contains the keyword
+                if (nameToSearch.includes(map.keyword)) {
+                    // For the "UEFA Champions League" specific exclusion:
+                    // If the keyword is "uefa champions league", we add an extra check
+                    // to ensure it's not "women's" version.
+                    if (map.keyword === "uefa champions league" && nameToSearch.includes("women's")) {
+                        continue; // Skip this match if "women's" is present, continue to next map
+                    }
+                    return map.displayName; // Found a match based on keyword inclusion
+                }
+            }
+
+            // Fallback: If no match found, return the original name
+            return originalLeagueName;
+        }
+        // End of the function to add
+        
         const firebaseConfig = {
             apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
             authDomain: "flashlive-daily-scraper.firebaseapp.com",
