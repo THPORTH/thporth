@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Firestore Live Games Viewer</title>
-    <!-- Firebase SDKs -->
+
+     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script> <!-- THIS IS THE MISSING LINE -->
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
     <!-- Luxon for date/time handling -->
     <script src="https://cdn.jsdelivr.net/npm/luxon@3.x/build/global/luxon.min.js"></script>
+    
     <style>
         body {
             background-color: #111;
