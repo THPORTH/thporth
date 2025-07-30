@@ -23,20 +23,41 @@
             margin-bottom: 1rem;
             border-bottom: 2px solid #555;
             padding-bottom: 0.3rem;
+            /* Ensure league title aligns with the table content */
+            padding-left: 10px; /* Match the padding of the first column */
         }
         .game-table {
             width: 100%;
             border-collapse: collapse;
         }
         .game-table td {
-            padding: 4px 10px;
+            padding: 4px 10px; /* Default cell padding */
             vertical-align: top;
         }
+        /* --- NEW/MODIFIED CSS FOR COLUMN WIDTHS AND ALIGNMENT --- */
+        .game-table td:nth-child(1) { /* First column (time/status) */
+            width: 90px; /* Fixed width for time/status column */
+            min-width: 90px; /* Ensure it doesn't shrink */
+            text-align: left; /* Align time/status to the left */
+        }
+        .team-cell { /* Second column (team name) */
+            white-space: nowrap;
+            text-align: left; /* Ensure team name is left-aligned */
+            /* Remove explicit padding-left here, let td:nth-child(1) handle overall table padding */
+        }
+        .game-table td:nth-child(3) { /* Third column (score) */
+            width: 40px; /* Fixed width for score */
+            min-width: 40px;
+            text-align: right; /* Align score to the right */
+        }
+        .game-table td:nth-child(4) { /* Fourth column (empty spacer) */
+            width: 10px; /* Small fixed width for separation */
+            min-width: 10px;
+        }
+        /* --- END NEW/MODIFIED CSS --- */
+
         .game-row {
             border-bottom: 1px solid #333;
-        }
-        .team-cell {
-            white-space: nowrap;
         }
         .error {
             color: red;
@@ -51,10 +72,6 @@
     <script>
         // Function to map original league names from Firestore to desired display names
         function getLeagueDisplayName(originalLeagueName) {
-            // Define your exact mapping rules here.
-            // The keys (left side) MUST EXACTLY match the league names as they appear in your Firestore.
-            // The values (right side) are the desired display names on your site.
-            // IMPORTANT: Ensure keys match the exact casing from your Firestore data.
             const exactLeagueMaps = {
                 "USA: WNBA": "WNBA",
                 "USA: MLB": "MLB",
@@ -63,29 +80,58 @@
                 "USA: NBA": "NBA",
                 "USA: NHL": "NHL",
                 "USA: NFL": "NFL",
-                "USA: NCAAB": "NCAAB", // College Basketball
-                "USA: NCAAF": "NCAAF", // College Football
+                "USA: NCAAB": "NCAAB",
+                "USA: NCAAF": "NCAAF",
                 "ENGLAND: PREMIER LEAGUE": "Premier League",
                 "GERMANY: BUNDESLIGA": "Bundesliga",
                 "SPAIN: LALIGA": "LaLiga",
                 "ITALY: SERIE A": "Serie A",
                 "FRANCE: LIGUE 1": "Ligue 1",
                 "USA: MLS": "MLS"
-                // Add all your specific mappings here. Examples:
-                // "ARGENTINA: LIGA PROFESIONAL": "Argentine Primera División",
-                // "BRAZIL: SERIE A": "Brasileirão Série A",
-                // "SPAIN: COPA DEL REY": "Copa del Rey",
-                // "AUSTRALIA: A-LEAGUE": "A-League"
+                // Add all your specific league mappings here.
             };
 
-            // Check if the exact originalLeagueName exists as a key in our map
             if (exactLeagueMaps.hasOwnProperty(originalLeagueName)) {
                 return exactLeagueMaps[originalLeagueName];
             }
-
-            // Fallback: If no exact match found, return the original name from Firestore
             return originalLeagueName;
         }
+
+        // Function to map original team names to desired display names (mascot names)
+        function getTeamDisplayName(originalTeamName) {
+            let processedTeamName = originalTeamName;
+            if (processedTeamName.endsWith(" W")) {
+                processedTeamName = processedTeamName.slice(0, -2);
+            }
+
+            const exactTeamMaps = {
+                // MLB Teams
+                "Arizona Diamondbacks": "Diamondbacks", "Atlanta Braves": "Braves", "Baltimore Orioles": "Orioles",
+                "Boston Red Sox": "Red Sox", "Chicago Cubs": "Cubs", "Chicago White Sox": "White Sox",
+                "Cincinnati Reds": "Reds", "Cleveland Guardians": "Guardians", "Colorado Rockies": "Rockies",
+                "Detroit Tigers": "Tigers", "Houston Astros": "Astros", "Kansas City Royals": "Royals",
+                "Los Angeles Angels": "Angels", "Los Angeles Dodgers": "Dodgers", "Miami Marlins": "Marlins",
+                "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets",
+                "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies",
+                "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants",
+                "Seattle Mariners": "Mariners", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays",
+                "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals",
+
+                // WNBA Teams
+                "Atlanta Dream": "Dream", "Chicago Sky": "Sky", "Connecticut Sun": "Sun",
+                "Dallas Wings": "Wings", "Indiana Fever": "Fever", "Las Vegas Aces": "Aces",
+                "Los Angeles Sparks": "Sparks", "Minnesota Lynx": "Lynx", "New York Liberty": "Liberty",
+                "Phoenix Mercury": "Mercury", "Seattle Storm": "Storm", "Washington Mystics": "Mystics",
+                "Golden State Valkyries": "Valkyries"
+                // Add all your specific team mappings here.
+            };
+
+            if (exactTeamMaps.hasOwnProperty(processedTeamName)) {
+                return exactTeamMaps[processedTeamName];
+            }
+            return processedTeamName;
+        }
+
 
         // Firebase Configuration (YOUR PROJECT SPECIFIC CONFIG)
         const firebaseConfig = {
@@ -101,62 +147,44 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        // Reference to your Firestore collection where game data is stored
         const collectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
 
-        /**
-         * Fetches games from Firestore, filters by today's Eastern Time date,
-         * groups them by mapped league name, and displays them on the page.
-         */
         async function fetchGames() {
             const container = document.getElementById("games");
             const errorDiv = document.getElementById("error");
-            container.innerHTML = ""; // Clear previous content
-            errorDiv.textContent = ""; // Clear previous errors
+            container.innerHTML = "";
+            errorDiv.textContent = "";
 
             try {
-                // Get today's date in Eastern Time, consistent with your backend
-                // Luxon is available globally via the CDN script
                 const { DateTime } = luxon;
                 const nowInEastern = DateTime.now().setZone('America/New_York');
-                const todayStr = nowInEastern.toISODate(); // 'YYYY-MM-DD' format
+                const todayStr = nowInEastern.toISODate();
                 console.log(`[Frontend] Calculated todayStr in Eastern Time: ${todayStr}`);
 
-                // Query Firestore for games matching today's date in Eastern Time
-                // and order them by Start Time
                 const snapshot = await collectionRef
                     .where('gameDate', '==', todayStr)
                     .orderBy("Start Time")
                     .get();
 
-                // If no documents are found for today, display a message
                 if (snapshot.empty) {
                     container.innerHTML = `<p>No games found for today (${todayStr}) in Firestore collection.</p>`;
                     return;
                 }
 
-                const leagueGroups = {}; // Object to group games by their display league name
-
-                // Iterate through each document in the snapshot
+                const leagueGroups = {};
                 snapshot.docs.forEach(doc => {
-                    const data = doc.data(); // Get the document data
-
-                    // Get the display name for the league using the mapping function
+                    const data = doc.data();
                     const leagueDisplayName = getLeagueDisplayName(data.League) || "Other";
-
-                    // Initialize array for the league if it doesn't exist
                     if (!leagueGroups[leagueDisplayName]) {
                         leagueGroups[leagueDisplayName] = [];
                     }
-                    leagueGroups[leagueDisplayName].push(data); // Add game to its league group
+                    leagueGroups[leagueDisplayName].push(data);
                 });
 
-                // Iterate through the grouped leagues and display them
                 for (const [leagueName, games] of Object.entries(leagueGroups)) {
                     const leagueSection = document.createElement("div");
                     leagueSection.className = "league-section";
 
-                    // Create and append the league title
                     const title = document.createElement("div");
                     title.className = "league-title";
                     title.textContent = leagueName;
@@ -165,62 +193,49 @@
                     const table = document.createElement("table");
                     table.className = "game-table";
 
-                    // Variable to track the last displayed time label within this league
                     let lastDisplayedTimeLabel = null;
 
-                    // Iterate through games in the current league and add them to the table
                     games.forEach(data => {
-                        const home = data["Home Team"] || "";
-                        const away = data["Away Team"] || "";
+                        const home = getTeamDisplayName(data["Home Team"]) || "";
+                        const away = getTeamDisplayName(data["Away Team"]) || "";
                         const homeScore = data["Home Score"];
                         const awayScore = data["Away Score"];
-                        // Convert status strings to uppercase for consistent comparison
                         const matchStatus = (data["Match Status"] || "").toUpperCase();
                         const inningStatus = (data["Status"] || "").toUpperCase();
-                        const rawStart = data["Start Time"]; // Unix timestamp from Firestore
+                        const rawStart = data["Start Time"];
 
-                        // Determine game status
                         const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING");
-                        const isFinal = matchStatus === "FINISHED"; // Correctly checks for "FINISHED" from Firestore
+                        const isFinal = matchStatus === "FINISHED";
 
-                        let currentTimeLabel = ""; // Variable to hold the text for the first column for THIS game
+                        let currentTimeLabel = "";
 
-                        // Logic to determine the time/status label for the current game
                         if (isLive) {
-                            currentTimeLabel = inningStatus || matchStatus; // Show inning or LIVE status
+                            currentTimeLabel = inningStatus || matchStatus;
                         } else if (isFinal) {
-                            currentTimeLabel = "F"; // Show "F" for finished games
+                            currentTimeLabel = "F";
                         } else if (rawStart) {
-                            // Convert Firestore timestamp to a Date object
                             let gameDateFromFirestore;
                             if (typeof rawStart?.toDate === "function") {
-                                // If it's a Firestore Timestamp object
                                 gameDateFromFirestore = rawStart.toDate();
                             } else if (typeof rawStart === "number") {
-                                // If it's a Unix timestamp (seconds), convert to milliseconds
                                 gameDateFromFirestore = new Date(rawStart * 1000);
                             } else {
-                                // Fallback for other formats, though less expected
                                 gameDateFromFirestore = new Date(rawStart);
                             }
 
-                            // Format the time using Luxon, converting to the user's local timezone
                             const startTimeLuxon = DateTime.fromJSDate(gameDateFromFirestore).setZone(DateTime.local().zoneName);
-                            currentTimeLabel = startTimeLuxon.toFormat('h:mm a'); // e.g., "3:30 PM"
+                            currentTimeLabel = startTimeLuxon.toFormat('h:mm a');
                         } else {
-                            currentTimeLabel = "TBD"; // If no start time available
+                            currentTimeLabel = "TBD";
                         }
 
-                        // --- NEW LOGIC FOR DEDUPLICATING TIME LABELS ---
                         let displayTimeLabel = currentTimeLabel;
                         if (currentTimeLabel === lastDisplayedTimeLabel) {
-                            displayTimeLabel = ""; // If same as last, display empty
+                            displayTimeLabel = "";
                         } else {
-                            lastDisplayedTimeLabel = currentTimeLabel; // Update for next iteration
+                            lastDisplayedTimeLabel = currentTimeLabel;
                         }
-                        // --- END NEW LOGIC ---
 
-                        // Create table rows for the away team and home team
                         const row1 = document.createElement("tr");
                         row1.className = "game-row";
                         row1.innerHTML = `
@@ -248,13 +263,11 @@
                 }
 
             } catch (err) {
-                // Log and display any errors during fetching or rendering
                 console.error("Error fetching games:", err);
                 errorDiv.textContent = "Failed to load Firestore data: " + err.message;
             }
         }
 
-        // Initial fetch when the page loads
         fetchGames();
     </script>
 </body>
