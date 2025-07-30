@@ -74,332 +74,463 @@
     <div id="games"></div>
     <div id="error" class="error"></div>
 
-    <script>
-        // Function to map original league names from Firestore to desired display names
-        function getLeagueDisplayName(originalLeagueName) {
-            const exactLeagueMaps = {
-                "USA: WNBA": "WNBA",
-                "USA: MLB": "MLB",
-                "EUROPE: UEFA CHAMPIONS LEAGUE": "UEFA Champions League",
-                "EUROPE: UEFA WOMEN'S CHAMPIONS LEAGUE": "UEFA Women's Champions League",
-                "USA: NBA": "NBA",
-                "USA: NHL": "NHL",
-                "USA: NFL": "NFL",
-                "USA: NCAAB": "NCAAB",
-                "USA: NCAAF": "NCAAF",
-                "ENGLAND: PREMIER LEAGUE": "Premier League",
-                "GERMANY: BUNDESLIGA": "Bundesliga",
-                "SPAIN: LALIGA": "LaLiga",
-                "ITALY: SERIE A": "Serie A",
-                "FRANCE: LIGUE 1": "Ligue 1",
-                "USA: MLS": "MLS",
-                "North & Central America: Leagues Cup": "Leagues Cup"
-                // Add all your specific league mappings here.
-            };
+ <script>
+  // Firebase Configuration (YOUR PROJECT SPECIFIC CONFIG)
+  const firebaseConfig = {
+      apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
+      authDomain: "flashlive-daily-scraper.firebaseapp.com",
+      projectId: "flashlive-daily-scraper",
+      storageBucket: "flashlive-daily-scraper.appspot.com",
+      messagingSenderId: "124291936014",
+      appId: "1:124291936014:web:acadcaa791d6046849315f",
+      measurementId: "G-R146KS92QJ"
+  };
 
-            if (exactLeagueMaps.hasOwnProperty(originalLeagueName)) {
-                return exactLeagueMaps[originalLeagueName];
-            }
-            return originalLeagueName;
-        }
+  const app = firebase.initializeApp(firebaseConfig); // Initialize app once
+  const auth = firebase.auth(); // Get auth instance
+  const db = firebase.firestore(); // Get firestore instance
 
-        // Function to map original team names to desired display names (mascot names)
-        function getTeamDisplayName(originalTeamName) {
-            let processedTeamName = originalTeamName;
-            if (processedTeamName.endsWith(" W")) {
-                processedTeamName = processedTeamName.slice(0, -2);
-            }
+  const gamesCollectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
 
-            const exactTeamMaps = {
-                // MLB Teams
-                "Arizona Diamondbacks": "Diamondbacks", "Atlanta Braves": "Braves", "Baltimore Orioles": "Orioles",
-                "Boston Red Sox": "Red Sox", "Chicago Cubs": "Cubs", "Chicago White Sox": "White Sox",
-                "Cincinnati Reds": "Reds", "Cleveland Guardians": "Guardians", "Colorado Rockies": "Rockies",
-                "Detroit Tigers": "Tigers", "Houston Astros": "Astros", "Kansas City Royals": "Royals",
-                "Los Angeles Angels": "Angels", "Los Angeles Dodgers": "Dodgers", "Miami Marlins": "Marlins",
-                "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets",
-                "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies",
-                "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants",
-                "Seattle Mariners": "Mariners", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays",
-                "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals",
+  // Function to map original league names from Firestore to desired display names
+  function getLeagueDisplayName(originalLeagueName) {
+      const exactLeagueMaps = {
+          "USA: WNBA": "WNBA",
+          "USA: MLB": "MLB",
+          "EUROPE: UEFA CHAMPIONS LEAGUE": "UEFA Champions League",
+          "EUROPE: UEFA WOMEN'S CHAMPIONS LEAGUE": "UEFA Women's Champions League",
+          "USA: NBA": "NBA",
+          "USA: NHL": "NHL",
+          "USA: NFL": "NFL",
+          "USA: NCAAB": "NCAAB",
+          "USA: NCAAF": "NCAAF",
+          "ENGLAND: PREMIER LEAGUE": "Premier League",
+          "GERMANY: BUNDESLIGA": "Bundesliga",
+          "SPAIN: LALIGA": "LaLiga",
+          "ITALY: SERIE A": "Serie A",
+          "FRANCE: LIGUE 1": "Ligue 1",
+          "USA: MLS": "MLS",
+          "North & Central America: Leagues Cup": "Leagues Cup"
+          // Add all your specific league mappings here.
+      };
 
-                // WNBA Teams
-                "Atlanta Dream": "Dream", "Chicago Sky": "Sky", "Connecticut Sun": "Sun",
-                "Dallas Wings": "Wings", "Indiana Fever": "Fever", "Las Vegas Aces": "Aces",
-                "Los Angeles Sparks": "Sparks", "Minnesota Lynx": "Lynx", "New York Liberty": "Liberty",
-                "Phoenix Mercury": "Mercury", "Seattle Storm": "Storm", "Washington Mystics": "Mystics",
-                "Golden State Valkyries": "Valkyries"
-                // Add all your specific team mappings here.
-            };
+      if (exactLeagueMaps.hasOwnProperty(originalLeagueName)) {
+          return exactLeagueMaps[originalLeagueName];
+      }
+      return originalLeagueName;
+  }
 
-            if (exactTeamMaps.hasOwnProperty(processedTeamName)) {
-                return exactTeamMaps[processedTeamName];
-            }
-            return processedTeamName;
-        }
+  // Function to map original team names to desired display names (mascot names)
+  function getTeamDisplayName(originalTeamName) {
+      let processedTeamName = originalTeamName;
+      if (processedTeamName.endsWith(" W")) {
+          processedTeamName = processedTeamName.slice(0, -2);
+      }
+
+      const exactTeamMaps = {
+          // MLB Teams
+          "Arizona Diamondbacks": "Diamondbacks", "Atlanta Braves": "Braves", "Baltimore Orioles": "Orioles",
+          "Boston Red Sox": "Red Sox", "Chicago Cubs": "Cubs", "Chicago White Sox": "White Sox",
+          "Cincinnati Reds": "Reds", "Cleveland Guardians": "Guardians", "Colorado Rockies": "Rockies",
+          "Detroit Tigers": "Tigers", "Houston Astros": "Astros", "Kansas City Royals": "Royals",
+          "Los Angeles Angels": "Angels", "Los Angeles Dodgers": "Dodgers", "Miami Marlins": "Marlins",
+          "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets",
+          "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies",
+          "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants",
+          "Seattle Mariners": "Mariners", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays", // Corrected "St. Louis Cardinals"
+          "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals",
+
+          // WNBA Teams
+          "Atlanta Dream": "Dream", "Chicago Sky": "Sky", "Connecticut Sun": "Sun",
+          "Dallas Wings": "Wings", "Indiana Fever": "Fever", "Las Vegas Aces": "Aces",
+          "Los Angeles Sparks": "Sparks", "Minnesota Lynx": "Lynx", "New York Liberty": "Liberty",
+          "Phoenix Mercury": "Mercury", "Seattle Storm": "Storm", "Washington Mystics": "Mystics",
+          "Golden State Valkyries": "Valkyries"
+          // Add all your specific team mappings here.
+      };
+
+      if (exactTeamMaps.hasOwnProperty(processedTeamName)) {
+          return exactTeamMaps[processedTeamName];
+      }
+      return processedTeamName;
+  }
+
+  // Define the desired order of leagues for display
+  const LEAGUE_DISPLAY_ORDER = [
+      "MLB",
+      "WNBA",
+      "Leagues Cup",
+      "NBA", // Example: Add other leagues you want to prioritize here
+      "UEFA Champions League",
+      "UEFA Women's Champions League",
+      "Premier League",
+      "Bundesliga",
+      "LaLiga",
+      "Serie A",
+      "Ligue 1",
+      "MLS",
+      // Add other league display names as needed, in desired order
+  ];
 
 
-        // Firebase Configuration (YOUR PROJECT SPECIFIC CONFIG)
-        const firebaseConfig = {
-            apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
-            authDomain: "flashlive-daily-scraper.firebaseapp.com",
-            projectId: "flashlive-daily-scraper",
-            storageBucket: "flashlive-daily-scraper.appspot.com",
-            messagingSenderId: "124291936014",
-            appId: "1:124291936014:web:acadcaa791d6046849315f",
-            measurementId: "G-R146KS92QJ"
-        };
+  /**
+   * Sets up a real-time listener for games from Firestore, filters by today's Eastern Time date,
+   * groups them by mapped league name, and updates the display on the page automatically.
+   */
+  async function fetchTodayGames() {
+      const container = document.getElementById("games"); // This is the #games div inside tv-listings-today
+      const errorDiv = document.getElementById("error"); // This is the #error div inside tv-listings-today
+      errorDiv.textContent = ""; // Clear previous errors
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const collectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
+      try {
+          const { DateTime } = luxon;
+          const nowInEastern = DateTime.now().setZone('America/New_York');
+          const todayStr = nowInEastern.toISODate();
+          console.log(`[Frontend] Setting up listener for todayStr in Eastern Time: ${todayStr}`);
 
-        // Define the desired order of leagues for display
-        const LEAGUE_DISPLAY_ORDER = [
-            "MLB",
-            "WNBA",
-            "Leagues Cup",
-            "NBA", // Example: Add other leagues you want to prioritize here
-            "UEFA Champions League",
-            "UEFA Women's Champions League",
-            "Premier League",
-            "Bundesliga",
-            "LaLiga",
-            "Serie A",
-            "Ligue 1",
-            "MLS",
-            // Add other league display names as needed, in desired order
-        ];
+          // Create the query
+          const gamesQuery = gamesCollectionRef // Use gamesCollectionRef defined globally
+              .where('gameDate', '==', todayStr)
+              .orderBy("Start Time");
+
+          // Set up the real-time listener using onSnapshot
+          gamesQuery.onSnapshot(snapshot => {
+              console.log("[Firestore Listener] Snapshot received, re-rendering UI."); // Debugging log
+              // Clear the container before re-rendering all games
+              container.innerHTML = "";
+
+              if (snapshot.empty) {
+                  container.innerHTML = `<p style="padding: 10px;">No games found for today (${todayStr}) in Firestore collection.</p>`;
+                  return;
+              }
+
+              const leagueGroups = {};
+
+              snapshot.docs.forEach(doc => {
+                  const data = doc.data();
+                  const leagueDisplayName = getLeagueDisplayName(data.League) || "Other";
+                  if (!leagueGroups[leagueDisplayName]) {
+                      leagueGroups[leagueDisplayName] = [];
+                  }
+                  leagueGroups[leagueDisplayName].push(data);
+              });
+
+              // Create a sorted list of league names based on LEAGUE_DISPLAY_ORDER
+              const sortedLeagueNames = [];
+              const processedLeagues = new Set();
+
+              // Add leagues from the predefined order
+              LEAGUE_DISPLAY_ORDER.forEach(orderedLeagueName => {
+                  if (leagueGroups[orderedLeagueName]) {
+                      sortedLeagueNames.push(orderedLeagueName);
+                      processedLeagues.add(orderedLeagueName);
+                  }
+              });
+
+              // Add any remaining leagues not in the predefined order
+              for (const leagueName in leagueGroups) {
+                  if (!processedLeagues.has(leagueName)) {
+                      sortedLeagueNames.push(leagueName);
+                  }
+              }
+
+              // Now iterate through the sorted league names
+              for (const leagueName of sortedLeagueNames) {
+                  const games = leagueGroups[leagueName]; // Get games for the current league
+                  
+                  const leagueSection = document.createElement("div");
+                  leagueSection.className = "league-section";
+
+                  const title = document.createElement("div");
+                  title.className = "league-title";
+                  title.textContent = leagueName;
+                  leagueSection.appendChild(title);
+
+                  const table = document.createElement("table");
+                  table.className = "game-table";
+
+                  let lastDisplayedTimeLabel = null; // This will only track *scheduled* times for deduplication
+
+                  games.forEach(data => {
+                      const home = getTeamDisplayName(data["Home Team"]) || "";
+                      const away = getTeamDisplayName(data["Away Team"]) || "";
+                      const homeScore = data["Home Score"];
+                      const awayScore = data["Away Score"];
+                      const matchStatus = (data["Match Status"] || "").toUpperCase();
+                      const inningStatus = (data["Status"] || "").toUpperCase();
+                      const rawStart = data["Start Time"];
+
+                      // isLive now includes "Q" for quarters and HALF_TIME
+                      const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
+                      const isFinal = matchStatus === "FINISHED";
+
+                      let currentTimeLabel = ""; // The time/status label for the current game
+                      const leagueDisplayNameForGame = getLeagueDisplayName(data.League) || "Other"; // Get mapped league name for specific status logic
+
+                      if (isLive) {
+                          let statusToDisplay = inningStatus;
+                          let parsedStatus = '';
+
+                          if (leagueDisplayNameForGame === "MLB") {
+                              // MLB Innings: "Top/Bot X" or "X"
+                              const topBotMatch = statusToDisplay.match(/(TOP|BOT)\s*(\d+)(?:ST|ND|RD|TH)?/i);
+                              const inningNumMatch = statusToDisplay.match(/(\d+)(?:ST|ND|RD|TH)?(?:\s*INNING)?/i); // Broader match for just number
+                              const inningWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)_?INNING/i);
+
+                              if (topBotMatch) {
+                                  const topBot = topBotMatch[1].charAt(0).toUpperCase() + topBotMatch[1].slice(1).toLowerCase();
+                                  const inning = topBotMatch[2];
+                                  parsedStatus = `${topBot} ${inning}`;
+                              } else if (inningWordMatch) {
+                                  const wordToNum = {
+                                      "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4", "FIFTH": "5",
+                                      "SIXTH": "6", "SEVENTH": "7", "EIGHTH": "8", "NINTH": "9"
+                                  };
+                                  const inningWord = inningWordMatch[1].toUpperCase();
+                                  parsedStatus = wordToNum[inningWord] || inningWord;
+                              } else if (inningNumMatch) {
+                                  parsedStatus = inningNumMatch[1]; // Just the number (e.g., "1", "2")
+                              }
+
+                              // If parsedStatus is empty, it means no specific inning info was found.
+                              // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
+                              currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
+
+                          } else if (leagueDisplayNameForGame === "WNBA") {
+                              let parsedStatus = '';
+                              // Try to match "Q1", "Q2", etc.
+                              const quarterMatch = statusToDisplay.match(/Q(\d+)/i);
+                              // Try to match "FIRST_QUARTER", "SECOND_QUARTER", etc.
+                              const quarterWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH)_?QUARTER/i);
+
+                              if (quarterMatch && quarterMatch[1]) {
+                                  parsedStatus = `Q${quarterMatch[1]}`;
+                              } else if (quarterWordMatch) {
+                                  const wordToNum = {
+                                      "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4"
+                                  };
+                                  const quarterWord = quarterWordMatch[1].toUpperCase();
+                                  parsedStatus = `Q${wordToNum[quarterWord] || quarterWord}`;
+                              } else if (statusToDisplay === "HALF_TIME") {
+                                  parsedStatus = "Half";
+                              }
+                              
+                              // If parsedStatus is empty, it means no specific quarter/half info was found.
+                              // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
+                              currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
+
+                          } else {
+                              // Default live status for other leagues (not MLB/WNBA)
+                              // This will show the raw inningStatus or matchStatus (e.g., "LIVE"), not in red.
+                              currentTimeLabel = inningStatus || matchStatus;
+                          }
+                      } else if (isFinal) {
+                          currentTimeLabel = "F";
+                      } else if (rawStart) {
+                          let gameDateFromFirestore;
+                          if (typeof rawStart?.toDate === "function") {
+                              gameDateFromFirestore = rawStart.toDate();
+                          } else if (typeof rawStart === "number") {
+                              gameDateFromFirestore = new Date(rawStart * 1000);
+                          } else {
+                              gameDateFromFirestore = new Date(rawStart);
+                          }
+
+                          const startTimeLuxon = luxon.DateTime.fromJSDate(gameDateFromFirestore).setZone(luxon.DateTime.local().zoneName);
+                          currentTimeLabel = startTimeLuxon.toFormat('h:mm a');
+                      } else {
+                          currentTimeLabel = "TBD";
+                      }
+
+                      let displayTimeLabel = currentTimeLabel;
+
+                      // Determine if the current label is a scheduled time (not live, not final, not TBD)
+                      const isScheduledTime = !(currentTimeLabel.includes('<span style="color: red;">') ||
+                                                 currentTimeLabel === "F" ||
+                                                 currentTimeLabel === "TBD");
+
+                      if (isScheduledTime) {
+                          // Apply deduplication only for scheduled times
+                          if (currentTimeLabel === lastDisplayedTimeLabel) {
+                              displayTimeLabel = ""; // Hide if same as previously displayed scheduled time
+                          } else {
+                              lastDisplayedTimeLabel = currentTimeLabel; // Update last displayed scheduled time
+                          }
+                      }
+                      // If it's a live/final/TBD status, displayTimeLabel remains currentTimeLabel,
+                      // and lastDisplayedTimeLabel is NOT updated by these, preserving the last scheduled time.
+
+                      const row1 = document.createElement("tr");
+                      row1.className = "game-row";
+                      row1.innerHTML = `
+                          <td>${displayTimeLabel}</td>
+                          <td class="team-cell">${away}</td>
+                          <td>${(isLive || isFinal) && typeof awayScore !== "undefined" && awayScore !== '' ? awayScore : ""}</td>
+                          <td></td>
+                      `;
+
+                      const row2 = document.createElement("tr");
+                      row2.className = "game-row game-separator"; /* Added game-separator class here */
+                      row2.innerHTML = `
+                          <td></td>
+                          <td class="team-cell">${home}</td>
+                          <td>${(isLive || isFinal) && typeof homeScore !== "undefined" && homeScore !== '' ? homeScore : ""}</td>
+                          <td></td>
+                      `;
+
+                      table.appendChild(row1);
+                      table.appendChild(row2);
+                  });
+
+                  leagueSection.appendChild(table);
+                  container.appendChild(leagueSection);
+              }
+          }, err => {
+              // Error handling for the snapshot listener
+              console.error("Error listening to Firestore updates:", err);
+              errorDiv.textContent = "Failed to load real-time data: " + err.message;
+          });
+
+      } catch (err) {
+          // Error handling for initial setup of the listener
+          console.error("Error setting up game listener:", err);
+          errorDiv.textContent = "Failed to initialize real-time data: " + err.message;
+      }
+  }
 
 
-        /**
-         * Sets up a real-time listener for games from Firestore, filters by today's Eastern Time date,
-         * groups them by mapped league name, and updates the display on the page automatically.
-         */
-        async function setupRealtimeGameListener() {
-            const container = document.getElementById("games");
-            const errorDiv = document.getElementById("error");
-            errorDiv.textContent = ""; // Clear previous errors
+  // fetchYesterdayScores function (from index-7.html, slightly modified to use getTeamDisplayName)
+  async function fetchYesterdayScores() {
+    const loadingElement = document.getElementById('scoresLoading');
+    const errorMessageDiv = document.getElementById('scoresErrorMessage');
+    const errorTextSpan = document.getElementById('scoresErrorText');
+    const contentDiv = document.getElementById('dynamicScoresContent');
 
-            try {
-                const { DateTime } = luxon;
-                const nowInEastern = DateTime.now().setZone('America/New_York');
-                const todayStr = nowInEastern.toISODate();
-                console.log(`[Frontend] Setting up listener for todayStr in Eastern Time: ${todayStr}`);
+    if (loadingElement) loadingElement.classList.remove('hidden');
+    if (contentDiv) { contentDiv.classList.add('hidden'); contentDiv.innerHTML = ''; }
+    if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
 
-                // Create the query
-                const gamesQuery = collectionRef
-                    .where('gameDate', '==', todayStr)
-                    .orderBy("Start Time");
+    const yesterday = luxon.DateTime.now().setZone('America/New_York').minus({ days: 1 }).toISODate();
+    const FINISHED_STATUSES = ['Finished', 'Final'];
 
-                // Set up the real-time listener using onSnapshot
-                gamesQuery.onSnapshot(snapshot => {
-                    console.log("[Firestore Listener] Snapshot received, re-rendering UI."); // Debugging log
-                    // Clear the container before re-rendering all games
-                    container.innerHTML = "";
+    try {
+      gamesCollectionRef
+        .where('gameDate', '==', yesterday)
+        .where('Match Status', 'in', FINISHED_STATUSES)
+        .orderBy('Start Time')
+        .onSnapshot((snapshot) => {
+          const games = snapshot.docs.map(doc => doc.data());
+          if (games.length === 0) {
+            if (errorTextSpan) errorTextSpan.textContent = 'No finished games for yesterday.';
+            if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+            if (loadingElement) loadingElement.classList.add('hidden');
+            if (contentDiv) contentDiv.classList.add('hidden');
+            return;
+          }
 
-                    if (snapshot.empty) {
-                        container.innerHTML = `<p>No games found for today (${todayStr}) in Firestore collection.</p>`;
-                        return;
-                    }
+          const groupedGames = games.reduce((acc, game) => {
+            const league = game.League || 'Other';
+            if (!acc[league]) acc[league] = [];
+            acc[league].push(game);
+            return acc;
+          }, {});
 
-                    const leagueGroups = {};
+          const sortedLeagueNames = Object.keys(groupedGames).sort(); // Sort alphabetically for scores
 
-                    snapshot.docs.forEach(doc => {
-                        const data = doc.data();
-                        const leagueDisplayName = getLeagueDisplayName(data.League) || "Other";
-                        if (!leagueGroups[leagueDisplayName]) {
-                            leagueGroups[leagueDisplayName] = [];
-                        }
-                        leagueGroups[leagueDisplayName].push(data);
-                    });
+          if (contentDiv) {
+            contentDiv.innerHTML = '';
+            sortedLeagueNames.forEach(leagueName => {
+              const leagueSection = document.createElement('div');
+              leagueSection.classList.add('league-section');
+              const leagueHeader = document.createElement('h2');
+              leagueHeader.classList.add('league-header');
+              leagueHeader.textContent = getLeagueDisplayName(leagueName); // Use getLeagueDisplayName
+              leagueSection.appendChild(leagueHeader);
+              const gamesListContainer = document.createElement('div');
+              gamesListContainer.classList.add('game-entry-wrapper');
 
-                    // Create a sorted list of league names based on LEAGUE_DISPLAY_ORDER
-                    const sortedLeagueNames = [];
-                    const processedLeagues = new Set();
+              const leagueGames = groupedGames[leagueName];
+              leagueGames.forEach(game => {
+                const row = document.createElement('div');
+                row.className = 'game-entry';
 
-                    // Add leagues from the predefined order
-                    LEAGUE_DISPLAY_ORDER.forEach(orderedLeagueName => {
-                        if (leagueGroups[orderedLeagueName]) {
-                            sortedLeagueNames.push(orderedLeagueName);
-                            processedLeagues.add(orderedLeagueName);
-                        }
-                    });
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'time-cell status-finished'; // Always finished for this tab
+                timeDiv.textContent = 'F'; // 'F' for Final
+                row.appendChild(timeDiv);
 
-                    // Add any remaining leagues not in the predefined order
-                    for (const leagueName in leagueGroups) {
-                        if (!processedLeagues.has(leagueName)) {
-                            sortedLeagueNames.push(leagueName);
-                        }
-                    }
+                const teamsDiv = document.createElement('div');
+                teamsDiv.className = 'game-details';
+                teamsDiv.innerHTML = `
+                  <div class="team-name">${getTeamDisplayName(game['Away Team'] || '')}</div>
+                  <div class="team-name">${getTeamDisplayName(game['Home Team'] || '')}</div>
+                `;
+                row.appendChild(teamsDiv);
 
-                    // Now iterate through the sorted league names
-                    for (const leagueName of sortedLeagueNames) {
-                        const games = leagueGroups[leagueName]; // Get games for the current league
-                        
-                        const leagueSection = document.createElement("div");
-                        leagueSection.className = "league-section";
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'game-scores';
+                const awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
+                const homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
 
-                        const title = document.createElement("div");
-                        title.className = "league-title";
-                        title.textContent = leagueName;
-                        leagueSection.appendChild(title);
+                // Determine winner for bolding
+                const isAwayWinner = parseInt(awayScore) > parseInt(homeScore);
+                const isHomeWinner = parseInt(homeScore) > parseInt(awayScore);
 
-                        const table = document.createElement("table");
-                        table.className = "game-table";
+                scoreDiv.innerHTML = `
+                  <div class="score-value ${isAwayWinner ? 'winner' : ''}">${awayScore}</div>
+                  <div class="score-value ${isHomeWinner ? 'winner' : ''}">${homeScore}</div>
+                `;
+                row.appendChild(scoreDiv);
 
-                        let lastDisplayedTimeLabel = null; // This will only track *scheduled* times for deduplication
+                const channelDiv = document.createElement('div');
+                channelDiv.className = 'channel-cell';
+                channelDiv.textContent = game.Channels || '';
+                row.appendChild(channelDiv);
 
-                        games.forEach(data => {
-                            const home = getTeamDisplayName(data["Home Team"]) || "";
-                            const away = getTeamDisplayName(data["Away Team"]) || "";
-                            const homeScore = data["Home Score"];
-                            const awayScore = data["Away Score"];
-                            const matchStatus = (data["Match Status"] || "").toUpperCase();
-                            const inningStatus = (data["Status"] || "").toUpperCase();
-                            const rawStart = data["Start Time"];
+                gamesListContainer.appendChild(row);
+              });
 
-                            // isLive now includes "Q" for quarters and HALF_TIME
-                            const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
-                            const isFinal = matchStatus === "FINISHED";
+              leagueSection.appendChild(gamesListContainer);
+              contentDiv.appendChild(leagueSection);
+            });
+            contentDiv.classList.remove('hidden');
+          }
 
-                            let currentTimeLabel = ""; // The time/status label for the current game
-                            const leagueDisplayNameForGame = getLeagueDisplayName(data.League) || "Other"; // Get mapped league name for specific status logic
+          if (loadingElement) loadingElement.classList.add('hidden');
+        },
+        (error) => {
+          console.error("onSnapshot failed for yesterday's scores:", error);
+          if (errorTextSpan) errorTextSpan.textContent = `Failed to load yesterday's scores: ${error.message}`;
+          if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+          if (loadingElement) loadingElement.classList.add('hidden');
+          if (contentDiv) contentDiv.classList.add('hidden');
+        });
+    } catch (error) {
+      console.error("Error setting up snapshot listener for yesterday's scores:", error);
+      if (errorTextSpan) errorTextSpan.textContent = `Setup error for yesterday's scores: ${error.message}.`;
+      if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+      if (loadingElement) loadingElement.classList.add('hidden');
+      if (contentDiv) contentDiv.classList.add('hidden');
+    }
+  }
 
-                            if (isLive) {
-                                let statusToDisplay = inningStatus;
-                                let parsedStatus = '';
-
-                                if (leagueDisplayNameForGame === "MLB") {
-                                    // MLB Innings: "Top/Bot X" or "X"
-                                    const topBotMatch = statusToDisplay.match(/(TOP|BOT)\s*(\d+)(?:ST|ND|RD|TH)?/i);
-                                    const inningNumMatch = statusToDisplay.match(/(\d+)(?:ST|ND|RD|TH)?(?:\s*INNING)?/i); // Broader match for just number
-                                    const inningWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)_?INNING/i);
-
-                                    if (topBotMatch) {
-                                        const topBot = topBotMatch[1].charAt(0).toUpperCase() + topBotMatch[1].slice(1).toLowerCase();
-                                        const inning = topBotMatch[2];
-                                        parsedStatus = `${topBot} ${inning}`;
-                                    } else if (inningWordMatch) {
-                                        const wordToNum = {
-                                            "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4", "FIFTH": "5",
-                                            "SIXTH": "6", "SEVENTH": "7", "EIGHTH": "8", "NINTH": "9"
-                                        };
-                                        const inningWord = inningWordMatch[1].toUpperCase();
-                                        parsedStatus = wordToNum[inningWord] || inningWord;
-                                    } else if (inningNumMatch) {
-                                        parsedStatus = inningNumMatch[1]; // Just the number (e.g., "1", "2")
-                                    }
-
-                                    // If parsedStatus is empty, it means no specific inning info was found.
-                                    // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
-                                    currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
-
-                                } else if (leagueDisplayNameForGame === "WNBA") {
-                                    let parsedStatus = '';
-                                    // Try to match "Q1", "Q2", etc.
-                                    const quarterMatch = statusToDisplay.match(/Q(\d+)/i);
-                                    // Try to match "FIRST_QUARTER", "SECOND_QUARTER", etc.
-                                    const quarterWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH)_?QUARTER/i);
-
-                                    if (quarterMatch && quarterMatch[1]) {
-                                        parsedStatus = `Q${quarterMatch[1]}`;
-                                    } else if (quarterWordMatch) {
-                                        const wordToNum = {
-                                            "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4"
-                                        };
-                                        const quarterWord = quarterWordMatch[1].toUpperCase();
-                                        parsedStatus = `Q${wordToNum[quarterWord] || quarterWord}`;
-                                    } else if (statusToDisplay === "HALF_TIME") {
-                                        parsedStatus = "Half";
-                                    }
-                                    
-                                    // If parsedStatus is empty, it means no specific quarter/half info was found.
-                                    // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
-                                    currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
-
-                                } else {
-                                    // Default live status for other leagues (not MLB/WNBA)
-                                    // This will show the raw inningStatus or matchStatus (e.g., "LIVE"), not in red.
-                                    currentTimeLabel = inningStatus || matchStatus;
-                                }
-                            } else if (isFinal) {
-                                currentTimeLabel = "F";
-                            } else if (rawStart) {
-                                let gameDateFromFirestore;
-                                if (typeof rawStart?.toDate === "function") {
-                                    gameDateFromFirestore = rawStart.toDate();
-                                } else if (typeof rawStart === "number") {
-                                    gameDateFromFirestore = new Date(rawStart * 1000);
-                                } else {
-                                    gameDateFromFirestore = new Date(rawStart);
-                                }
-
-                                const startTimeLuxon = DateTime.fromJSDate(gameDateFromFirestore).setZone(DateTime.local().zoneName);
-                                currentTimeLabel = startTimeLuxon.toFormat('h:mm a');
-                            } else {
-                                currentTimeLabel = "TBD";
-                            }
-
-                            let displayTimeLabel = currentTimeLabel;
-
-                            // Determine if the current label is a scheduled time (not live, not final, not TBD)
-                            const isScheduledTime = !(currentTimeLabel.includes('<span style="color: red;">') ||
-                                                       currentTimeLabel === "F" ||
-                                                       currentTimeLabel === "TBD");
-
-                            if (isScheduledTime) {
-                                // Apply deduplication only for scheduled times
-                                if (currentTimeLabel === lastDisplayedTimeLabel) {
-                                    displayTimeLabel = ""; // Hide if same as previously displayed scheduled time
-                                } else {
-                                    lastDisplayedTimeLabel = currentTimeLabel; // Update last displayed scheduled time
-                                }
-                            }
-                            // If it's a live/final/TBD status, displayTimeLabel remains currentTimeLabel,
-                            // and lastDisplayedTimeLabel is NOT updated by these, preserving the last scheduled time.
-
-                            const row1 = document.createElement("tr");
-                            row1.className = "game-row";
-                            row1.innerHTML = `
-                                <td>${displayTimeLabel}</td>
-                                <td class="team-cell">${away}</td>
-                                <td>${(isLive || isFinal) && typeof awayScore !== "undefined" && awayScore !== '' ? awayScore : ""}</td>
-                                <td></td>
-                            `;
-
-                            const row2 = document.createElement("tr");
-                            row2.className = "game-row game-separator"; /* Added game-separator class here */
-                            row2.innerHTML = `
-                                <td></td>
-                                <td class="team-cell">${home}</td>
-                                <td>${(isLive || isFinal) && typeof homeScore !== "undefined" && homeScore !== '' ? homeScore : ""}</td>
-                                <td></td>
-                            `;
-
-                            table.appendChild(row1);
-                            table.appendChild(row2);
-                        });
-
-                        leagueSection.appendChild(table);
-                        container.appendChild(leagueSection);
-                    }
-                }, err => {
-                    // Error handling for the snapshot listener
-                    console.error("Error listening to Firestore updates:", err);
-                    errorDiv.textContent = "Failed to load real-time data: " + err.message;
-                });
-
-            } catch (err) {
-                // Error handling for initial setup of the listener
-                console.error("Error setting up game listener:", err);
-                errorDiv.textContent = "Failed to initialize real-time data: " + err.message;
-            }
-        }
-
-        // Initial setup of the real-time listener when the page loads
-        setupRealtimeGameListener();
-    </script>
+  // Moved setupTabSwitching call inside onAuthStateChanged to ensure Firebase is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        console.log("Firebase Auth Ready. User:", user.uid);
+        // Now that auth is ready, initialize tab switching and data fetching
+        setupTabSwitching();
+      } else {
+        // Attempt anonymous sign-in if not already signed in
+        auth.signInAnonymously().catch((error) => {
+          console.error("Anonymous sign-in failed:", error);
+          // Even if sign-in fails, try to set up tabs, though data fetching might fail
+          setupTabSwitching();
+        });
+      }
+    });
+  });
+</script>
 </body>
 </html>
