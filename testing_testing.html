@@ -149,126 +149,142 @@
         const db = firebase.firestore();
         const collectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
 
-        async function fetchGames() {
+        /**
+         * Sets up a real-time listener for games from Firestore, filters by today's Eastern Time date,
+         * groups them by mapped league name, and updates the display on the page automatically.
+         */
+        async function setupRealtimeGameListener() {
             const container = document.getElementById("games");
             const errorDiv = document.getElementById("error");
-            container.innerHTML = "";
-            errorDiv.textContent = "";
+            errorDiv.textContent = ""; // Clear previous errors
 
             try {
                 const { DateTime } = luxon;
                 const nowInEastern = DateTime.now().setZone('America/New_York');
                 const todayStr = nowInEastern.toISODate();
-                console.log(`[Frontend] Calculated todayStr in Eastern Time: ${todayStr}`);
+                console.log(`[Frontend] Setting up listener for todayStr in Eastern Time: ${todayStr}`);
 
-                const snapshot = await collectionRef
+                // Create the query
+                const gamesQuery = collectionRef
                     .where('gameDate', '==', todayStr)
-                    .orderBy("Start Time")
-                    .get();
+                    .orderBy("Start Time");
 
-                if (snapshot.empty) {
-                    container.innerHTML = `<p>No games found for today (${todayStr}) in Firestore collection.</p>`;
-                    return;
-                }
+                // Set up the real-time listener using onSnapshot
+                gamesQuery.onSnapshot(snapshot => {
+                    // Clear the container before re-rendering all games
+                    container.innerHTML = "";
 
-                const leagueGroups = {};
-                snapshot.docs.forEach(doc => {
-                    const data = doc.data();
-                    const leagueDisplayName = getLeagueDisplayName(data.League) || "Other";
-                    if (!leagueGroups[leagueDisplayName]) {
-                        leagueGroups[leagueDisplayName] = [];
+                    if (snapshot.empty) {
+                        container.innerHTML = `<p>No games found for today (${todayStr}) in Firestore collection.</p>`;
+                        return;
                     }
-                    leagueGroups[leagueDisplayName].push(data);
-                });
 
-                for (const [leagueName, games] of Object.entries(leagueGroups)) {
-                    const leagueSection = document.createElement("div");
-                    leagueSection.className = "league-section";
+                    const leagueGroups = {};
 
-                    const title = document.createElement("div");
-                    title.className = "league-title";
-                    title.textContent = leagueName;
-                    leagueSection.appendChild(title);
-
-                    const table = document.createElement("table");
-                    table.className = "game-table";
-
-                    let lastDisplayedTimeLabel = null;
-
-                    games.forEach(data => {
-                        const home = getTeamDisplayName(data["Home Team"]) || "";
-                        const away = getTeamDisplayName(data["Away Team"]) || "";
-                        const homeScore = data["Home Score"];
-                        const awayScore = data["Away Score"];
-                        const matchStatus = (data["Match Status"] || "").toUpperCase();
-                        const inningStatus = (data["Status"] || "").toUpperCase();
-                        const rawStart = data["Start Time"];
-
-                        const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING");
-                        const isFinal = matchStatus === "FINISHED";
-
-                        let currentTimeLabel = "";
-
-                        if (isLive) {
-                            currentTimeLabel = inningStatus || matchStatus;
-                        } else if (isFinal) {
-                            currentTimeLabel = "F";
-                        } else if (rawStart) {
-                            let gameDateFromFirestore;
-                            if (typeof rawStart?.toDate === "function") {
-                                gameDateFromFirestore = rawStart.toDate();
-                            } else if (typeof rawStart === "number") {
-                                gameDateFromFirestore = new Date(rawStart * 1000);
-                            } else {
-                                gameDateFromFirestore = new Date(rawStart);
-                            }
-
-                            const startTimeLuxon = DateTime.fromJSDate(gameDateFromFirestore).setZone(DateTime.local().zoneName);
-                            currentTimeLabel = startTimeLuxon.toFormat('h:mm a');
-                        } else {
-                            currentTimeLabel = "TBD";
+                    snapshot.docs.forEach(doc => {
+                        const data = doc.data();
+                        const leagueDisplayName = getLeagueDisplayName(data.League) || "Other";
+                        if (!leagueGroups[leagueDisplayName]) {
+                            leagueGroups[leagueDisplayName] = [];
                         }
-
-                        let displayTimeLabel = currentTimeLabel;
-                        if (currentTimeLabel === lastDisplayedTimeLabel) {
-                            displayTimeLabel = "";
-                        } else {
-                            lastDisplayedTimeLabel = currentTimeLabel;
-                        }
-
-                        const row1 = document.createElement("tr");
-                        row1.className = "game-row";
-                        row1.innerHTML = `
-                            <td>${displayTimeLabel}</td>
-                            <td class="team-cell">${away}</td>
-                            <td>${typeof awayScore !== "undefined" ? awayScore : ""}</td>
-                            <td></td>
-                        `;
-
-                        const row2 = document.createElement("tr");
-                        row2.className = "game-row";
-                        row2.innerHTML = `
-                            <td></td>
-                            <td class="team-cell">${home}</td>
-                            <td>${typeof homeScore !== "undefined" ? homeScore : ""}</td>
-                            <td></td>
-                        `;
-
-                        table.appendChild(row1);
-                        table.appendChild(row2);
+                        leagueGroups[leagueDisplayName].push(data);
                     });
 
-                    leagueSection.appendChild(table);
-                    container.appendChild(leagueSection);
-                }
+                    for (const [leagueName, games] of Object.entries(leagueGroups)) {
+                        const leagueSection = document.createElement("div");
+                        leagueSection.className = "league-section";
+
+                        const title = document.createElement("div");
+                        title.className = "league-title";
+                        title.textContent = leagueName;
+                        leagueSection.appendChild(title);
+
+                        const table = document.createElement("table");
+                        table.className = "game-table";
+
+                        let lastDisplayedTimeLabel = null;
+
+                        games.forEach(data => {
+                            const home = getTeamDisplayName(data["Home Team"]) || "";
+                            const away = getTeamDisplayName(data["Away Team"]) || "";
+                            const homeScore = data["Home Score"];
+                            const awayScore = data["Away Score"];
+                            const matchStatus = (data["Match Status"] || "").toUpperCase();
+                            const inningStatus = (data["Status"] || "").toUpperCase();
+                            const rawStart = data["Start Time"];
+
+                            const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING");
+                            const isFinal = matchStatus === "FINISHED";
+
+                            let currentTimeLabel = "";
+
+                            if (isLive) {
+                                currentTimeLabel = inningStatus || matchStatus;
+                            } else if (isFinal) {
+                                currentTimeLabel = "F";
+                            } else if (rawStart) {
+                                let gameDateFromFirestore;
+                                if (typeof rawStart?.toDate === "function") {
+                                    gameDateFromFirestore = rawStart.toDate();
+                                } else if (typeof rawStart === "number") {
+                                    gameDateFromFirestore = new Date(rawStart * 1000);
+                                } else {
+                                    gameDateFromFirestore = new Date(rawStart);
+                                }
+
+                                const startTimeLuxon = DateTime.fromJSDate(gameDateFromFirestore).setZone(DateTime.local().zoneName);
+                                currentTimeLabel = startTimeLuxon.toFormat('h:mm a');
+                            } else {
+                                currentTimeLabel = "TBD";
+                            }
+
+                            let displayTimeLabel = currentTimeLabel;
+                            if (currentTimeLabel === lastDisplayedTimeLabel) {
+                                displayTimeLabel = "";
+                            } else {
+                                lastDisplayedTimeLabel = currentTimeLabel;
+                            }
+
+                            const row1 = document.createElement("tr");
+                            row1.className = "game-row";
+                            row1.innerHTML = `
+                                <td>${displayTimeLabel}</td>
+                                <td class="team-cell">${away}</td>
+                                <td>${typeof awayScore !== "undefined" ? awayScore : ""}</td>
+                                <td></td>
+                            `;
+
+                            const row2 = document.createElement("tr");
+                            row2.className = "game-row";
+                            row2.innerHTML = `
+                                <td></td>
+                                <td class="team-cell">${home}</td>
+                                <td>${typeof homeScore !== "undefined" ? homeScore : ""}</td>
+                                <td></td>
+                            `;
+
+                            table.appendChild(row1);
+                            table.appendChild(row2);
+                        });
+
+                        leagueSection.appendChild(table);
+                        container.appendChild(leagueSection);
+                    }
+                }, err => {
+                    // Error handling for the snapshot listener
+                    console.error("Error listening to Firestore updates:", err);
+                    errorDiv.textContent = "Failed to load real-time data: " + err.message;
+                });
 
             } catch (err) {
-                console.error("Error fetching games:", err);
-                errorDiv.textContent = "Failed to load Firestore data: " + err.message;
+                // Error handling for initial setup of the listener
+                console.error("Error setting up game listener:", err);
+                errorDiv.textContent = "Failed to initialize real-time data: " + err.message;
             }
         }
 
-        fetchGames();
+        // Initial setup of the real-time listener when the page loads
+        setupRealtimeGameListener();
     </script>
 </body>
 </html>
