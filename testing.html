@@ -22,12 +22,15 @@
     );
   }
 </script>
-	  <style>.news-tab[data-tab="fantasy"],
-.news-tab[data-tab="transactions"],
-#fantasy-feed,
-#transactions-feed {
-  display: none !important;
-}</style>
+	 <style>
+      /* RESTORED: Original CSS for news tabs */
+      .news-tab[data-tab="fantasy"],
+      .news-tab[data-tab="transactions"],
+      #fantasy-feed,
+      #transactions-feed {
+        display: none !important;
+      }
+    </style>
 	  
 
 
@@ -1575,13 +1578,15 @@
         <div class="news-feed-content" id="fox-feed" style="display:none;">Loading FOX...</div>
       </div>
       <!-- Breaking/Fantasy/Transactions Tabs Section -->
+     <!-- Breaking/Fantasy/Transactions Tabs Section -->
       <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
         <div class="news-section-header breaking-tabs-header">
           <span class="news-tab active" data-tab="breaking">Breaking</span>
           <span class="news-tab" data-tab="fantasy">Fantasy</span>
           <span class="news-tab" data-tab="transactions">Transactions</span>
         </div>
-        <div class="news-feed-content" id="breaking-feed">Loading breaking news...</div>
+        <!-- IMPORTANT: Set breaking-feed to display: block; by default -->
+        <div class="news-feed-content" id="breaking-feed" style="display: block;">Loading breaking news...</div>
         <div class="news-feed-content" id="fantasy-feed" style="display:none;">Loading fantasy news...</div>
         <div class="news-feed-content" id="transactions-feed" style="display:none;">Loading transactions...</div>
       </div>
@@ -2940,6 +2945,81 @@ document.querySelectorAll("#menuList li[data-section]").forEach(item => {
   }
 </script>
 
+	  <script>
+  // -- FEED URLs: Replace with your real feeds --
+const HEADLINES_FEED = "https://www.espn.com/espn/rss/news";
+const BREAKING_FEED = "https://rss.app/feeds/XcFXtVdyCBGtIC6O.xml";
+const FANTASY_FEED = "https://fantasynews.cbssports.com/rss/headlines/";
+const TRANSACTIONS_FEED = "https://www.espn.com/espn/rss/mlb/news"; // EXAMPLE, replace as needed
+
+// -- Generic function to fetch and render a basic RSS feed --
+function fetchRSSFeed(url, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = "Loading...";
+  fetch(url)
+    .then(res => res.text())
+    .then(str => {
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(str, "application/xml");
+      const items = Array.from(xml.querySelectorAll("item"));
+      if (!items.length) {
+        container.innerHTML = "<p>No stories found.</p>";
+        return;
+      }
+      const ul = document.createElement("ul");
+      ul.style.margin = "0";
+      ul.style.padding = "0";
+      ul.style.listStyle = "none";
+      items.forEach(item => {
+        const li = document.createElement("li");
+        li.style.padding = "6px 0";
+        const title = item.querySelector("title")?.textContent || "";
+        const link = item.querySelector("link")?.textContent || "#";
+        li.innerHTML = `<a href="${link}" target="_blank" style="color:#212121;text-decoration:none;">${title}</a>`;
+        ul.appendChild(li);
+      });
+      container.innerHTML = "";
+      container.appendChild(ul);
+    })
+    .catch(() => {
+      container.innerHTML = "<p>Error loading feed.</p>";
+    });
+}
+
+// -- Tabs logic for Breaking/Fantasy/Transactions
+document.addEventListener("DOMContentLoaded", function() {
+  // Load default feeds
+  fetchRSSFeed(HEADLINES_FEED, "headlines-feed");
+  fetchRSSFeed(BREAKING_FEED, "breaking-feed");
+
+  const tabs = document.querySelectorAll(".news-tab");
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById("breaking-feed").style.display = "none";
+      document.getElementById("fantasy-feed").style.display = "none";
+      document.getElementById("transactions-feed").style.display = "none";
+
+      if (tab.dataset.tab === "breaking") {
+        document.getElementById("breaking-feed").style.display = "block";
+        fetchRSSFeed(BREAKING_FEED, "breaking-feed");
+      }
+      if (tab.dataset.tab === "fantasy") {
+        document.getElementById("fantasy-feed").style.display = "block";
+        fetchRSSFeed(FANTASY_FEED, "fantasy-feed");
+      }
+      if (tab.dataset.tab === "transactions") {
+        document.getElementById("transactions-feed").style.display = "block";
+        fetchRSSFeed(TRANSACTIONS_FEED, "transactions-feed");
+      }
+    });
+  });
+});
+</script>
+
+	  
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const menuBtn = document.getElementById('menu-toggle');
