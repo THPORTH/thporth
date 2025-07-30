@@ -86,9 +86,11 @@
       measurementId: "G-R146KS92QJ"
   };
 
-  const app = firebase.initializeApp(firebaseConfig); // Initialize app once
-  const auth = firebase.auth(); // Get auth instance
-  const db = firebase.firestore(); // Get firestore instance
+  // Initialize Firebase app
+  firebase.initializeApp(firebaseConfig); 
+  // Get auth and firestore instances from the initialized app
+  const auth = firebase.auth(); // Correctly access auth from the global firebase object
+  const db = firebase.firestore(); // Correctly access firestore from the global firebase object
 
   const gamesCollectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
 
