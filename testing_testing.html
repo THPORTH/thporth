@@ -171,6 +171,7 @@
 
                 // Set up the real-time listener using onSnapshot
                 gamesQuery.onSnapshot(snapshot => {
+                    console.log("[Firestore Listener] Snapshot received, re-rendering UI."); // Debugging log
                     // Clear the container before re-rendering all games
                     container.innerHTML = "";
 
@@ -213,13 +214,73 @@
                             const inningStatus = (data["Status"] || "").toUpperCase();
                             const rawStart = data["Start Time"];
 
-                            const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING");
+                            // isLive now includes "Q" for quarters and HALF_TIME
+                            const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
                             const isFinal = matchStatus === "FINISHED";
 
                             let currentTimeLabel = "";
+                            const leagueDisplayNameForGame = getLeagueDisplayName(data.League) || "Other"; // Get mapped league name for specific status logic
 
                             if (isLive) {
-                                currentTimeLabel = inningStatus || matchStatus;
+                                let statusToDisplay = inningStatus; // Declare statusToDisplay here
+                                let parsedStatus = ''; // To hold the parsed inning/quarter
+
+                                if (leagueDisplayNameForGame === "MLB") {
+                                    // MLB Innings: "Top/Bot X" or "X"
+                                    const topBotMatch = statusToDisplay.match(/(TOP|BOT)\s*(\d+)(?:ST|ND|RD|TH)?/i);
+                                    const inningNumMatch = statusToDisplay.match(/(\d+)(?:ST|ND|RD|TH)?\s*INNING/i);
+                                    const inningWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)\s*_?INNING/i);
+
+                                    if (topBotMatch) {
+                                        const topBot = topBotMatch[1].charAt(0).toUpperCase() + topBotMatch[1].slice(1).toLowerCase();
+                                        const inning = topBotMatch[2];
+                                        parsedStatus = `${topBot} ${inning}`;
+                                    } else if (inningNumMatch) {
+                                        parsedStatus = inningNumMatch[1]; // Just the number (e.g., "1", "2")
+                                    } else if (inningWordMatch) {
+                                        const wordToNum = {
+                                            "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4", "FIFTH": "5",
+                                            "SIXTH": "6", "SEVENTH": "7", "EIGHTH": "8", "NINTH": "9"
+                                        };
+                                        const inningWord = inningWordMatch[1].toUpperCase();
+                                        parsedStatus = wordToNum[inningWord] || inningWord;
+                                    }
+
+                                    if (parsedStatus) {
+                                        currentTimeLabel = `<span style="color: red;">${parsedStatus}</span>`;
+                                    } else {
+                                        // If MLB game is live but no specific inning info, display "LIVE"
+                                        currentTimeLabel = `<span style="color: red;">LIVE</span>`;
+                                    }
+                                } else if (leagueDisplayNameForGame === "WNBA") {
+                                    let parsedStatus = '';
+                                    // Try to match "Q1", "Q2", etc.
+                                    const quarterMatch = statusToDisplay.match(/Q(\d+)/i);
+                                    // Try to match "FIRST_QUARTER", "SECOND_QUARTER", etc.
+                                    const quarterWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH)_?QUARTER/i);
+
+                                    if (quarterMatch && quarterMatch[1]) {
+                                        parsedStatus = `Q${quarterMatch[1]}`;
+                                    } else if (quarterWordMatch) {
+                                        const wordToNum = {
+                                            "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4"
+                                        };
+                                        const quarterWord = quarterWordMatch[1].toUpperCase();
+                                        parsedStatus = `Q${wordToNum[quarterWord] || quarterWord}`;
+                                    } else if (statusToDisplay === "HALF_TIME") { // Handle HALF_TIME for WNBA
+                                        parsedStatus = "Half";
+                                    }
+
+                                    if (parsedStatus) {
+                                        currentTimeLabel = `<span style="color: red;">${parsedStatus}</span>`;
+                                    } else {
+                                        // If WNBA game is live but no specific quarter/half info, display "LIVE"
+                                        currentTimeLabel = `<span style="color: red;">LIVE</span>`;
+                                    }
+                                } else {
+                                    // Default live status for other leagues (not MLB/WNBA), no specific format requested
+                                    currentTimeLabel = inningStatus || matchStatus;
+                                }
                             } else if (isFinal) {
                                 currentTimeLabel = "F";
                             } else if (rawStart) {
