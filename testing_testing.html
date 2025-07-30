@@ -87,7 +87,6 @@
                 "SPAIN: LALIGA": "LaLiga",
                 "ITALY: SERIE A": "Serie A",
                 "FRANCE: LIGUE 1": "Ligue 1",
-                "North & Central America: Leagues Cup": "Leagues Cup",
                 "USA: MLS": "MLS"
                 // Add all your specific league mappings here.
             };
@@ -115,7 +114,7 @@
                 "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets",
                 "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies",
                 "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants",
-                "Seattle Mariners": "Mariners", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays",
+                "Seattle Mariners": "Mariners", "St.Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays",
                 "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals",
 
                 // WNBA Teams
@@ -227,16 +226,15 @@
                                 let parsedStatus = '';
 
                                 if (leagueDisplayNameForGame === "MLB") {
+                                    // MLB Innings: "Top/Bot X" or "X"
                                     const topBotMatch = statusToDisplay.match(/(TOP|BOT)\s*(\d+)(?:ST|ND|RD|TH)?/i);
-                                    const inningNumMatch = statusToDisplay.match(/(\d+)(?:ST|ND|RD|TH)?\s*INNING/i);
-                                    const inningWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)\s*_?INNING/i);
+                                    const inningNumMatch = statusToDisplay.match(/(\d+)(?:ST|ND|RD|TH)?(?:\s*INNING)?/i); // Broader match for just number
+                                    const inningWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)_?INNING/i);
 
                                     if (topBotMatch) {
                                         const topBot = topBotMatch[1].charAt(0).toUpperCase() + topBotMatch[1].slice(1).toLowerCase();
                                         const inning = topBotMatch[2];
                                         parsedStatus = `${topBot} ${inning}`;
-                                    } else if (inningNumMatch) {
-                                        parsedStatus = inningNumMatch[1];
                                     } else if (inningWordMatch) {
                                         const wordToNum = {
                                             "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4", "FIFTH": "5",
@@ -244,12 +242,19 @@
                                         };
                                         const inningWord = inningWordMatch[1].toUpperCase();
                                         parsedStatus = wordToNum[inningWord] || inningWord;
+                                    } else if (inningNumMatch) {
+                                        parsedStatus = inningNumMatch[1]; // Just the number (e.g., "1", "2")
                                     }
 
-                                    currentTimeLabel = `<span style="color: red;">${parsedStatus || "LIVE"}</span>`; // Fallback to "LIVE" if no specific inning parsed
+                                    // If parsedStatus is empty, it means no specific inning info was found.
+                                    // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
+                                    currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
+
                                 } else if (leagueDisplayNameForGame === "WNBA") {
                                     let parsedStatus = '';
+                                    // Try to match "Q1", "Q2", etc.
                                     const quarterMatch = statusToDisplay.match(/Q(\d+)/i);
+                                    // Try to match "FIRST_QUARTER", "SECOND_QUARTER", etc.
                                     const quarterWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH)_?QUARTER/i);
 
                                     if (quarterMatch && quarterMatch[1]) {
@@ -264,9 +269,13 @@
                                         parsedStatus = "Half";
                                     }
                                     
-                                    currentTimeLabel = `<span style="color: red;">${parsedStatus || "LIVE"}</span>`; // Fallback to "LIVE" if no specific quarter/half parsed
+                                    // If parsedStatus is empty, it means no specific quarter/half info was found.
+                                    // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
+                                    currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
+
                                 } else {
                                     // Default live status for other leagues (not MLB/WNBA)
+                                    // This will show the raw inningStatus or matchStatus (e.g., "LIVE"), not in red.
                                     currentTimeLabel = inningStatus || matchStatus;
                                 }
                             } else if (isFinal) {
@@ -310,7 +319,7 @@
                             row1.innerHTML = `
                                 <td>${displayTimeLabel}</td>
                                 <td class="team-cell">${away}</td>
-                                <td>${typeof awayScore !== "undefined" ? awayScore : ""}</td>
+                                <td>${(isLive || isFinal) && typeof awayScore !== "undefined" && awayScore !== '' ? awayScore : ""}</td>
                                 <td></td>
                             `;
 
@@ -319,7 +328,7 @@
                             row2.innerHTML = `
                                 <td></td>
                                 <td class="team-cell">${home}</td>
-                                <td>${typeof homeScore !== "undefined" ? homeScore : ""}</td>
+                                <td>${(isLive || isFinal) && typeof homeScore !== "undefined" && homeScore !== '' ? homeScore : ""}</td>
                                 <td></td>
                             `;
 
