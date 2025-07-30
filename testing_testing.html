@@ -203,7 +203,7 @@
                         const table = document.createElement("table");
                         table.className = "game-table";
 
-                        let lastDisplayedTimeLabel = null;
+                        let lastDisplayedTimeLabel = null; // This will only track *scheduled* times for deduplication
 
                         games.forEach(data => {
                             const home = getTeamDisplayName(data["Home Team"]) || "";
@@ -218,15 +218,14 @@
                             const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
                             const isFinal = matchStatus === "FINISHED";
 
-                            let currentTimeLabel = "";
+                            let currentTimeLabel = ""; // The time/status label for the current game
                             const leagueDisplayNameForGame = getLeagueDisplayName(data.League) || "Other"; // Get mapped league name for specific status logic
 
                             if (isLive) {
-                                let statusToDisplay = inningStatus; // Declare statusToDisplay here
-                                let parsedStatus = ''; // To hold the parsed inning/quarter
+                                let statusToDisplay = inningStatus;
+                                let parsedStatus = '';
 
                                 if (leagueDisplayNameForGame === "MLB") {
-                                    // MLB Innings: "Top/Bot X" or "X"
                                     const topBotMatch = statusToDisplay.match(/(TOP|BOT)\s*(\d+)(?:ST|ND|RD|TH)?/i);
                                     const inningNumMatch = statusToDisplay.match(/(\d+)(?:ST|ND|RD|TH)?\s*INNING/i);
                                     const inningWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)\s*_?INNING/i);
@@ -236,7 +235,7 @@
                                         const inning = topBotMatch[2];
                                         parsedStatus = `${topBot} ${inning}`;
                                     } else if (inningNumMatch) {
-                                        parsedStatus = inningNumMatch[1]; // Just the number (e.g., "1", "2")
+                                        parsedStatus = inningNumMatch[1];
                                     } else if (inningWordMatch) {
                                         const wordToNum = {
                                             "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4", "FIFTH": "5",
@@ -246,17 +245,10 @@
                                         parsedStatus = wordToNum[inningWord] || inningWord;
                                     }
 
-                                    if (parsedStatus) {
-                                        currentTimeLabel = `<span style="color: red;">${parsedStatus}</span>`;
-                                    } else {
-                                        // If MLB game is live but no specific inning info, display "LIVE"
-                                        currentTimeLabel = `<span style="color: red;">LIVE</span>`;
-                                    }
+                                    currentTimeLabel = `<span style="color: red;">${parsedStatus || "LIVE"}</span>`; // Fallback to "LIVE" if no specific inning parsed
                                 } else if (leagueDisplayNameForGame === "WNBA") {
                                     let parsedStatus = '';
-                                    // Try to match "Q1", "Q2", etc.
                                     const quarterMatch = statusToDisplay.match(/Q(\d+)/i);
-                                    // Try to match "FIRST_QUARTER", "SECOND_QUARTER", etc.
                                     const quarterWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH)_?QUARTER/i);
 
                                     if (quarterMatch && quarterMatch[1]) {
@@ -267,18 +259,13 @@
                                         };
                                         const quarterWord = quarterWordMatch[1].toUpperCase();
                                         parsedStatus = `Q${wordToNum[quarterWord] || quarterWord}`;
-                                    } else if (statusToDisplay === "HALF_TIME") { // Handle HALF_TIME for WNBA
+                                    } else if (statusToDisplay === "HALF_TIME") {
                                         parsedStatus = "Half";
                                     }
-
-                                    if (parsedStatus) {
-                                        currentTimeLabel = `<span style="color: red;">${parsedStatus}</span>`;
-                                    } else {
-                                        // If WNBA game is live but no specific quarter/half info, display "LIVE"
-                                        currentTimeLabel = `<span style="color: red;">LIVE</span>`;
-                                    }
+                                    
+                                    currentTimeLabel = `<span style="color: red;">${parsedStatus || "LIVE"}</span>`; // Fallback to "LIVE" if no specific quarter/half parsed
                                 } else {
-                                    // Default live status for other leagues (not MLB/WNBA), no specific format requested
+                                    // Default live status for other leagues (not MLB/WNBA)
                                     currentTimeLabel = inningStatus || matchStatus;
                                 }
                             } else if (isFinal) {
@@ -300,11 +287,22 @@
                             }
 
                             let displayTimeLabel = currentTimeLabel;
-                            if (currentTimeLabel === lastDisplayedTimeLabel) {
-                                displayTimeLabel = "";
-                            } else {
-                                lastDisplayedTimeLabel = currentTimeLabel;
+
+                            // Determine if the current label is a scheduled time (not live, not final, not TBD)
+                            const isScheduledTime = !(currentTimeLabel.includes('<span style="color: red;">') ||
+                                                       currentTimeLabel === "F" ||
+                                                       currentTimeLabel === "TBD");
+
+                            if (isScheduledTime) {
+                                // Apply deduplication only for scheduled times
+                                if (currentTimeLabel === lastDisplayedTimeLabel) {
+                                    displayTimeLabel = ""; // Hide if same as previously displayed scheduled time
+                                } else {
+                                    lastDisplayedTimeLabel = currentTimeLabel; // Update last displayed scheduled time
+                                }
                             }
+                            // If it's a live/final/TBD status, displayTimeLabel remains currentTimeLabel,
+                            // and lastDisplayedTimeLabel is NOT updated by these, preserving the last scheduled time.
 
                             const row1 = document.createElement("tr");
                             row1.className = "game-row";
