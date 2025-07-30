@@ -57,7 +57,12 @@
         /* --- END NEW/MODIFIED CSS --- */
 
         .game-row {
-            border-bottom: 1px solid #333;
+            /* Removed border-bottom from here */
+            /* border-bottom: 1px solid #333; */
+        }
+        .game-separator {
+            border-bottom: 1px solid #333; /* Apply border only to the second row of each game */
+            margin-bottom: 8px; /* Add some space between games */
         }
         .error {
             color: red;
@@ -365,7 +370,7 @@
                             `;
 
                             const row2 = document.createElement("tr");
-                            row2.className = "game-row";
+                            row2.className = "game-row game-separator"; /* Added game-separator class here */
                             row2.innerHTML = `
                                 <td></td>
                                 <td class="team-cell">${home}</td>
@@ -398,6 +403,3 @@
     </script>
 </body>
 </html>
-
-
-
