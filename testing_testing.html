@@ -115,7 +115,7 @@
                 "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets",
                 "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies",
                 "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants",
-                "Seattle Mariners": "Mariners", "St.Louis Cardinals": "Cardinals", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays",
+                "Seattle Mariners": "Mariners", "St.Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays",
                 "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals",
 
                 // WNBA Teams
@@ -149,6 +149,24 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const collectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
+
+        // Define the desired order of leagues for display
+        const LEAGUE_DISPLAY_ORDER = [
+            "MLB",
+            "WNBA",
+            "Leagues Cup",
+            "NBA", // Example: Add other leagues you want to prioritize here
+            "UEFA Champions League",
+            "UEFA Women's Champions League",
+            "Premier League",
+            "Bundesliga",
+            "LaLiga",
+            "Serie A",
+            "Ligue 1",
+            "MLS",
+            // Add other league display names as needed, in desired order
+        ];
+
 
         /**
          * Sets up a real-time listener for games from Firestore, filters by today's Eastern Time date,
@@ -192,7 +210,29 @@
                         leagueGroups[leagueDisplayName].push(data);
                     });
 
-                    for (const [leagueName, games] of Object.entries(leagueGroups)) {
+                    // Create a sorted list of league names based on LEAGUE_DISPLAY_ORDER
+                    const sortedLeagueNames = [];
+                    const processedLeagues = new Set();
+
+                    // Add leagues from the predefined order
+                    LEAGUE_DISPLAY_ORDER.forEach(orderedLeagueName => {
+                        if (leagueGroups[orderedLeagueName]) {
+                            sortedLeagueNames.push(orderedLeagueName);
+                            processedLeagues.add(orderedLeagueName);
+                        }
+                    });
+
+                    // Add any remaining leagues not in the predefined order
+                    for (const leagueName in leagueGroups) {
+                        if (!processedLeagues.has(leagueName)) {
+                            sortedLeagueNames.push(leagueName);
+                        }
+                    }
+
+                    // Now iterate through the sorted league names
+                    for (const leagueName of sortedLeagueNames) {
+                        const games = leagueGroups[leagueName]; // Get games for the current league
+                        
                         const leagueSection = document.createElement("div");
                         leagueSection.className = "league-section";
 
