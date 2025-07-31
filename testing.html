@@ -115,7 +115,7 @@
 .game-table {
     width: 100%;
     border-collapse: collapse;
-	font-size: 10px;
+	font-size: 11px;
 }
 .game-table td {
     padding: 4px 10px; /* Default cell padding */
@@ -2229,12 +2229,8 @@ document.querySelectorAll("#menuList li[data-section]").forEach(item => {
       measurementId: "G-R146KS92QJ"
   };
 
-  // Initialize Firebase app
-  firebase.initializeApp(firebaseConfig); 
-  // Get auth and firestore instances from the initialized app
-  const auth = firebase.auth(); // Correctly access auth from the global firebase object
-  const db = firebase.firestore(); // Correctly access firestore from the global firebase object
-
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
   const gamesCollectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
 
   // Function to map original league names from Firestore to desired display names
@@ -2439,7 +2435,8 @@ document.querySelectorAll("#menuList li[data-section]").forEach(item => {
 
                               // If parsedStatus is empty, it means no specific inning info was found.
                               // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
-                              currentTimeLabel = parsedStatus ? `<span class="live-status-text">${parsedStatus}</span>` : ""; // Added class
+                              currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
+
                           } else if (leagueDisplayNameForGame === "WNBA") {
                               let parsedStatus = '';
                               // Try to match "Q1", "Q2", etc.
@@ -2461,15 +2458,15 @@ document.querySelectorAll("#menuList li[data-section]").forEach(item => {
                               
                               // If parsedStatus is empty, it means no specific quarter/half info was found.
                               // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
-                              currentTimeLabel = parsedStatus ? `<span class="live-status-text">${parsedStatus}</span>` : ""; // Added class
+                              currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
 
                           } else {
                               // Default live status for other leagues (not MLB/WNBA)
                               // This will show the raw inningStatus or matchStatus (e.g., "LIVE"), not in red.
-                              currentTimeLabel = `<span class="live-status-text">${inningStatus || matchStatus}</span>`; // Added class
+                              currentTimeLabel = inningStatus || matchStatus;
                           }
                       } else if (isFinal) {
-                          currentTimeLabel = `<span class="final-status-text">F</span>`; // Added class
+                          currentTimeLabel = "F";
                       } else if (rawStart) {
                           let gameDateFromFirestore;
                           if (typeof rawStart?.toDate === "function") {
@@ -2481,27 +2478,24 @@ document.querySelectorAll("#menuList li[data-section]").forEach(item => {
                           }
 
                           const startTimeLuxon = luxon.DateTime.fromJSDate(gameDateFromFirestore).setZone(luxon.DateTime.local().zoneName);
-                          currentTimeLabel = `<span class="scheduled-time-text">${startTimeLuxon.toFormat('h:mm a')}</span>`; // Added class
+                          currentTimeLabel = startTimeLuxon.toFormat('h:mm a');
                       } else {
-                          currentTimeLabel = `<span class="scheduled-time-text">TBD</span>`; // Added class
+                          currentTimeLabel = "TBD";
                       }
 
                       let displayTimeLabel = currentTimeLabel;
 
                       // Determine if the current label is a scheduled time (not live, not final, not TBD)
-                      const isScheduledTime = !(currentTimeLabel.includes('live-status-text') ||
-                                                 currentTimeLabel.includes('final-status-text') ||
-                                                 currentTimeLabel.includes('TBD')); // Check for TBD string directly for now
+                      const isScheduledTime = !(currentTimeLabel.includes('<span style="color: red;">') ||
+                                                 currentTimeLabel === "F" ||
+                                                 currentTimeLabel === "TBD");
 
                       if (isScheduledTime) {
                           // Apply deduplication only for scheduled times
-                          // Note: This deduplication logic might need refinement if you have multiple games at the exact same time
-                          // and you *do* want to show the time for each. For now, it will hide duplicates.
-                          const plainTextTime = new DOMParser().parseFromString(currentTimeLabel, 'text/html').body.textContent;
-                          if (plainTextTime === lastDisplayedTimeLabel) {
+                          if (currentTimeLabel === lastDisplayedTimeLabel) {
                               displayTimeLabel = ""; // Hide if same as previously displayed scheduled time
                           } else {
-                              lastDisplayedTimeLabel = plainTextTime; // Update last displayed scheduled time
+                              lastDisplayedTimeLabel = currentTimeLabel; // Update last displayed scheduled time
                           }
                       }
                       // If it's a live/final/TBD status, displayTimeLabel remains currentTimeLabel,
@@ -2510,9 +2504,9 @@ document.querySelectorAll("#menuList li[data-section]").forEach(item => {
                       const row1 = document.createElement("tr");
                       row1.className = "game-row";
                       row1.innerHTML = `
-                          <td class="game-time-status-cell">${displayTimeLabel}</td>
+                          <td>${displayTimeLabel}</td>
                           <td class="team-cell">${away}</td>
-                          <td class="game-score-cell">${(isLive || isFinal) && typeof awayScore !== "undefined" && awayScore !== '' ? `<span class="game-score-value">${awayScore}</span>` : ""}</td>
+                          <td>${(isLive || isFinal) && typeof awayScore !== "undefined" && awayScore !== '' ? awayScore : ""}</td>
                           <td></td>
                       `;
 
@@ -2521,7 +2515,7 @@ document.querySelectorAll("#menuList li[data-section]").forEach(item => {
                       row2.innerHTML = `
                           <td></td>
                           <td class="team-cell">${home}</td>
-                          <td class="game-score-cell">${(isLive || isFinal) && typeof homeScore !== "undefined" && homeScore !== '' ? `<span class="game-score-value">${homeScore}</span>` : ""}</td>
+                          <td>${(isLive || isFinal) && typeof homeScore !== "undefined" && homeScore !== '' ? homeScore : ""}</td>
                           <td></td>
                       `;
 
@@ -2656,36 +2650,10 @@ document.querySelectorAll("#menuList li[data-section]").forEach(item => {
       console.error("Error setting up snapshot listener for yesterday's scores:", error);
       if (errorTextSpan) errorTextSpan.textContent = `Setup error for yesterday's scores: ${error.message}.`;
       if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
+      if (loadingElement) loadingElement.classList.add('hidden');
       if (contentDiv) contentDiv.classList.add('hidden');
     }
   }
-
-  // Initial setup of the real-time listener when the page loads
-  // Ensure authentication is ready before fetching games
-  document.addEventListener('DOMContentLoaded', function() {
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        console.log("Firebase Auth Ready. User:", user.uid);
-        // Now that auth is ready, fetch games
-        fetchTodayGames();
-        // If you also want to fetch yesterday's scores on load, uncomment the line below:
-        // fetchYesterdayScores();
-      } else {
-        // Attempt anonymous sign-in if not already signed in
-        auth.signInAnonymously().then(() => {
-          console.log("Anonymous sign-in successful. Fetching games.");
-          fetchTodayGames();
-          // If you also want to fetch yesterday's scores on load, uncomment the line below:
-          // fetchYesterdayScores();
-        }).catch((error) => {
-          console.error("Anonymous sign-in failed:", error);
-          // Fallback: Even if sign-in fails, try to fetch games (though it might still fail due to rules)
-          fetchTodayGames();
-          // fetchYesterdayScores(); // Uncomment if needed
-        });
-      }
-    });
-  });
 </script>
 
 
@@ -3096,3 +3064,4 @@ document.addEventListener("DOMContentLoaded", function() {
 
   </body>
 </html>
+
