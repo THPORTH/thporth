@@ -252,49 +252,48 @@
 }
 
 /* Time cell styling (from index-7, now applies to .time-cell) */
+/* Time cell styling */
 .time-cell {
     /* font-weight: 500; /* Medium weight */
-    text-align: center; /* Center align time */
+    text-align: left !important; /* Ensure left alignment */
     width: 50px; /* Fixed width for time */
     flex-shrink: 0;
     padding-right: 0 !important;
-    text-align: left !important;
     padding-left: 0 !important;
     margin-left: 0 !important;
-    color: #e0e0e0; /* Light text color */
-    font-size: 10px; /* text-sm */
+    color: #e0e0e0 !important; /* Changed to !important to ensure override */
+    font-size: 10px !important; /* Changed font size and added !important */
 }
 
-/* Game details (teams) styling (from index-7, now applies to .game-details) */
+/* Game details (teams) styling */
 .game-details {
     flex-grow: 1; /* flex-grow */
     padding-left: 3px; /* padding-left */
     padding-right: 3px; /* padding-right */
-    color: #e5e7eb; /* text-gray-200 */
+    color: #e5e7eb !important; /* Changed to !important to ensure override */
 }
 .team-name {
-    font-size: 11px; /* text-sm */
-    line-height: 1.25rem; /* leading-5 */
-    padding-top: 1px; /* py-0.25rem (simulated) */
-    padding-bottom: 1px; /* py-0.25rem (simulated) */
+    font-size: 11px !important; /* Changed font size and added !important */
+    line-height: 1.2; /* Adjusted line height for tighter spacing */
+    padding-top: 1px;
+    padding-bottom: 1px;
     padding-left: 0 !important;
 }
 
-/* Game scores styling (from index-7, now applies to .game-scores) */
+/* Game scores styling */
 .game-scores {
     text-align: right; /* text-right */
     padding-right: 1rem; /* padding-right */
     width: 20px; /* fixed width */
     flex-shrink: 0; /* flex-shrink-0 */
-    color: #e5e7eb; /* text-gray-200 */
+    color: #e5e7eb !important; /* Changed to !important to ensure override */
 }
 .score-value {
-    font-size: 11px; /* text-sm */
-    line-height: 1.25rem; /* leading-5 */
-    padding-top: 0.25rem; /* py-0.25rem (simulated) */
-    padding-bottom: 0.25rem; /* py-0.25rem (simulated) */
+    font-size: 11px !important; /* Changed font size and added !important */
+    line-height: 1.2; /* Adjusted line height for tighter spacing */
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
 }
-
 /* Game channel styling (from index-7, now applies to .game-channel) */
 .game-channel {
     text-align: right; /* text-right */
