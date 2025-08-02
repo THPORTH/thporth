@@ -1550,7 +1550,7 @@
   </div>
 
   <!-- START: NEW F1 CONTENT BLOCK -->
-  <div id="f1-column-content" style="display: none; height: 100%; display: flex; flex-direction: column; background-color: #1f1f1f; color: #e5e7eb;">
+  <div id="f1-column-content" style="display: none; height: 100%; flex-direction: column; background-color: #1f1f1f; color: #e5e7eb;">
       
       <!-- Header 1: Schedule -->
       <div style="padding: 1rem; border-bottom: 1px solid #374151; background-color: #3c3c3c;">
@@ -1592,12 +1592,105 @@
           </div>
           <!-- Tab Content Area -->
           <div style="padding: 0.5rem; flex: 1; overflow-y: auto;">
+              <!-- START: NATIVE DRIVER STANDINGS TABLE -->
               <div id="driver-standings" class="f1-content-pane">
-                  <iframe style="width: 100%; height: 600px; border-radius: 0.5rem; border: none;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQcpOkjKy5bcEPAZRofXpGGyf0_VkfIBIDDrlgUIiSuznqdUfDRAqmy_EAcVN3K1-y_F6wr78TbH6U8/pubhtml?gid=0&single=true&widget=true&headers=false"></iframe>
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                  <thead>
+                    <tr style="text-align: left;">
+                      <th style="padding: 6px 4px; width: 25px;">#</th>
+                      <th style="padding: 6px 4px;">Driver</th>
+                      <th style="padding: 6px 4px;">Team</th>
+                      <th style="padding: 6px 4px; text-align: right;">Pts</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">1</td>
+                      <td style="padding: 6px 4px;">Verstappen</td>
+                      <td style="padding: 6px 4px;">Red Bull</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">185</td>
+                    </tr>
+                    <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">2</td>
+                      <td style="padding: 6px 4px;">Leclerc</td>
+                      <td style="padding: 6px 4px;">Ferrari</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">138</td>
+                    </tr>
+                    <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">3</td>
+                      <td style="padding: 6px 4px;">Pérez</td>
+                      <td style="padding: 6px 4px;">Red Bull</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">129</td>
+                    </tr>
+                     <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">4</td>
+                      <td style="padding: 6px 4px;">Russell</td>
+                      <td style="padding: 6px 4px;">Mercedes</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">111</td>
+                    </tr>
+                     <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">5</td>
+                      <td style="padding: 6px 4px;">Sainz</td>
+                      <td style="padding: 6px 4px;">Ferrari</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">102</td>
+                    </tr>
+                    <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">6</td>
+                      <td style="padding: 6px 4px;">Hamilton</td>
+                      <td style="padding: 6px 4px;">Mercedes</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">77</td>
+                    </tr>
+                     <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">7</td>
+                      <td style="padding: 6px 4px;">Norris</td>
+                      <td style="padding: 6px 4px;">McLaren</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">50</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
+              <!-- END: NATIVE DRIVER STANDINGS TABLE -->
+
+              <!-- START: NATIVE CONSTRUCTOR STANDINGS TABLE -->
               <div id="constructor-standings" class="f1-content-pane" style="display: none;">
-                  <iframe style="width: 100%; height: 600px; border-radius: 0.5rem; border: none;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQcpOkjKy5bcEPAZRofXpGGyf0_VkfIBIDDrlgUIiSuznqdUfDRAqmy_EAcVN3K1-y_F6wr78TbH6U8/pubhtml?gid=70418913&single=true&widget=true&headers=false"></iframe>
+                 <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                  <thead>
+                    <tr style="text-align: left;">
+                      <th style="padding: 6px 4px; width: 25px;">#</th>
+                      <th style="padding: 6px 4px;">Team</th>
+                      <th style="padding: 6px 4px; text-align: right;">Pts</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">1</td>
+                      <td style="padding: 6px 4px;">Red Bull</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">314</td>
+                    </tr>
+                    <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">2</td>
+                      <td style="padding: 6px 4px;">Ferrari</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">240</td>
+                    </tr>
+                    <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">3</td>
+                      <td style="padding: 6px 4px;">Mercedes</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">188</td>
+                    </tr>
+                     <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">4</td>
+                      <td style="padding: 6px 4px;">McLaren</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">95</td>
+                    </tr>
+                     <tr style="border-top: 1px solid #374151;">
+                      <td style="padding: 6px 4px;">5</td>
+                      <td style="padding: 6px 4px;">Alpine</td>
+                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">61</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
+              <!-- END: NATIVE CONSTRUCTOR STANDINGS TABLE -->
           </div>
       </div>
   </div>
@@ -3061,6 +3154,68 @@ document.addEventListener("DOMContentLoaded", function() {
     setupTabSwitching();
   });
 </script>
+
+<!-- FINAL, ISOLATED SCRIPT FOR COLUMN & F1 TAB SWITCHING -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    
+    // --- PART 1: Logic to switch between Games and F1 column content ---
+    const leftMenu = document.getElementById('menuList');
+    const gamesContent = document.getElementById('tv-listings-container');
+    const f1Content = document.getElementById('f1-column-content');
+
+    if (leftMenu && gamesContent && f1Content) {
+        leftMenu.addEventListener('click', function(event) {
+            const clickedItem = event.target.closest('li[data-section]');
+            if (!clickedItem) return;
+
+            const section = clickedItem.dataset.section;
+
+            if (section === 'FormulaOne') {
+                gamesContent.style.display = 'none';
+                f1Content.style.display = 'flex'; // Use flex to restore layout
+            } else {
+                gamesContent.style.display = 'block';
+                f1Content.style.display = 'none';
+            }
+        });
+    }
+
+    // --- PART 2: Logic for the F1 Driver/Constructor tabs ---
+    const f1TabButtonsContainer = document.getElementById('f1-tab-buttons');
+    const f1ContentPanes = document.querySelectorAll('.f1-content-pane');
+    
+    if (f1TabButtonsContainer) {
+        f1TabButtonsContainer.addEventListener('click', function(event) {
+            const clickedButton = event.target.closest('.f1-tab-button');
+            if (!clickedButton) return;
+
+            const targetTabId = clickedButton.dataset.tab;
+            
+            // Deactivate all buttons
+            f1TabButtonsContainer.querySelectorAll('.f1-tab-button').forEach(btn => {
+                btn.style.borderBottomColor = 'transparent';
+                btn.style.color = '#9ca3af';
+            });
+
+            // Hide all panes
+            f1ContentPanes.forEach(pane => {
+                pane.style.display = 'none';
+            });
+
+            // Activate the clicked button and its pane
+            clickedButton.style.borderBottomColor = '#DC143C'; // F1 Red
+            clickedButton.style.color = '#fff';
+            
+            const targetPane = document.getElementById(targetTabId);
+            if (targetPane) {
+                targetPane.style.display = 'block';
+            }
+        });
+    }
+});
+</script>
+
 
   </body>
 </html>
