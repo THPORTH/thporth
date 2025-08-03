@@ -2605,7 +2605,7 @@
                       const rawStart = data["Start Time"];
 
                       // isLive now includes "Q" for quarters and HALF_TIME
-                      const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
+                      const isLive = matchStatus === "IN PROGRESS" || matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
                       const isFinal = matchStatus === "FINISHED";
 
                       let currentTimeLabel = ""; // The time/status label for the current game
