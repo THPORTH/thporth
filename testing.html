@@ -208,7 +208,7 @@
     }
 }
 
-/* League section styling (from index-7, for general structure) */
+/* League section styling (from index-7, kept for general structure) */
 /* .league-section { margin-bottom: 16px; } */ /* Overridden by testing_testing-3.html's 3rem */
 /* .league-section:last-child { margin-bottom: 16px; } */ /* Overridden */
 
@@ -1499,23 +1499,22 @@
 
 <!-- ─── TV-LISTINGS COLUMN ───────────────────────────────────────────────────────── -->
 <div class="column tv-listings" style="flex: 0 0 250px; background-color: #1f1f1f;">
-  
-  <!-- This is the original Games content container -->
-  <div id="tv-listings-container">
-    <div id="games-header" style="
-        position: sticky; top: 0; width: 100%; height: 18px;
-        background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif;
-        font-size: 10px; display: flex; align-items: center;
-        padding-left: 1px; z-index: 11; border-bottom: 1px solid #1f1f1f;
-      ">
-      <strong>Games</strong>
-    </div>
+  <div id="games-header" style="
+      position: sticky; top: 0; width: 100%; height: 18px;
+      background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif;
+      font-size: 10px; display: flex; align-items: center;
+      padding-left: 1px; z-index: 11; border-bottom: 1px solid #1f1f1f;
+    ">
+    <strong>Games</strong>
+  </div>
 
-    <div id="games-tabs" style="display: flex; height: 18px; background-color: #2a2a2a;">
-      <div class="games-tab active" data-tab="scores">SCORES</div>
-      <div class="games-tab" data-tab="today">TODAY</div>
-      <div class="games-tab" data-tab="live">LIVE</div>
-    </div>
+  <div id="games-tabs" style="display: flex; height: 18px; background-color: #2a2a2a;">
+    <div class="games-tab active" data-tab="scores">SCORES</div>
+    <div class="games-tab" data-tab="today">TODAY</div>
+    <div class="games-tab" data-tab="live">LIVE</div>
+  </div>
+
+  <div id="tv-listings-container">
     <!-- SCORES TAB -->
     <div id="tv-listings-scores" class="games-content" style="display: block;">
       <div id="scoresWrapper">
@@ -1548,91 +1547,6 @@
     <!-- LIVE TAB (placeholder) -->
     <div id="tv-listings-live" class="games-content" style="display: none;"></div>
   </div>
-
-  <!-- START: NEW F1 CONTENT BLOCK -->
-  <div id="f1-column-content" style="display: none; height: 100%; flex-direction: column; background-color: #1f1f1f; color: #e5e7eb;">
-      
-      <!-- Header 1: Schedule -->
-      <div style="padding: 1rem; border-bottom: 1px solid #374151; background-color: #3c3c3c;">
-          <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff;">Schedule</h2>
-      </div>
-  
-      <!-- Container 1: Schedule Data -->
-      <div style="padding: 1rem; height: 12rem; overflow-y: auto;">
-          <div style="font-size: 0.875rem;">
-              <p style="font-weight: 600;">Spanish Grand Prix</p>
-              <p style="color: #9ca3af;">Circuit de Barcelona-Catalunya</p>
-              <div style="margin-top: 0.75rem; space-y: 0.5rem;">
-                  <p>6:25 AM - Practice 1 - ESPNU</p>
-                  <p>9:55 AM - Practice 2 - ESPNU</p>
-                  <p>6:25 AM - Practice 3 - ESPNU</p>
-                  <p>8:55 AM - Qualifying - ESPN</p>
-                  <p>8:55 AM - Race - ESPN</p>
-              </div>
-          </div>
-      </div>
-  
-      <!-- Header 2: Standings -->
-      <div style="padding: 1rem; border-top: 1px solid #374151; border-bottom: 1px solid #374151; background-color: #3c3c3c;">
-          <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff;">Standings</h2>
-      </div>
-  
-    <!-- Standings Component -->
-      <div style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
-          <!-- Tab Navigation -->
-          <div style="padding: 0 1.5rem; border-bottom: 1px solid #374151;">
-              <nav id="f1-tab-buttons" style="display: flex; margin-bottom: -1px; gap: 1.5rem;">
-                  <button class="f1-tab-button active" data-tab="driver-standings" style="border-bottom: 2px solid #DC143C; color: #fff; padding-bottom: 1rem; font-size: 0.875rem; font-weight: 600; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer;">
-                      Driver
-                  </button>
-                  <button class="f1-tab-button" data-tab="constructor-standings" style="border-bottom: 2px solid transparent; color: #9ca3af; padding-bottom: 1rem; font-size: 0.875rem; font-weight: 600; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer;">
-                      Constructor
-                  </button>
-              </nav>
-          </div>
-          <!-- Tab Content Area -->
-          <div style="padding: 0.5rem; flex: 1; overflow-y: auto;">
-              <!-- START: NATIVE DRIVER STANDINGS TABLE -->
-              <div id="driver-standings" class="f1-content-pane">
-                <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                  <thead>
-                    <tr style="text-align: left;">
-                      <th style="padding: 6px 4px; width: 25px; border-top: none;">#</th>
-                      <th style="padding: 6px 4px; border-top: none;">Driver</th>
-                      <th style="padding: 6px 4px; border-top: none;">Team</th>
-                      <th style="padding: 6px 4px; text-align: right; border-top: none;">Pts</th>
-                    </tr>
-                  </thead>
-                  <tbody id="driver-standings-body">
-                    <!-- Live data will be injected here by the script -->
-                  </tbody>
-                </table>
-              </div>
-              <!-- END: NATIVE DRIVER STANDINGS TABLE -->
-
-              <!-- START: NATIVE CONSTRUCTOR STANDINGS TABLE -->
-              <div id="constructor-standings" class="f1-content-pane" style="display: none;">
-                 <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                  <thead>
-                    <tr style="text-align: left;">
-                      <th style="padding: 6px 4px; width: 25px; border-top: none;">#</th>
-                      <th style="padding: 6px 4px; border-top: none;">Team</th>
-                      <th style="padding: 6px 4px; text-align: right; border-top: none;">Pts</th>
-                    </tr>
-                  </thead>
-                  <tbody id="constructor-standings-body">
-                    <!-- Live data will be injected here by the script -->
-                  </tbody>
-                </table>
-              </div>
-              <!-- END: NATIVE CONSTRUCTOR STANDINGS TABLE -->
-          </div>
-      </div>
-          </div>
-      </div>
-  </div>
-  <!-- END: NEW F1 CONTENT BLOCK -->
-
 </div>
 
 
@@ -1953,11 +1867,7 @@
     <!-- News Feeds Script -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        // --- GRAB ELEMENTS FOR COLUMN SWITCHING (Added here) ---
-        const gamesContent = document.getElementById('tv-listings-container');
-        const f1Content = document.getElementById('f1-column-content');
-
-        // Helper function to fetch and render an XML feed
+        // Helper function to fetch and render an XML feed and attach click event listeners to its links
         function fetchFeed(containerSelector, feedUrl) {
           const container = document.querySelector(containerSelector);
           if (!container) return;
@@ -1969,14 +1879,14 @@
               const items = Array.from(xml.querySelectorAll("item"));
               if (items.length > 0) {
                 const ul = document.createElement("ul");
-                ul.style.margin = "0";
-                ul.style.padding = "0";
-                ul.style.listStyle = "none";
+                ul.style.margin = "0"; // Ensure no default margin
+                ul.style.padding = "0"; // Ensure no default padding
+                ul.style.listStyle = "none"; // Remove bullet points
                 items.forEach(item => {
                   const title = item.querySelector("title")?.textContent || "No title";
                   const link = item.querySelector("link")?.textContent || "#";
                   const li = document.createElement("li");
-                  li.style.marginBottom = "0.5em";
+                  li.style.marginBottom = "0.5em"; // Add some spacing between items
                   const a = document.createElement("a");
                   a.href = link;
                   a.target = "_blank";
@@ -2001,50 +1911,168 @@
             });
         }
 
-        // Feed maps and fetching logic (unchanged)
-        const feedMap = {
-          espn: "https://www.espn.com/espn/rss/news",
-          cbs: "https://rss.app/feeds/qQ90C7XC0oUECOLP.xml",
-          yahoo: "https://rss.app/feeds/OvSpAK6PF8gmF37d.xml",
-          fox: "https://rss.app/feeds/gqwmnxZNc8bSqdto.xml"
-        };
-        Object.entries(feedMap).forEach(([source, url]) => {
-          fetchFeed(`#${source}-feed`, url);
-        });
-        fetchFeed("#feed-_somo8H8eOG8npoO2 .feed-content", "https://rss.app/feeds/_somo8H8eOG8npoO2.xml");
-        fetchFeed("#feed-_wbelLijqAwfJLCJd .feed-content", "https://rss.app/feeds/_wbelLijqAwfJLCJd.xml");
-        fetchFeed("#feed-_lAj37RJzPmNOxjz4 .feed-content", "https://rss.app/feeds/_lAj37RJzPmNOxjz4.xml");
-        fetchFeed("#feed-_pBOHW7eyjbGkaiZq .feed-content", "https://rss.app/feeds/_pBOHW7eyjbGkaiZq.xml");
-        fetchFeed("#feed-PremierLeague .feed-content", "https://rss.app/feeds/_un3EHST14mfp29GT.xml");
-        fetchFeed("#feed-UEFAChampionsLeague .feed-content", "https://rss.app/feeds/hJ27BTRwkcUlwvsf.xml");
-        fetchFeed("#feed-SerieA .feed-content", "https://rss.app/feeds/_IEjWrVaKRW3QNEkB.xml");
-        fetchFeed("#feed-Bundesliga .feed-content", "https://rss.app/feeds/_OFOWQNsn38MFTtLv.xml");
-        fetchFeed("#feed-LaLiga .feed-content", "https://rss.app/feeds/_zvRqo1UuuoLB5czl.xml");
-        fetchFeed("#feed-_Upexy7Yp5vjsRWf8 .feed-content", "https://rss.app/feeds/_Upexy7Yp5vjsRWf8.xml");
-        fetchFeed("#feed-UFC .feed-content", "https://rss.app/feeds/_YGmr1TjOD0yXmfU1.xml");
-        fetchFeed("#feed-Boxing .feed-content", "https://rss.app/feeds/_7DfbEtxpn8RPNIMf.xml");
-        fetchFeed("#feed-NASCARCupSeries .feed-content", "https://rss.app/feeds/_D7Q3jbrHjR3bGj8O.xml");
-        fetchFeed("#feed-Tennis .feed-content", "https://rss.app/feeds/_tGSXi2957CegL2kC.xml");
-        fetchFeed("#feed-WNBA .feed-content", "https://rss.app/feeds/_JsIgbwln4EnDHpSE.xml");
-        fetchFeed("#feed-LIVGolf .feed-content", "https://rss.app/feeds/_s7tH2abPc7ZQXhLp.xml");
-        fetchFeed("#feed-IndyCar .feed-content", "https://rss.app/feeds/_TqIJuTCX0SmFe0lM.xml");
-        fetchFeed("#feed-NCAAM .feed-content", "https://rss.app/feeds/_va6EQaZAxOx6z8xR.xml");
-        fetchFeed("#feed-NCAAW .feed-content", "https://rss.app/feeds/_2P4NcD95YPwU8T51.xml");
-        fetchFeed("#feed-NCAABaseball .feed-content", "https://rss.app/feeds/_q2SYr186Ed7j8jud.xml");
-        fetchFeed("#feed-NCAASoftball .feed-content", "https://rss.app/feeds/_y4zf68Y0lK5bkT47.xml");
-        fetchFeed("#feed-MotoGP .feed-content", "https://rss.app/feeds/_4Bpke8POCqxzxfKq.xml");
-        fetchFeed("#feed-LPGATour .feed-content", "https://rss.app/feeds/_a4W47htGlhRlO2ju.xml");
-        fetchFeed("#feed-NCAAF .feed-content", "https://rss.app/feeds/_e8BTSPZYg61J9CYu.xml");
-        fetchFeed("#feed-PGATour .feed-content", "https://rss.app/feeds/_QQsPX3f8GnzYvAXX.xml");
-        fetchFeed("#feed-FACup .feed-content", "https://rss.app/feeds/Wlg6SgkaP1M71ZJK.xml");
-        fetchFeed("#feed-LigaMX .feed-content", "https://rss.app/feeds/_JgpA2OqGGC8IrApe.xml");
-        fetchFeed("#feed-NWSL .feed-content", "https://rss.app/feeds/_1kbC9b791rPZgjg6.xml");
-        fetchFeed("#feed-FormulaOne .feed-content", "https://rss.app/feeds/_32mCoV3PIKhpjo2K.xml");
-        fetchFeed("#feed-Ligue1 .feed-content", "https://rss.app/feeds/_9nS7hLmB3aUlWcjH.xml");
-        fetchFeed("#feed-UEFAEuropaLeague .feed-content", "https://rss.app/feeds/_Op8jopGsYny0gt0e.xml");
-        fetchFeed("#feed-UEFAConferenceLeague .feed-content", "https://rss.app/feeds/_BjsIqdRuSa1z3U9p.xml");
-        fetchFeed("#feed-TrackAndField .feed-content", "https://rss.app/feeds/_rZcwsn3Z2MR5N2Zq.xml");
-        fetchFeed("#feed-Soccer .feed-content", "https://rss.app/feeds/_Vqk4SoQYrKBPOvx6.xml");
+        // ─── Updated "Headlines" feedMap ───
+const feedMap = {
+  // ESPN still works directly, but you can point it at rss.app if you like:
+  espn:  "https://www.espn.com/espn/rss/news",
+
+  // CBS through rss.app instead of AllOrigins
+  cbs:   "https://rss.app/feeds/qQ90C7XC0oUECOLP.xml",
+
+  // Yahoo through rss.app
+  yahoo: "https://rss.app/feeds/OvSpAK6PF8gmF37d.xml",
+
+  // FOX through rss.app
+  fox:   "https://rss.app/feeds/gqwmnxZNc8bSqdto.xml"
+};
+
+
+Object.entries(feedMap).forEach(([source, url]) => {
+  // Notice we now pass "#espn-feed", "#cbs-feed", etc., instead of "#feed-ESPN .feed-content"
+  fetchFeed(`#${source}-feed`, url);
+});
+
+        // Fetch custom feeds for existing sections
+        fetchFeed(
+          "#feed-_somo8H8eOG8npoO2 .feed-content",
+          "https://rss.app/feeds/_somo8H8eOG8npoO2.xml"
+        ); // MLB
+        fetchFeed(
+          "#feed-_wbelLijqAwfJLCJd .feed-content",
+          "https://rss.app/feeds/_wbelLijqAwfJLCJd.xml"
+        ); // NBA
+        fetchFeed(
+          "#feed-_lAj37RJzPmNOxjz4 .feed-content",
+          "https://rss.app/feeds/_lAj37RJzPmNOxjz4.xml"
+        ); // NFL
+        fetchFeed(
+          "#feed-_pBOHW7eyjbGkaiZq .feed-content",
+          "https://rss.app/feeds/_pBOHW7eyjbGkaiZq.xml"
+        ); // MLS
+        fetchFeed(
+          "#feed-PremierLeague .feed-content",
+          "https://rss.app/feeds/_un3EHST14mfp29GT.xml"
+        ); // Premier League
+        fetchFeed(
+          "#feed-UEFAChampionsLeague .feed-content",
+          "https://rss.app/feeds/hJ27BTRwkcUlwvsf.xml"
+        ); // UEFA Champions League
+        fetchFeed(
+          "#feed-SerieA .feed-content",
+          "https://rss.app/feeds/_IEjWrVaKRW3QNEkB.xml"
+        ); // Serie A
+        fetchFeed(
+          "#feed-Bundesliga .feed-content",
+          "https://rss.app/feeds/_OFOWQNsn38MFTtLv.xml"
+        ); // Bundesliga
+        fetchFeed(
+          "#feed-LaLiga .feed-content",
+          "https://rss.app/feeds/_zvRqo1UuuoLB5czl.xml"
+        ); // LaLiga
+        fetchFeed(
+          "#feed-_Upexy7Yp5vjsRWf8 .feed-content",
+          "https://rss.app/feeds/_Upexy7Yp5vjsRWf8.xml"
+        ); // NHL
+
+        // Fetch custom feeds for new news sections
+        fetchFeed(
+          "#feed-UFC .feed-content",
+          "https://rss.app/feeds/_YGmr1TjOD0yXmfU1.xml"
+        ); // UFC
+        fetchFeed(
+          "#feed-Boxing .feed-content",
+          "https://rss.app/feeds/_7DfbEtxpn8RPNIMf.xml"
+        ); // Boxing
+        fetchFeed(
+          "#feed-NASCARCupSeries .feed-content",
+          "https://rss.app/feeds/_D7Q3jbrHjR3bGj8O.xml"
+        ); // NASCAR Cup Series
+        fetchFeed(
+          "#feed-Tennis .feed-content",
+          "https://rss.app/feeds/_tGSXi2957CegL2kC.xml"
+        ); // Tennis
+        fetchFeed(
+          "#feed-WNBA .feed-content",
+          "https://rss.app/feeds/_JsIgbwln4EnDHpSE.xml"
+        ); // WNBA
+        fetchFeed(
+          "#feed-LIVGolf .feed-content",
+          "https://rss.app/feeds/_s7tH2abPc7ZQXhLp.xml"
+        ); // LIV Golf
+        fetchFeed(
+          "#feed-IndyCar .feed-content",
+          "https://rss.app/feeds/_TqIJuTCX0SmFe0lM.xml"
+        ); // IndyCar
+        fetchFeed(
+          "#feed-NCAAM .feed-content",
+          "https://rss.app/feeds/_va6EQaZAxOx6z8xR.xml"
+        ); // NCAAM
+        fetchFeed(
+          "#feed-NCAAW .feed-content",
+          "https://rss.app/feeds/_2P4NcD95YPwU8T51.xml"
+        ); // NCAAW
+        fetchFeed(
+          "#feed-NCAABaseball .feed-content",
+          "https://rss.app/feeds/_q2SYr186Ed7j8jud.xml"
+        ); // NCAABaseball
+        fetchFeed(
+          "#feed-NCAASoftball .feed-content",
+          "https://rss.app/feeds/_y4zf68Y0lK5bkT47.xml"
+        ); // NCAASoftball
+        fetchFeed(
+          "#feed-MotoGP .feed-content",
+          "https://rss.app/feeds/_4Bpke8POCqxzxfKq.xml"
+        ); // MotoGP
+        fetchFeed(
+          "#feed-LPGATour .feed-content",
+          "https://rss.app/feeds/_a4W47htGlhRlO2ju.xml"
+        ); // LPGA Tour
+fetchFeed(
+  "#feed-NCAAF .feed-content",
+  "https://rss.app/feeds/_e8BTSPZYg61J9CYu.xml"
+);
+fetchFeed(
+  "#feed-PGATour .feed-content",
+  "https://rss.app/feeds/_QQsPX3f8GnzYvAXX.xml"
+);
+        fetchFeed(
+  "#feed-FACup .feed-content",
+  "https://rss.app/feeds/Wlg6SgkaP1M71ZJK.xml"
+);
+              fetchFeed(
+  "#feed-LigaMX .feed-content",
+  "https://rss.app/feeds/_JgpA2OqGGC8IrApe.xml"
+);
+      fetchFeed(
+  "#feed-NWSL .feed-content",
+  "https://rss.app/feeds/_1kbC9b791rPZgjg6.xml"
+);
+           fetchFeed(
+  "#feed-FormulaOne .feed-content",
+  "https://rss.app/feeds/_32mCoV3PIKhpjo2K.xml"
+);
+              fetchFeed(
+  "#feed-Ligue1 .feed-content",
+  "https://rss.app/feeds/_9nS7hLmB3aUlWcjH.xml"
+);
+                fetchFeed(
+  "#feed-UEFAEuropaLeague .feed-content",
+  "https://rss.app/feeds/_Op8jopGsYny0gt0e.xml"
+);
+                fetchFeed(
+  "#feed-UEFAConferenceLeague .feed-content",
+  "https://rss.app/feeds/_BjsIqdRuSa1z3U9p.xml"
+);
+        fetchFeed(
+  "#feed-TrackAndField .feed-content",
+  "https://rss.app/feeds/_rZcwsn3Z2MR5N2Zq.xml"
+);
+         fetchFeed(
+  "#feed-Soccer .feed-content",
+  "https://rss.app/feeds/_Vqk4SoQYrKBPOvx6.xml"
+);
+        
+        
 
         // Existing menu functionality
         let selectedSection = "Home";
@@ -2076,13 +2104,13 @@
           });
         });
 
-        // --- THIS IS THE CORRECTED CLICK HANDLER ---
         document.querySelectorAll("#menuList li").forEach(item => {
           item.addEventListener("click", e => {
             if (
               item.classList.contains("spacer-line") ||
-              item.classList.contains("soccer-more-toggle") ||
+              item.classList.contains("soccer-more-toggle")||
               item.querySelector("strong")
+              
             ) {
               e.stopPropagation();
               return;
@@ -2096,18 +2124,6 @@
               .forEach(li => li.classList.remove("selected"));
             item.classList.add("selected");
             const section = item.dataset.section;
-
-            // --- START: MODIFIED LOGIC ---
-            // 1. Handle the column content switching
-            if (section === 'FormulaOne') {
-                if(gamesContent) gamesContent.style.display = 'none';
-                if(f1Content) f1Content.style.display = 'flex';
-            } else {
-                if(gamesContent) gamesContent.style.display = 'block';
-                if(f1Content) f1Content.style.display = 'none';
-            }
-
-            // 2. Handle the news panel switching (existing logic)
             document.querySelectorAll(".news .content-section").forEach(
               s => (s.style.display = "none")
             );
@@ -2117,37 +2133,24 @@
             const social = document.getElementById("social-" + section);
             if (news) {
               news.style.display = "block";
-              
-              // --- START: ERROR FIX ---
-              const newsSubMenu = document.getElementById("newsSubMenu");
               if (section === "Home") {
-                if (newsSubMenu) newsSubMenu.style.display = "flex";
+                document.getElementById("newsSubMenu").style.display = "flex";
                 const container = document.querySelector(".news");
-                if (container) {
-                    container.scrollTop = 0;
-                    container.dispatchEvent(new Event("scroll"));
-                }
+                container.scrollTop = 0;
+                container.dispatchEvent(new Event("scroll"));
               } else {
-                if (newsSubMenu) newsSubMenu.style.display = "none";
+                document.getElementById("newsSubMenu").style.display = "none";
               }
-              // --- END: ERROR FIX ---
             }
             if (social) social.style.display = "block";
-            // --- END: MODIFIED LOGIC ---
           });
         });
 
         const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
         const newsPanel = document.querySelector(".news");
         newsPanel.addEventListener("scroll", () => {
-          // --- START: ERROR FIX ---
-          const newsSubMenu = document.getElementById("newsSubMenu");
-          // If the element doesn't exist, we can't calculate offset, so exit.
-          if (!newsSubMenu) return; 
-          // --- END: ERROR FIX ---
-
           const top = newsPanel.getBoundingClientRect().top;
-          const offset = newsSubMenu.offsetHeight + 50;
+          const offset = document.getElementById("newsSubMenu").offsetHeight + 50;
           let active = 0;
           for (let i = 0; i < feeds.length; i++) {
             const el = document.getElementById(feeds[i]);
@@ -2189,60 +2192,32 @@
           toggle.textContent = expanded ? "More…" : "Less…";
         };
 
+        // For any RSS feed links added outside fetchFeed, force them to open in a new tab and attach a click listener
         document.querySelectorAll(".rss-feed a").forEach(link => {
           link.setAttribute("target", "_blank");
           link.addEventListener("click", () => {
             link.classList.add("clicked");
           });
         });
-
-        // --- Logic for F1 Driver/Constructor tabs (moved here) ---
-        const f1TabButtonsContainer = document.getElementById('f1-tab-buttons');
-        const f1ContentPanes = document.querySelectorAll('.f1-content-pane');
-        
-        if (f1TabButtonsContainer) {
-            f1TabButtonsContainer.addEventListener('click', function(event) {
-                const clickedButton = event.target.closest('.f1-tab-button');
-                if (!clickedButton) return;
-
-                const targetTabId = clickedButton.dataset.tab;
-                
-                f1TabButtonsContainer.querySelectorAll('.f1-tab-button').forEach(btn => {
-                    btn.style.borderBottomColor = 'transparent';
-                    btn.style.color = '#9ca3af';
-                });
-                f1ContentPanes.forEach(pane => {
-                    pane.style.display = 'none';
-                });
-
-                clickedButton.style.borderBottomColor = '#DC143C';
-                clickedButton.style.color = '#fff';
-                
-                const targetPane = document.getElementById(targetTabId);
-                if (targetPane) {
-                    targetPane.style.display = 'block';
-                }
-            });
-        }
       });
-
      function showSecondSocialSection(section) {
-      document.querySelectorAll("#second-social-panel .content-section").forEach(el => {
-        el.style.display = "none";
-      });
-      const target = document.getElementById("social2-" + section);
-      if (target) {
-        target.style.display = "block";
-      }
-    }
+  document.querySelectorAll("#second-social-panel .content-section").forEach(el => {
+    el.style.display = "none";
+  });
+  const target = document.getElementById("social2-" + section);
+  if (target) {
+    target.style.display = "block";
+  }
+}
 
-    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
-      item.addEventListener("click", () => {
-        const section = item.dataset.section;
-        showSecondSocialSection(section);
-        showDiscussionSection(section);
-      });
-    });
+// When a menu item is clicked:
+document.querySelectorAll("#menuList li[data-section]").forEach(item => {
+  item.addEventListener("click", () => {
+    const section = item.dataset.section; // should be "NBA" for NBA
+    showSecondSocialSection(section);
+    showDiscussionSection(section);
+  });
+});
     </script>
 
 <!-- This script now contains the logic for both "Today" and "Scores" tabs -->
@@ -2433,7 +2408,7 @@
                       const rawStart = data["Start Time"];
 
                       // isLive now includes "Q" for quarters and HALF_TIME
-                      const isLive = matchStatus === "IN PROGRESS" || matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
+                      const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
                       const isFinal = matchStatus === "FINISHED";
 
                       let currentTimeLabel = ""; // The time/status label for the current game
@@ -3092,121 +3067,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 </script>
 
-<!-- FINAL, ISOLATED SCRIPT FOR COLUMN & F1 TAB SWITCHING -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    
-    // --- PART 1: Logic to switch between Games and F1 column content ---
-    const leftMenu = document.getElementById('menuList');
-    const gamesContent = document.getElementById('tv-listings-container');
-    const f1Content = document.getElementById('f1-column-content');
-
-    if (leftMenu && gamesContent && f1Content) {
-        leftMenu.addEventListener('click', function(event) {
-            const clickedItem = event.target.closest('li[data-section]');
-            if (!clickedItem) return;
-
-            const section = clickedItem.dataset.section;
-
-            if (section === 'FormulaOne') {
-                gamesContent.style.display = 'none';
-                f1Content.style.display = 'flex'; // Use flex to restore layout
-            } else {
-                gamesContent.style.display = 'block';
-                f1Content.style.display = 'none';
-            }
-        });
-    }
-
-    // --- PART 2: Logic for the F1 Driver/Constructor tabs ---
-    const f1TabButtonsContainer = document.getElementById('f1-tab-buttons');
-    const f1ContentPanes = document.querySelectorAll('.f1-content-pane');
-    
-    if (f1TabButtonsContainer) {
-        f1TabButtonsContainer.addEventListener('click', function(event) {
-            const clickedButton = event.target.closest('.f1-tab-button');
-            if (!clickedButton) return;
-
-            const targetTabId = clickedButton.dataset.tab;
-            
-            // Deactivate all buttons
-            f1TabButtonsContainer.querySelectorAll('.f1-tab-button').forEach(btn => {
-                btn.style.borderBottomColor = 'transparent';
-                btn.style.color = '#9ca3af';
-            });
-
-            // Hide all panes
-            f1ContentPanes.forEach(pane => {
-                pane.style.display = 'none';
-            });
-
-            // Activate the clicked button and its pane
-            clickedButton.style.borderBottomColor = '#DC143C'; // F1 Red
-            clickedButton.style.color = '#fff';
-            
-            const targetPane = document.getElementById(targetTabId);
-            if (targetPane) {
-                targetPane.style.display = 'block';
-            }
-        });
-    }
-});
-</script>
-
-	  <!-- SCRIPT TO FETCH LIVE F1 STANDINGS FROM GOOGLE SHEETS -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Convert the published URLs to direct CSV export links
-    const driverSheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6rs6yvXAh-KktOOVGGY6knFMjR11W75yfcq7iReQCjl-uc9hHwT3yMpZ01GqAlYwsY0VYVTADrPiR/pub?output=csv';
-    const constructorSheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQcpOkjKy5bcEPAZRofXpGGyf0_VkfIBIDDrlgUIiSuznqdUfDRAqmy_EAcVN3K1-y_F6wr78TbH6U8/pub?output=csv';
-
-    function fetchAndPopulateStandings(url, tableBodyId, expectedColumns) {
-      const tableBody = document.getElementById(tableBodyId);
-      if (!tableBody) return;
-      
-      tableBody.innerHTML = `<tr><td colspan="${expectedColumns}" style="text-align: center; padding: 20px;">Loading standings...</td></tr>`;
-
-      fetch(url)
-        .then(response => {
-          if (!response.ok) throw new Error('Network response was not ok');
-          return response.text();
-        })
-        .then(csvText => {
-          tableBody.innerHTML = ''; // Clear loading message
-          const rows = csvText.trim().split('\\n');
-          
-          // Start from the second row to skip the header
-          for (let i = 1; i < rows.length; i++) {
-            const cells = rows[i].split(',').map(cell => cell.trim());
-            
-            if (cells.length >= expectedColumns) {
-              const newRow = document.createElement('tr');
-              newRow.style.borderTop = '1px solid #374151';
-              
-              let rowHtml = '';
-              for (let j = 0; j < expectedColumns; j++) {
-                const isPointsColumn = (j === expectedColumns - 1);
-                const cellStyle = isPointsColumn 
-                  ? 'padding: 6px 4px; text-align: right; font-weight: bold;' 
-                  : 'padding: 6px 4px;';
-                rowHtml += `<td style="${cellStyle}">${cells[j]}</td>`;
-              }
-              newRow.innerHTML = rowHtml;
-              tableBody.appendChild(newRow);
-            }
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching sheet data:', error);
-          tableBody.innerHTML = `<tr><td colspan="${expectedColumns}" style="text-align: center; padding: 20px; color: red;">Error loading standings.</td></tr>`;
-        });
-    }
-
-    // Fetch both standings when the page loads
-    fetchAndPopulateStandings(driverSheetURL, 'driver-standings-body', 4);
-    fetchAndPopulateStandings(constructorSheetURL, 'constructor-standings-body', 3);
-  });
-</script>
 
   </body>
 </html>
+
