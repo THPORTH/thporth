@@ -3122,6 +3122,22 @@ document.addEventListener('DOMContentLoaded', function () {
     const f1TabButtonsContainer = document.getElementById('f1-tab-buttons');
     const f1ContentPanes = document.querySelectorAll('.f1-content-pane');
     
+    let driverStandingsLoaded = false;
+    let constructorStandingsLoaded = false;
+    
+    // Load the default tab's data immediately when the F1 panel is shown
+    // This assumes you want to load it when FormulaOne is clicked.
+    // We can also trigger this on the first click of the tab.
+    const f1MenuItem = document.querySelector('li[data-section="FormulaOne"]');
+    if (f1MenuItem) {
+        f1MenuItem.addEventListener('click', () => {
+            if (!driverStandingsLoaded) {
+                loadDriverStandings();
+                driverStandingsLoaded = true;
+            }
+        }, { once: true }); // Use { once: true } so it only fires the first time
+    }
+
     if (f1TabButtonsContainer) {
         f1TabButtonsContainer.addEventListener('click', function(event) {
             const clickedButton = event.target.closest('.f1-tab-button');
@@ -3141,12 +3157,21 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // Activate the clicked button and its pane
-            clickedButton.style.borderBottomColor = '#DC143C'; // F1 Red
+            clickedButton.style.borderBottomColor = '#DC143C';
             clickedButton.style.color = '#fff';
             
             const targetPane = document.getElementById(targetTabId);
             if (targetPane) {
                 targetPane.style.display = 'block';
+            }
+            
+            // Load data if it hasn't been loaded yet
+            if (targetTabId === 'driver-standings' && !driverStandingsLoaded) {
+                loadDriverStandings();
+                driverStandingsLoaded = true; 
+            } else if (targetTabId === 'constructor-standings' && !constructorStandingsLoaded) {
+                loadConstructorStandings();
+                constructorStandingsLoaded = true;
             }
         });
     }
