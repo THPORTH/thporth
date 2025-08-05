@@ -3193,9 +3193,9 @@ async function fetchFromGoogleSheetsCSV(url) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const csvText = await response.text();
-        // Parse CSV data
-        const rows = csvText.split('\\n').map(row => row.split(',').map(cell => cell.trim().replace(/^\"|\"$/g, '')));
-        return rows.filter(row => row.length > 0 && row[0] !== ''); // Remove empty rows
+        // Parse CSV data using a regular expression for newlines
+        const rows = csvText.split(/\r?\n/).map(row => row.split(',').map(cell => cell.trim().replace(/^\"|\"$/g, '')));
+        return rows.filter(row => row.length > 1 && row[0] !== ''); // Ensure row has content
     } catch (error) {
         console.error('Error fetching from Google Sheets CSV:', error);
         throw error;
