@@ -1593,212 +1593,40 @@
           <!-- Tab Content Area -->
           <div style="padding: 0.5rem; flex: 1; overflow-y: auto;">
               <!-- START: NATIVE DRIVER STANDINGS TABLE -->
-              <div id="driver-standings" class="f1-content-pane">
-                <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                  <thead>
-                    <tr style="text-align: left;">
-                      <th style="padding: 6px 4px; width: 25px;">#</th>
-                      <th style="padding: 6px 4px;">Driver</th>
-                      <th style="padding: 6px 4px;">Team</th>
-                      <th style="padding: 6px 4px; text-align: right;">Pts</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">1</td>
-                        <td style="padding: 6px 4px;">Oscar Piastri</td>
-                        <td style="padding: 6px 4px;">McLaren</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">266</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">2</td>
-                        <td style="padding: 6px 4px;">Lando Norris</td>
-                        <td style="padding: 6px 4px;">McLaren</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">250</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">3</td>
-                        <td style="padding: 6px 4px;">Max Verstappen</td>
-                        <td style="padding: 6px 4px;">Red Bull</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">185</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">4</td>
-                        <td style="padding: 6px 4px;">George Russell</td>
-                        <td style="padding: 6px 4px;">Mercedes</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">157</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">5</td>
-                        <td style="padding: 6px 4px;">Charles Leclerc</td>
-                        <td style="padding: 6px 4px;">Ferrari</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">139</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">6</td>
-                        <td style="padding: 6px 4px;">Lewis Hamilton</td>
-                        <td style="padding: 6px 4px;">Ferrari</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">109</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">7</td>
-                        <td style="padding: 6px 4px;">Kimi Antonelli</td>
-                        <td style="padding: 6px 4px;">Mercedes</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">63</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">8</td>
-                        <td style="padding: 6px 4px;">Alexander Albon</td>
-                        <td style="padding: 6px 4px;">Williams</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">54</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">9</td>
-                        <td style="padding: 6px 4px;">Nico Hülkenberg</td>
-                        <td style="padding: 6px 4px;">Sauber</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">37</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">10</td>
-                        <td style="padding: 6px 4px;">Esteban Ocon</td>
-                        <td style="padding: 6px 4px;">Haas</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">27</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">11</td>
-                        <td style="padding: 6px 4px;">Isack Hadjar</td>
-                        <td style="padding: 6px 4px;">Racing Bulls</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">22</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">12</td>
-                        <td style="padding: 6px 4px;">Pierre Gasly</td>
-                        <td style="padding: 6px 4px;">Alpine</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">20</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">13</td>
-                        <td style="padding: 6px 4px;">Lance Stroll</td>
-                        <td style="padding: 6px 4px;">Aston Martin</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">20</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">14</td>
-                        <td style="padding: 6px 4px;">Liam Lawson</td>
-                        <td style="padding: 6px 4px;">Racing Bulls</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">16</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">15</td>
-                        <td style="padding: 6px 4px;">Fernando Alonso</td>
-                        <td style="padding: 6px 4px;">Aston Martin</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">16</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">16</td>
-                        <td style="padding: 6px 4px;">Carlos Sainz</td>
-                        <td style="padding: 6px 4px;">Williams</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">16</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">17</td>
-                        <td style="padding: 6px 4px;">Yuki Tsunoda</td>
-                        <td style="padding: 6px 4px;">Red Bull</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">10</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">18</td>
-                        <td style="padding: 6px 4px;">Oliver Bearman</td>
-                        <td style="padding: 6px 4px;">Haas</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">8</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">19</td>
-                        <td style="padding: 6px 4px;">Gabriel Bortoleto</td>
-                        <td style="padding: 6px 4px;">Sauber</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">6</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">20</td>
-                        <td style="padding: 6px 4px;">Franco Colapinto</td>
-                        <td style="padding: 6px 4px;">Alpine</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">0</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                        <td style="padding: 6px 4px;">21</td>
-                        <td style="padding: 6px 4px;">Jack Doohan</td>
-                        <td style="padding: 6px 4px;">Alpine</td>
-                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">0</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!-- END: NATIVE DRIVER STANDINGS TABLE -->
+             <!-- START: DYNAMIC DRIVER STANDINGS TABLE -->
+<div id="driver-standings" class="f1-content-pane">
+  <div id="driver-loading" style="text-align: center; padding: 20px; color: #9ca3af;">Loading driver standings...</div>
+  <div id="driver-error" style="display: none; color: #ef4444; text-align: center; padding: 20px;"></div>
+  <table id="driver-table" style="width: 100%; border-collapse: collapse; font-size: 11px; display: none;">
+    <thead>
+      <tr style="text-align: left;">
+        <th style="padding: 6px 4px; width: 25px;">#</th>
+        <th style="padding: 6px 4px;">Driver</th>
+        <th style="padding: 6px 4px;">Team</th>
+        <th style="padding: 6px 4px; text-align: right;">Pts</th>
+      </tr>
+    </thead>
+    <tbody id="driver-tbody"></tbody>
+  </table>
+</div>
+<!-- END: DYNAMIC DRIVER STANDINGS TABLE -->
 
-              <!-- START: NATIVE CONSTRUCTOR STANDINGS TABLE -->
-              <div id="constructor-standings" class="f1-content-pane" style="display: none;">
-                 <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                  <thead>
-                    <tr style="text-align: left;">
-                      <th style="padding: 6px 4px; width: 25px;">#</th>
-                      <th style="padding: 6px 4px;">Team</th>
-                      <th style="padding: 6px 4px; text-align: right;">Pts</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style="border-top: 1px solid #374151;">
-                      <td style="padding: 6px 4px;">1</td>
-                      <td style="padding: 6px 4px;">McLaren</td>
-                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">516</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                      <td style="padding: 6px 4px;">2</td>
-                      <td style="padding: 6px 4px;">Ferrari</td>
-                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">248</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                      <td style="padding: 6px 4px;">3</td>
-                      <td style="padding: 6px 4px;">Mercedes</td>
-                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">220</td>
-                    </tr>
-                     <tr style="border-top: 1px solid #374151;">
-                      <td style="padding: 6px 4px;">4</td>
-                      <td style="padding: 6px 4px;">Red Bull</td>
-                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">192</td>
-                    </tr>
-                     <tr style="border-top: 1px solid #374151;">
-                      <td style="padding: 6px 4px;">5</td>
-                      <td style="padding: 6px 4px;">Williams</td>
-                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">70</td>
-                    </tr>
-                    <tr style="border-top: 1px solid #374151;">
-                      <td style="padding: 6px 4px;">6</td>
-                      <td style="padding: 6px 4px;">Sauber</td>
-                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">43</td>
-                    </tr>
-                     <tr style="border-top: 1px solid #374151;">
-                      <td style="padding: 6px 4px;">7</td>
-                      <td style="padding: 6px 4px;">Racing Bulls</td>
-                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">41</td>
-                    </tr>
-                     <tr style="border-top: 1px solid #374151;">
-                      <td style="padding: 6px 4px;">8</td>
-                      <td style="padding: 6px 4px;">Aston Martin</td>
-                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">36</td>
-                    </tr>
-                     <tr style="border-top: 1px solid #374151;">
-                      <td style="padding: 6px 4px;">9</td>
-                      <td style="padding: 6px 4px;">Haas</td>
-                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">35</td>
-                    </tr>
-                     <tr style="border-top: 1px solid #374151;">
-                      <td style="padding: 6px 4px;">10</td>
-                      <td style="padding: 6px 4px;">Alpine</td>
-                      <td style="padding: 6px 4px; text-align: right; font-weight: bold;">20</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+<!-- START: DYNAMIC CONSTRUCTOR STANDINGS TABLE -->
+<div id="constructor-standings" class="f1-content-pane" style="display: none;">
+  <div id="constructor-loading" style="text-align: center; padding: 20px; color: #9ca3af;">Loading constructor standings...</div>
+  <div id="constructor-error" style="display: none; color: #ef4444; text-align: center; padding: 20px;"></div>
+  <table id="constructor-table" style="width: 100%; border-collapse: collapse; font-size: 11px; display: none;">
+    <thead>
+      <tr style="text-align: left;">
+        <th style="padding: 6px 4px; width: 25px;">#</th>
+        <th style="padding: 6px 4px;">Team</th>
+        <th style="padding: 6px 4px; text-align: right;">Pts</th>
+      </tr>
+    </thead>
+    <tbody id="constructor-tbody"></tbody>
+  </table>
+</div>
+<!-- END: DYNAMIC CONSTRUCTOR STANDINGS TABLE -->
               <!-- END: NATIVE CONSTRUCTOR STANDINGS TABLE -->
           </div>
       </div>
@@ -3325,7 +3153,108 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+<script>
+// Google Sheets Configuration - Using published CSV URLs (no API key needed)
+const GOOGLE_SHEETS_CONFIG = {
+    DRIVER_STANDINGS_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6rs6yvXAh-KktOOVGGY6knFMjR11W75yfcq7iReQCjl-uc9hHwT3yMpZ01GqAlYwsY0VYVTADrPiR/pub?output=csv',
+    CONSTRUCTOR_STANDINGS_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQcpOkjKy5bcEPAZRofXpGGyf0_VkfIBIDDrlgUIiSuznqdUfDRAqmy_EAcVN3K1-y_F6wr78TbH6U8/pub?output=csv'
+};
 
+// Function to fetch data from published Google Sheets CSV
+async function fetchFromGoogleSheetsCSV(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const csvText = await response.text();
+        // Parse CSV data
+        const rows = csvText.split('\\n').map(row => row.split(',').map(cell => cell.trim().replace(/^\"|\"$/g, '')));
+        return rows.filter(row => row.length > 0 && row[0] !== ''); // Remove empty rows
+    } catch (error) {
+        console.error('Error fetching from Google Sheets CSV:', error);
+        throw error;
+    }
+}
+
+// Function to load driver standings
+async function loadDriverStandings() {
+    const loadingDiv = document.getElementById('driver-loading');
+    const errorDiv = document.getElementById('driver-error');
+    const table = document.getElementById('driver-table');
+    const tbody = document.getElementById('driver-tbody');
+    try {
+        loadingDiv.style.display = 'block';
+        errorDiv.style.display = 'none';
+        table.style.display = 'none';
+        const data = await fetchFromGoogleSheetsCSV(GOOGLE_SHEETS_CONFIG.DRIVER_STANDINGS_URL);
+        if (data.length === 0) throw new Error('No data found in sheet');
+        tbody.innerHTML = '';
+        for (let i = 1; i < data.length; i++) {
+            const row = data[i];
+            if (row.length >= 4) {
+                const tr = document.createElement('tr');
+                tr.style.borderTop = '1px solid #374151';
+                tr.innerHTML = `
+                    <td style="padding: 6px 4px;">${row[0]}</td>
+                    <td style="padding: 6px 4px;">${row[1]}</td>
+                    <td style="padding: 6px 4px;">${row[3]}</td>
+                    <td style="padding: 6px 4px; text-align: right; font-weight: bold;">${row[2]}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+        loadingDiv.style.display = 'none';
+        table.style.display = 'table';
+    } catch (error) {
+        loadingDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        errorDiv.textContent = `Error loading driver standings: ${error.message}`;
+        console.error('Error loading driver standings:', error);
+    }
+}
+
+// Function to load constructor standings
+async function loadConstructorStandings() {
+    const loadingDiv = document.getElementById('constructor-loading');
+    const errorDiv = document.getElementById('constructor-error');
+    const table = document.getElementById('constructor-table');
+    const tbody = document.getElementById('constructor-tbody');
+    try {
+        loadingDiv.style.display = 'block';
+        errorDiv.style.display = 'none';
+        table.style.display = 'none';
+        const data = await fetchFromGoogleSheetsCSV(GOOGLE_SHEETS_CONFIG.CONSTRUCTOR_STANDINGS_URL);
+        if (data.length === 0) throw new Error('No data found in sheet');
+        tbody.innerHTML = '';
+        for (let i = 1; i < data.length; i++) {
+            const row = data[i];
+            if (row.length >= 3) {
+                const tr = document.createElement('tr');
+                tr.style.borderTop = '1px solid #374151';
+                tr.innerHTML = `
+                    <td style="padding: 6px 4px;">${row[0]}</td>
+                    <td style="padding: 6px 4px;">${row[1]}</td>
+                    <td style="padding: 6px 4px; text-align: right; font-weight: bold;">${row[2]}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+        loadingDiv.style.display = 'none';
+        table.style.display = 'table';
+    } catch (error) {
+        loadingDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        errorDiv.textContent = `Error loading constructor standings: ${error.message}`;
+        console.error('Error loading constructor standings:', error);
+    }
+}
+
+// Initial load when F1 section is shown
+document.addEventListener('DOMContentLoaded', function () {
+    // You may want to call loadDriverStandings() here if F1 is the default tab
+});
+</script>
   </body>
 </html>
 
