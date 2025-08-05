@@ -1558,19 +1558,9 @@
       </div>
   
       <!-- Container 1: Schedule Data -->
-      <div style="padding: 1rem; height: 12rem; overflow-y: auto;">
-          <div style="font-size: 0.875rem;">
-              <p style="font-weight: 600;">Spanish Grand Prix</p>
-              <p style="color: #9ca3af;">Circuit de Barcelona-Catalunya</p>
-              <div style="margin-top: 0.75rem; space-y: 0.5rem;">
-                  <p>6:25 AM - Practice 1 - ESPNU</p>
-                  <p>9:55 AM - Practice 2 - ESPNU</p>
-                  <p>6:25 AM - Practice 3 - ESPNU</p>
-                  <p>8:55 AM - Qualifying - ESPN</p>
-                  <p>8:55 AM - Race - ESPN</p>
-              </div>
-          </div>
-      </div>
+    <div id="f1-schedule-container" style="padding: 1rem; font-size: 0.875rem;">
+    <p style="color: #9ca3af;">Loading schedule...</p>
+</div>
   
       <!-- Header 2: Standings -->
       <div style="padding: 1rem; border-top: 1px solid #374151; border-bottom: 1px solid #374151; background-color: #3c3c3c;">
@@ -3280,6 +3270,126 @@ document.addEventListener('DOMContentLoaded', function () {
     // You may want to call loadDriverStandings() here if F1 is the default tab
 });
 </script>
+
+	  <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const F1_SCHEDULE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZ9MyNW-7sVotdUg-L3rBWegNuPhhYek7C367krB8PfVRrRNBTE57AXTGPcxOXc192MqS_toeVrWER/pub?output=csv';
+    const scheduleContainer = document.getElementById('f1-schedule-container');
+
+    // Fetches and parses the F1 schedule CSV data.
+    async function fetchF1ScheduleData() {
+        try {
+            const response = await fetch(F1_SCHEDULE_URL);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const csvText = await response.text();
+            
+            const rows = csvText.split(/\r?\n/).slice(1); // Split and remove header row
+            const timeZone = 'America/Chicago'; // Times in the sheet are Central U.S. Time
+            const { DateTime } = luxon;
+
+            return rows.map(row => {
+                const columns = row.split(',');
+                if (columns.length < 6) return null; // Skip malformed rows
+
+                const date = columns[0].trim();
+                const startTimeStr = columns[1].trim();
+                const endTimeStr = columns[2].trim();
+
+                // Combine date and time to create a valid Luxon DateTime object with the correct time zone
+                const startDateTime = DateTime.fromFormat(`${date} ${startTimeStr}`, 'M/d/yyyy h:mm a', { zone: timeZone });
+                const endDateTime = DateTime.fromFormat(`${date} ${endTimeStr}`, 'M/d/yyyy h:mm a', { zone: timeZone });
+
+                return {
+                    start: startDateTime,
+                    end: endDateTime,
+                    eventHead: columns[3].trim(),
+                    eventSub: columns[4].trim(),
+                    channel: columns[5].trim()
+                };
+            }).filter(event => event && event.start.isValid); // Filter out null or invalid date rows
+        } catch (error) {
+            console.error('Error fetching or parsing F1 schedule:', error);
+            scheduleContainer.innerHTML = `<p style="color: #ef4444;">Error loading schedule.</p>`;
+            return [];
+        }
+    }
+
+    // Renders the schedule based on the current time.
+    function renderSchedule(allEvents) {
+        if (!allEvents || allEvents.length === 0) {
+            scheduleContainer.innerHTML = `<p style="color: #9ca3af;">No upcoming schedule found.</p>`;
+            return;
+        }
+
+        const now = luxon.DateTime.now();
+
+        // 1. Find the current or next race weekend to display
+        const nextEvent = allEvents.find(event => event.end > now);
+        if (!nextEvent) {
+            scheduleContainer.innerHTML = `<p style="color: #9ca3af;">The season may have concluded.</p>`;
+            return;
+        }
+        const currentRaceHead = nextEvent.eventHead;
+
+        // 2. Filter for events for that specific weekend whose end time hasn't passed
+        const eventsToDisplay = allEvents.filter(event => 
+            event.eventHead === currentRaceHead && event.end > now
+        );
+
+        // 3. Group events by date for display
+        const groupedByDate = eventsToDisplay.reduce((acc, event) => {
+            const dateKey = event.start.toFormat('yyyy-MM-dd');
+            if (!acc[dateKey]) {
+                acc[dateKey] = [];
+            }
+            acc[dateKey].push(event);
+            return acc;
+        }, {});
+        
+        // 4. Generate and inject the HTML
+        let html = '';
+        const today = now.toFormat('yyyy-MM-dd');
+        
+        for (const dateKey in groupedByDate) {
+            const dateObj = luxon.DateTime.fromISO(dateKey);
+            const dateHeader = (dateKey === today) ? 'Today' : dateObj.toFormat('MMMM d');
+            
+            html += `<h3 style="font-weight: 600; margin-bottom: 0.5rem; margin-top: 1rem;">${dateHeader}</h3>`;
+
+            groupedByDate[dateKey].forEach(event => {
+                const isLive = now >= event.start && now < event.end;
+                const timeDisplay = isLive 
+                    ? `<span style="color: #ef4444; font-weight: bold;">Live</span>`
+                    : event.start.toFormat('h:mm a');
+
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: top; margin-bottom: 0.75rem;">
+                        <div style="flex: 0 0 70px; color: #e0e0e0;">${timeDisplay}</div>
+                        <div style="flex: 1 1 auto;">
+                            <p style="margin: 0; padding: 0; font-weight: 500;">${event.eventHead}</p>
+                            <p style="margin: 0; padding: 0; color: #9ca3af;">${event.eventSub}</p>
+                        </div>
+                        <div style="flex: 0 0 60px; text-align: right; color: #e0e0e0;">${event.channel}</div>
+                    </div>
+                `;
+            });
+        }
+
+        scheduleContainer.innerHTML = html || `<p style="color: #9ca3af;">No upcoming events for this race.</p>`;
+    }
+
+    // Main function to update the schedule
+    async function updateSchedule() {
+        const events = await fetchF1ScheduleData();
+        renderSchedule(events);
+    }
+
+    // Initial load and then update every 60 seconds to catch "Live" status changes
+    updateSchedule();
+    setInterval(updateSchedule, 60000); 
+});
+</script>
+	  
   </body>
 </html>
 
