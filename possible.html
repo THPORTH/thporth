@@ -3392,6 +3392,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('[DEBUG] DOMContentLoaded: Script starting.');
 
     // --- CONFIGURATION MAP ---
+    // This is the central map for all league-specific data sources.
     const LEAGUE_DATA_CONFIG = {
         'NFL': {
             leagueId: 'USA: NFL',
@@ -3442,7 +3443,7 @@ document.addEventListener('DOMContentLoaded', function () {
             standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSMWPTh0lOh89-qkXYbx63Vs8FQ7gUoT0333Pa9ZgPg4WWBMgB-xERDMM_U2yIUgS3TSPOXOD5M7sVl/pub?gid=0&single=true&output=csv'
         },
 		'Soccer': {
-            leagueId: 'SOCCER_LEAGUE_ID_IN_FIRESTORE',
+            leagueId: 'SOCCER_LEAGUE_ID_IN_FIRESTORE', // Replace with the actual value from Firestore
             standingsUrl: 'YOUR_SOCCER_STANDINGS_CSV_URL_HERE'
         },
         'UEFAChampionsLeague': {
@@ -3544,9 +3545,7 @@ document.addEventListener('DOMContentLoaded', function () {
         standingsContent.innerHTML = '<p style="color: #9ca3af;">Loading standings...</p>';
         try {
             const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const csvText = await response.text();
             const rows = csvText.split(/\r?\n/).map(row => row.split(','));
             
@@ -3621,7 +3620,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 leagueSpecificColumn.style.display = 'none';
                 gamesContentContainer.style.display = 'block';
                 f1Content.style.display = 'none';
-                displayGames('games');
+                displayGames('games'); // Call for home page (all games)
             } else if (section === 'FormulaOne') {
                 console.log('[DEBUG] Menu Click: Switching to FormulaOne view.');
                 gamesColumn.style.display = 'block';
