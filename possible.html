@@ -3390,7 +3390,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // --- CONFIGURATION MAP ---
-   const LEAGUE_DATA_CONFIG = {
+    const LEAGUE_DATA_CONFIG = {
         'NFL': { leagueId: 'USA: NFL', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoXI911JBowIVpsOtYo7Jk0WwwNlujQ76rR4lgDAqxGWLa_q67gOXI0DyKsC4YkKIfbSYqerHp17-m/pub?gid=1628205730&single=true&output=csv' },
         'NBA': { leagueId: 'USA: NBA', standingsUrl: 'YOUR_NBA_STANDINGS_CSV_URL_HERE' },
         'MLB': { leagueId: 'USA: MLB', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRQHOSDTxfJ554E0MhgZPfmnarCUunnYmxDBSZ78APQ3QfvPWBnn1i68JPSuNCNByd1IzYEbj-6AVAZ/pub?gid=1312763847&single=true&output=csv' },
@@ -3427,7 +3427,6 @@ document.addEventListener('DOMContentLoaded', function () {
         'TrackAndField': { leagueId: 'Track and Field', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnsEETRJkJlYNokKws_nlk6-OfyJKg8aoq8AldZZgRcdV5YtuQ1kdINCKvR2H-XQZJVxRxcZaKOq2/pub?gid=2060167316&single=true&output=csv' }
     };
 
-
     // --- ELEMENT REFERENCES ---
     const gamesColumn = document.getElementById('games-column');
     const leagueSpecificColumn = document.getElementById('league-specific-column');
@@ -3443,14 +3442,16 @@ document.addEventListener('DOMContentLoaded', function () {
     async function fetchLeagueStandings(url) {
         standingsContent.innerHTML = '<p style="color: #9ca3af;">Loading standings...</p>';
         try {
+            console.log(`[Standings] Fetching standings from URL: ${url}`);
             const response = await fetch(url);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const csvText = await response.text();
             const rows = csvText.split(/\r?\n/).map(row => row.split(','));
 
             if (rows.length < 2 || (rows.length === 1 && rows[0].every(cell => cell.trim() === ''))) {
-                 standingsContent.innerHTML = '<p style="color: #9ca3af;">No standings data available.</p>';
-                 return;
+                standingsContent.innerHTML = '<p style="color: #9ca3af;">No standings data available.</p>';
+                console.log(`[Standings] No standings data available.`);
+                return;
             }
 
             let tableHtml = '<table style="width: 100%; border-collapse: collapse; font-size: 11px;">';
@@ -3466,8 +3467,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             tableHtml += '</tbody></table>';
             standingsContent.innerHTML = tableHtml;
+            console.log(`[Standings] Standings rendered successfully.`);
         } catch (error) {
-            console.error('Error fetching league standings:', error);
+            console.error('[Standings] Error fetching league standings:', error);
             standingsContent.innerHTML = `<p style="color: #ef4444;">Error loading standings.</p>`;
         }
     }
@@ -3480,17 +3482,26 @@ document.addEventListener('DOMContentLoaded', function () {
         container.innerHTML = '<p style="color: #9ca3af;">Loading schedule...</p>';
 
         try {
+            if (typeof gamesCollectionRef === 'undefined') {
+                console.error('[LeagueGames] ERROR: gamesCollectionRef is not defined!');
+                container.innerHTML = '<p style="color: #ef4444;">Internal error: games collection not initialized.</p>';
+                return;
+            }
+
             const { DateTime } = luxon;
             const nowInEastern = DateTime.now().setZone('America/New_York');
             const todayStr = nowInEastern.toISODate();
-            console.log(`[LeagueGames] Fetching games for league "${leagueId}" on ${todayStr}`);
+
+            console.log(`[LeagueGames] Fetching games for league "${leagueId}" on date ${todayStr}`);
 
             const gamesQuery = gamesCollectionRef
                 .where('league', '==', leagueId)
                 .where('gameDate', '==', todayStr)
-                .orderBy("Start Time");
+                .orderBy('startTime'); // Adjust field name here as needed
 
             gamesQuery.onSnapshot(snapshot => {
+                console.log(`[LeagueGames] Snapshot received with ${snapshot.size} documents for league "${leagueId}".`);
+
                 if (snapshot.empty) {
                     container.innerHTML = `<p style="color: #9ca3af;">No games found for ${leagueId} today.</p>`;
                     console.log(`[LeagueGames] No games found for ${leagueId}`);
@@ -3500,12 +3511,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 let html = '<ul style="list-style: none; padding: 0; margin: 0;">';
                 snapshot.forEach(doc => {
                     const game = doc.data();
+                    console.log(`[LeagueGames] Game found: ${game.Home} vs ${game.Away} at ${game.startTime}`);
                     html += `
                         <li style="padding: 4px 0; border-bottom: 1px solid #374151;">
                             <span style="font-weight: bold;">${game.Home}</span> vs 
                             <span style="font-weight: bold;">${game.Away}</span>
                             <br>
-                            <span style="color: #9ca3af;">${game["Start Time"]} ET</span>
+                            <span style="color: #9ca3af;">${game.startTime} ET</span>
                         </li>
                     `;
                 });
@@ -3525,58 +3537,66 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Main function to load data for a specific league.
+     * Called when user selects a league
      */
-    function loadLeagueSpecificData(section) {
-        const config = LEAGUE_DATA_CONFIG[section];
-        const menuItem = document.querySelector(`#menuList li[data-section="${section}"]`);
-        const leagueName = menuItem ? Array.from(menuItem.childNodes).find(node => node.nodeType === 3)?.textContent.trim() : 'League';
-        
-        leagueHeader.textContent = leagueName;
+    async function selectLeague(leagueKey) {
+        if (!leagueKey || !LEAGUE_DATA_CONFIG[leagueKey]) {
+            leagueHeader.innerText = "Select a league";
+            leagueSpecificColumn.style.display = 'none';
+            gamesColumn.style.display = 'block';
+            gamesContentContainer.style.display = 'block';
+            return;
+        }
 
-        if (config) {
-            if (config.leagueId) {
-                fetchLeagueGames(config.leagueId);
-            } else {
-                scheduleContent.innerHTML = '<p style="color: #9ca3af;">Schedule not configured.</p>';
-            }
-            if (config.standingsUrl && config.standingsUrl.startsWith('http')) {
-                fetchLeagueStandings(config.standingsUrl);
-            } else {
-                standingsContent.innerHTML = '<p style="color: #9ca3af;">Standings not configured.</p>';
-            }
+        const leagueInfo = LEAGUE_DATA_CONFIG[leagueKey];
+        console.log(`[UI] League selected: ${leagueKey} (ID: ${leagueInfo.leagueId})`);
+
+        leagueHeader.innerText = leagueKey;
+        leagueSpecificColumn.style.display = 'block';
+        gamesColumn.style.display = 'none';
+        gamesContentContainer.style.display = 'none';
+
+        standingsContent.innerHTML = '';
+        scheduleContent.innerHTML = '';
+
+        if (leagueInfo.standingsUrl) {
+            console.log(`[UI] Loading standings for ${leagueKey}`);
+            fetchLeagueStandings(leagueInfo.standingsUrl);
         } else {
-            scheduleContent.innerHTML = '<p style="color: #9ca3af;">No data configured for this league.</p>';
-            standingsContent.innerHTML = '';
+            standingsContent.innerHTML = '<p style="color: #9ca3af;">No standings available for this league.</p>';
+            console.log(`[UI] No standings URL configured for ${leagueKey}`);
+        }
+
+        if (leagueInfo.leagueId) {
+            console.log(`[UI] Loading games for league ID: ${leagueInfo.leagueId}`);
+            fetchLeagueGames(leagueInfo.leagueId);
+        } else {
+            scheduleContent.innerHTML = '<p style="color: #9ca3af;">No schedule available for this league.</p>';
+            console.log(`[UI] No league ID configured for games for ${leagueKey}`);
         }
     }
 
-    // --- MENU CLICK LOGIC ---
-    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
-        item.addEventListener("click", e => {
-            const section = item.dataset.section;
+    // Initialize Firestore and collection ref here
+    // (Make sure to initialize Firebase elsewhere before this script runs)
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+        const db = firebase.firestore();
+        window.gamesCollectionRef = db.collection('games');
+        console.log('[Firestore] gamesCollectionRef initialized.');
+    } else {
+        console.warn('[Firestore] Firebase not initialized or Firestore not available.');
+    }
 
-            if (section === 'Home') {
-                gamesColumn.style.display = 'block';
-                leagueSpecificColumn.style.display = 'none';
-                gamesContentContainer.style.display = 'block';
-                f1Content.style.display = 'none';
-                fetchTodayGames(); // home page: all games
-            } else if (section === 'FormulaOne') {
-                gamesColumn.style.display = 'block';
-                leagueSpecificColumn.style.display = 'none';
-                gamesContentContainer.style.display = 'none';
-                f1Content.style.display = 'flex';
-            } else {
-                gamesColumn.style.display = 'none';
-                leagueSpecificColumn.style.display = 'block';
-                loadLeagueSpecificData(section);
-            }
+    // Example: set up league selection dropdown listener (if you have one)
+    const leagueSelect = document.getElementById('league-select');
+    if (leagueSelect) {
+        leagueSelect.addEventListener('change', (e) => {
+            selectLeague(e.target.value);
         });
-    });
+    }
 
-    // Initial load for the home page games
-    fetchTodayGames();
+    // Load default league or UI state
+    selectLeague(null);
+
 });
 </script>
 
