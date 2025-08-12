@@ -2231,1168 +2231,24 @@
     });
     </script>
 
-<!-- This script now contains the logic for both "Today" and "Scores" tabs -->
-<script>
-  // Firebase Configuration (YOUR PROJECT SPECIFIC CONFIG)
-  const firebaseConfig = {
-      apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
-      authDomain: "flashlive-daily-scraper.firebaseapp.com",
-      projectId: "flashlive-daily-scraper",
-      storageBucket: "flashlive-daily-scraper.appspot.com",
-      messagingSenderId: "124291936014",
-      appId: "1:124291936014:web:acadcaa791d6046849315f",
-      measurementId: "G-R146KS92QJ"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const gamesCollectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
-
-  // Function to map original league names from Firestore to desired display names
-  function getLeagueDisplayName(originalLeagueName) {
-      const exactLeagueMaps = {
-          "USA: WNBA": "WNBA",
-          "USA: MLB": "MLB",
-          "EUROPE: UEFA CHAMPIONS LEAGUE": "UEFA Champions League",
-          "EUROPE: UEFA WOMEN'S CHAMPIONS LEAGUE": "UEFA Women's Champions League",
-          "USA: NBA": "NBA",
-          "USA: NHL": "NHL",
-          "USA: NFL": "NFL",
-          "USA: NCAAB": "NCAAB",
-          "USA: NCAAF": "NCAAF",
-          "ENGLAND: PREMIER LEAGUE": "Premier League",
-          "GERMANY: BUNDESLIGA": "Bundesliga",
-          "SPAIN: LALIGA": "LaLiga",
-          "ITALY: SERIE A": "Serie A",
-          "FRANCE: LIGUE 1": "Ligue 1",
-          "USA: MLS": "MLS",
-	  "USA: NFL - Pre-season": "NFL",
-          "North & Central America: Leagues Cup": "Leagues Cup"
-          // Add all your specific league mappings here.
-      };
-
-      if (exactLeagueMaps.hasOwnProperty(originalLeagueName)) {
-          return exactLeagueMaps[originalLeagueName];
-      }
-      return originalLeagueName;
-  }
-
-  // Function to map original team names to desired display names (mascot names)
-  function getTeamDisplayName(originalTeamName) {
-      let processedTeamName = originalTeamName;
-      if (processedTeamName.endsWith(" W")) {
-          processedTeamName = processedTeamName.slice(0, -2);
-      }
-
-      const exactTeamMaps = {
-          // MLB Teams
-          "Arizona Diamondbacks": "Diamondbacks", "Atlanta Braves": "Braves", "Baltimore Orioles": "Orioles",
-          "Boston Red Sox": "Red Sox", "Chicago Cubs": "Cubs", "Chicago White Sox": "White Sox",
-          "Cincinnati Reds": "Reds", "Cleveland Guardians": "Guardians", "Colorado Rockies": "Rockies",
-          "Detroit Tigers": "Tigers", "Houston Astros": "Astros", "Kansas City Royals": "Royals",
-          "Los Angeles Angels": "Angels", "Los Angeles Dodgers": "Dodgers", "Miami Marlins": "Marlins",
-          "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets",
-          "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies",
-          "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants",
-          "Seattle Mariners": "Mariners", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays", // Corrected "St. Louis Cardinals"
-          "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals",
-
-          // WNBA Teams
-          "Atlanta Dream": "Dream", "Chicago Sky": "Sky", "Connecticut Sun": "Sun",
-          "Dallas Wings": "Wings", "Indiana Fever": "Fever", "Las Vegas Aces": "Aces",
-          "Los Angeles Sparks": "Sparks", "Minnesota Lynx": "Lynx", "New York Liberty": "Liberty",
-          "Phoenix Mercury": "Mercury", "Seattle Storm": "Storm", "Washington Mystics": "Mystics",
-          "Golden State Valkyries": "Valkyries"
-          // Add all your specific team mappings here.
-      };
-
-      if (exactTeamMaps.hasOwnProperty(processedTeamName)) {
-          return exactTeamMaps[processedTeamName];
-      }
-      return processedTeamName;
-  }
-
-  // Define the desired order of leagues for display
-  const LEAGUE_DISPLAY_ORDER = [
-      "NFL",
-      "MLB",
-      "WNBA",
-      "Leagues Cup",
-      "NBA", // Example: Add other leagues you want to prioritize here
-      "UEFA Champions League",
-      "UEFA Women's Champions League",
-      "Premier League",
-      "Bundesliga",
-      "LaLiga",
-      "Serie A",
-      "Ligue 1",
-      "MLS",
-      // Add other league display names as needed, in desired order
-  ];
-
-
-  /**
-   * Sets up a real-time listener for games from Firestore, filters by today's Eastern Time date,
-   * groups them by mapped league name, and updates the display on the page automatically.
-   */
-  async function fetchTodayGames() {
-      const container = document.getElementById("games"); // This is the #games div inside tv-listings-today
-      const errorDiv = document.getElementById("error"); // This is the #error div inside tv-listings-today
-      errorDiv.textContent = ""; // Clear previous errors
-
-      try {
-          const { DateTime } = luxon;
-          const nowInEastern = DateTime.now().setZone('America/New_York');
-          const todayStr = nowInEastern.toISODate();
-          console.log(`[Frontend] Setting up listener for todayStr in Eastern Time: ${todayStr}`);
-
-          // Create the query
-          const gamesQuery = gamesCollectionRef // Use gamesCollectionRef defined globally
-              .where('gameDate', '==', todayStr)
-              .orderBy("Start Time");
-
-          // Set up the real-time listener using onSnapshot
-          gamesQuery.onSnapshot(snapshot => {
-              console.log("[Firestore Listener] Snapshot received, re-rendering UI."); // Debugging log
-              // Clear the container before re-rendering all games
-              container.innerHTML = "";
-
-              if (snapshot.empty) {
-                  container.innerHTML = `<p style="padding: 10px;">No games found for today (${todayStr}) in Firestore collection.</p>`;
-                  return;
-              }
-
-              const leagueGroups = {};
-
-              snapshot.docs.forEach(doc => {
-                  const data = doc.data();
-                  const leagueDisplayName = getLeagueDisplayName(data.League) || "Other";
-                  if (!leagueGroups[leagueDisplayName]) {
-                      leagueGroups[leagueDisplayName] = [];
-                  }
-                  leagueGroups[leagueDisplayName].push(data);
-              });
-
-              // Create a sorted list of league names based on LEAGUE_DISPLAY_ORDER
-              const sortedLeagueNames = [];
-              const processedLeagues = new Set();
-
-              // Add leagues from the predefined order
-              LEAGUE_DISPLAY_ORDER.forEach(orderedLeagueName => {
-                  if (leagueGroups[orderedLeagueName]) {
-                      sortedLeagueNames.push(orderedLeagueName);
-                      processedLeagues.add(orderedLeagueName);
-                  }
-              });
-
-              // Add any remaining leagues not in the predefined order
-              for (const leagueName in leagueGroups) {
-                  if (!processedLeagues.has(leagueName)) {
-                      sortedLeagueNames.push(leagueName);
-                  }
-              }
-
-              // Now iterate through the sorted league names
-              for (const leagueName of sortedLeagueNames) {
-                  const games = leagueGroups[leagueName]; // Get games for the current league
-                  
-                  const leagueSection = document.createElement("div");
-                  leagueSection.className = "league-section";
-
-                  const title = document.createElement("div");
-                  title.className = "league-title";
-                  title.textContent = leagueName;
-                  leagueSection.appendChild(title);
-
-                  const table = document.createElement("table");
-                  table.className = "game-table";
-
-                  let lastDisplayedTimeLabel = null; // This will only track *scheduled* times for deduplication
-
-                  games.forEach(data => {
-                      const home = getTeamDisplayName(data["Home Team"]) || "";
-                      const away = getTeamDisplayName(data["Away Team"]) || "";
-                      const homeScore = data["Home Score"];
-                      const awayScore = data["Away Score"];
-                      const matchStatus = (data["Match Status"] || "").toUpperCase();
-                      const inningStatus = (data["Status"] || "").toUpperCase();
-                      const rawStart = data["Start Time"];
-
-                      // isLive now includes "Q" for quarters and HALF_TIME
-                      const isLive = matchStatus === "IN PROGRESS" || matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
-                      const isFinal = matchStatus === "FINISHED";
-
-                      let currentTimeLabel = ""; // The time/status label for the current game
-                      const leagueDisplayNameForGame = getLeagueDisplayName(data.League) || "Other"; // Get mapped league name for specific status logic
-
-                      if (isLive) {
-                          let statusToDisplay = inningStatus;
-                          let parsedStatus = '';
-
-                          if (leagueDisplayNameForGame === "MLB") {
-                              // MLB Innings: "Top/Bot X" or "X"
-                              const topBotMatch = statusToDisplay.match(/(TOP|BOT)\s*(\d+)(?:ST|ND|RD|TH)?/i);
-                              const inningNumMatch = statusToDisplay.match(/(\d+)(?:ST|ND|RD|TH)?(?:\s*INNING)?/i); // Broader match for just number
-                              const inningWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)_?INNING/i);
-
-                              if (topBotMatch) {
-                                  const topBot = topBotMatch[1].charAt(0).toUpperCase() + topBotMatch[1].slice(1).toLowerCase();
-                                  const inning = topBotMatch[2];
-                                  parsedStatus = `${topBot} ${inning}`;
-                              } else if (inningWordMatch) {
-                                  const wordToNum = {
-                                      "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4", "FIFTH": "5",
-                                      "SIXTH": "6", "SEVENTH": "7", "EIGHTH": "8", "NINTH": "9"
-                                  };
-                                  const inningWord = inningWordMatch[1].toUpperCase();
-                                  parsedStatus = wordToNum[inningWord] || inningWord;
-                              } else if (inningNumMatch) {
-                                  parsedStatus = inningNumMatch[1]; // Just the number (e.g., "1", "2")
-                              }
-
-                              // If parsedStatus is empty, it means no specific inning info was found.
-                              // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
-                              currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
-
-                          } else if (leagueDisplayNameForGame === "WNBA") {
-                              let parsedStatus = '';
-                              // Try to match "Q1", "Q2", etc.
-                              const quarterMatch = statusToDisplay.match(/Q(\d+)/i);
-                              // Try to match "FIRST_QUARTER", "SECOND_QUARTER", etc.
-                              const quarterWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH)_?QUARTER/i);
-
-                              if (quarterMatch && quarterMatch[1]) {
-                                  parsedStatus = `Q${quarterMatch[1]}`;
-                              } else if (quarterWordMatch) {
-                                  const wordToNum = {
-                                      "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4"
-                                  };
-                                  const quarterWord = quarterWordMatch[1].toUpperCase();
-                                  parsedStatus = `Q${wordToNum[quarterWord] || quarterWord}`;
-                              } else if (statusToDisplay === "HALF_TIME") {
-                                  parsedStatus = "Half";
-                              }
-                              
-                              // If parsedStatus is empty, it means no specific quarter/half info was found.
-                              // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
-                              currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
-
-                          } else {
-                              // Default live status for other leagues (not MLB/WNBA)
-                              // This will show the raw inningStatus or matchStatus (e.g., "LIVE"), not in red.
-                              currentTimeLabel = inningStatus || matchStatus;
-                          }
-                      } else if (isFinal) {
-                          currentTimeLabel = "F";
-                      } else if (rawStart) {
-                          let gameDateFromFirestore;
-                          if (typeof rawStart?.toDate === "function") {
-                              gameDateFromFirestore = rawStart.toDate();
-                          } else if (typeof rawStart === "number") {
-                              gameDateFromFirestore = new Date(rawStart * 1000);
-                          } else {
-                              gameDateFromFirestore = new Date(rawStart);
-                          }
-
-                          const startTimeLuxon = luxon.DateTime.fromJSDate(gameDateFromFirestore).setZone(luxon.DateTime.local().zoneName);
-                          currentTimeLabel = startTimeLuxon.toFormat('h:mm a');
-                      } else {
-                          currentTimeLabel = "TBD";
-                      }
-
-                      let displayTimeLabel = currentTimeLabel;
-
-                      // Determine if the current label is a scheduled time (not live, not final, not TBD)
-                      const isScheduledTime = !(currentTimeLabel.includes('<span style="color: red;">') ||
-                                                 currentTimeLabel === "F" ||
-                                                 currentTimeLabel === "TBD");
-
-                      if (isScheduledTime) {
-                          // Apply deduplication only for scheduled times
-                          if (currentTimeLabel === lastDisplayedTimeLabel) {
-                              displayTimeLabel = ""; // Hide if same as previously displayed scheduled time
-                          } else {
-                              lastDisplayedTimeLabel = currentTimeLabel; // Update last displayed scheduled time
-                          }
-                      }
-                      // If it's a live/final/TBD status, displayTimeLabel remains currentTimeLabel,
-                      // and lastDisplayedTimeLabel is NOT updated by these, preserving the last scheduled time.
-
-                      const row1 = document.createElement("tr");
-                      row1.className = "game-row";
-                      row1.innerHTML = `
-                          <td>${displayTimeLabel}</td>
-                          <td class="team-cell">${away}</td>
-                          <td>${(isLive || isFinal) && typeof awayScore !== "undefined" && awayScore !== '' ? awayScore : ""}</td>
-                          <td></td>
-                      `;
-
-                      const row2 = document.createElement("tr");
-                      row2.className = "game-row game-separator"; /* Added game-separator class here */
-                      row2.innerHTML = `
-                          <td></td>
-                          <td class="team-cell">${home}</td>
-                          <td>${(isLive || isFinal) && typeof homeScore !== "undefined" && homeScore !== '' ? homeScore : ""}</td>
-                          <td></td>
-                      `;
-
-                      table.appendChild(row1);
-                      table.appendChild(row2);
-                  });
-
-                  leagueSection.appendChild(table);
-                  container.appendChild(leagueSection);
-              }
-          }, err => {
-              // Error handling for the snapshot listener
-              console.error("Error listening to Firestore updates:", err);
-              errorDiv.textContent = "Failed to load real-time data: " + err.message;
-          });
-
-      } catch (err) {
-          // Error handling for initial setup of the listener
-          console.error("Error setting up game listener:", err);
-          errorDiv.textContent = "Failed to initialize real-time data: " + err.message;
-      }
-  }
-
-
-  // fetchYesterdayScores function (from index-7.html, slightly modified to use getTeamDisplayName)
-  async function fetchYesterdayScores() {
-    const loadingElement = document.getElementById('scoresLoading');
-    const errorMessageDiv = document.getElementById('scoresErrorMessage');
-    const errorTextSpan = document.getElementById('scoresErrorText');
-    const contentDiv = document.getElementById('dynamicScoresContent');
-
-    if (loadingElement) loadingElement.classList.remove('hidden');
-    if (contentDiv) { contentDiv.classList.add('hidden'); contentDiv.innerHTML = ''; }
-    if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
-
-    const yesterday = luxon.DateTime.now().setZone('America/New_York').minus({ days: 1 }).toISODate();
-    const FINISHED_STATUSES = ['Finished', 'Final'];
-
-    try {
-      gamesCollectionRef
-        .where('gameDate', '==', yesterday)
-        .where('Match Status', 'in', FINISHED_STATUSES)
-        .orderBy('Start Time')
-        .onSnapshot((snapshot) => {
-          const games = snapshot.docs.map(doc => doc.data());
-          if (games.length === 0) {
-            if (errorTextSpan) errorTextSpan.textContent = 'No finished games for yesterday.';
-            if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-            if (loadingElement) loadingElement.classList.add('hidden');
-            if (contentDiv) contentDiv.classList.add('hidden');
-            return;
-          }
-
-          const groupedGames = games.reduce((acc, game) => {
-            const league = game.League || 'Other';
-            if (!acc[league]) acc[league] = [];
-            acc[league].push(game);
-            return acc;
-          }, {});
-
-          const sortedLeagueNames = Object.keys(groupedGames).sort(); // Sort alphabetically for scores
-
-          if (contentDiv) {
-            contentDiv.innerHTML = '';
-            sortedLeagueNames.forEach(leagueName => {
-              const leagueSection = document.createElement('div');
-              leagueSection.classList.add('league-section');
-              const leagueHeader = document.createElement('h2');
-              leagueHeader.classList.add('league-header');
-              leagueHeader.textContent = getLeagueDisplayName(leagueName); // Use getLeagueDisplayName
-              leagueSection.appendChild(leagueHeader);
-              const gamesListContainer = document.createElement('div');
-              gamesListContainer.classList.add('game-entry-wrapper');
-
-              const leagueGames = groupedGames[leagueName];
-              leagueGames.forEach(game => {
-                const row = document.createElement('div');
-                row.className = 'game-entry';
-
-                const timeDiv = document.createElement('div');
-                timeDiv.className = 'time-cell status-finished'; // Always finished for this tab
-                timeDiv.textContent = 'F'; // 'F' for Final
-                row.appendChild(timeDiv);
-
-                const teamsDiv = document.createElement('div');
-                teamsDiv.className = 'game-details';
-                teamsDiv.innerHTML = `
-                  <div class="team-name">${getTeamDisplayName(game['Away Team'] || '')}</div>
-                  <div class="team-name">${getTeamDisplayName(game['Home Team'] || '')}</div>
-                `;
-                row.appendChild(teamsDiv);
-
-                const scoreDiv = document.createElement('div');
-                scoreDiv.className = 'game-scores';
-                const awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
-                const homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
-
-                // Determine winner for bolding
-                const isAwayWinner = parseInt(awayScore) > parseInt(homeScore);
-                const isHomeWinner = parseInt(homeScore) > parseInt(awayScore);
-
-                scoreDiv.innerHTML = `
-                  <div class="score-value ${isAwayWinner ? 'winner' : ''}">${awayScore}</div>
-                  <div class="score-value ${isHomeWinner ? 'winner' : ''}">${homeScore}</div>
-                `;
-                row.appendChild(scoreDiv);
-
-                const channelDiv = document.createElement('div');
-                channelDiv.className = 'channel-cell';
-                channelDiv.textContent = game.Channels || '';
-                row.appendChild(channelDiv);
-
-                gamesListContainer.appendChild(row);
-              });
-
-              leagueSection.appendChild(gamesListContainer);
-              contentDiv.appendChild(leagueSection);
-            });
-            contentDiv.classList.remove('hidden');
-          }
-
-          if (loadingElement) loadingElement.classList.add('hidden');
-        },
-        (error) => {
-          console.error("onSnapshot failed for yesterday's scores:", error);
-          if (errorTextSpan) errorTextSpan.textContent = `Failed to load yesterday's scores: ${error.message}`;
-          if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-          if (loadingElement) loadingElement.classList.add('hidden');
-          if (contentDiv) contentDiv.classList.add('hidden');
-        });
-    } catch (error) {
-      console.error("Error setting up snapshot listener for yesterday's scores:", error);
-      if (errorTextSpan) errorTextSpan.textContent = `Setup error for yesterday's scores: ${error.message}.`;
-      if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-      if (loadingElement) loadingElement.classList.add('hidden');
-      if (contentDiv) contentDiv.classList.add('hidden');
-    }
-  }
-</script>
-
-
- <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // ── A) Grab all four tab elements and define their order ──
-    const tabs    = Array.from(document.querySelectorAll(".headlines-tab"));
-    const sources = ["espn", "cbs", "yahoo", "fox"];
-
-    // ── B) Keep track of which feeds already have a scroll listener ──
-    const scrollListeners = {};
-
-    // ── C) Function to attach a "scroll to bottom" watcher on a feed ──
-    function attachScrollWatcher(src) {
-      const feedEl = document.getElementById(src + "-feed");
-      // If there's no such element or we've already wired it, do nothing
-      if (!feedEl || scrollListeners[src]) return;
-
-      const onScroll = () => {
-        // When scrolled to (or within 1px of) bottom, auto‐advance:
-        if (feedEl.scrollHeight - feedEl.scrollTop - feedEl.clientHeight <= 1) {
-          const idx     = sources.indexOf(src);
-          const nextIdx = idx + 1;
-          if (nextIdx < sources.length) {
-            const nextTab = document.querySelector(
-              `.headlines-tab[data-source="${sources[nextIdx]}"]`
-            );
-            if (nextTab) nextTab.click();
-          }
-        }
-      };
-
-      feedEl.addEventListener("scroll", onScroll);
-      scrollListeners[src] = onScroll;
-    }
-
-    // ── D) Function to activate (highlight) exactly one tab + feed ──
-    function activateSource(src) {
-      // 1) Toggle "active" class on tabs
-      tabs.forEach(t => t.classList.toggle(
-        "active",
-        t.getAttribute("data-source") === src
-      ));
-
-      // 2) Hide all four feed‐divs, then show only the chosen one
-      sources.forEach(s => {
-        const div = document.getElementById(s + "-feed");
-        if (div) {
-          div.style.display = (s === src) ? "block" : "none";
-        }
-      });
-
-      // 3) After switching, (re‐)attach the scroll watcher to the newly visible feed
-      attachScrollWatcher(src);
-    }
-
-    // ── E) Add click listeners to each .headlines-tab ──
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        const src = tab.getAttribute("data-source"); // "espn" / "cbs" / etc.
-        activateSource(src);
-      });
-    });
-
-    // ── F) On initial load, activate ESPN by default ──
-    activateSource("espn");
-  });
-</script>
-	 
-
-	    <script>
-  /**
-   * Turn a raw headline into a normalized array of words.
-   * - Lowercase
-   * - Remove punctuation
-   * - Split on whitespace
-   * - Filter out empty tokens
-   */
-  function headlineToWordArray(str) {
-    return str
-      .toLowerCase()
-      .replace(/[^\w\s]/g, "")   // strip any non‐alphanumeric (keeps letters/numbers/spaces)
-      .split(/\s+/)              // split on whitespace
-      .filter(word => word.length > 0);
-  }
-
-  /**
-   * Compute Jaccard similarity of two arrays of words:
-   * |Intersection(words1, words2)| / |Union(words1, words2)|
-   */
-  function jaccardSimilarity(wordsA, wordsB) {
-    const setA = new Set(wordsA);
-    const setB = new Set(wordsB);
-    let intersectionCount = 0;
-    for (let w of setA) {
-      if (setB.has(w)) intersectionCount++;
-    }
-    const unionCount = setA.size + setB.size - intersectionCount;
-    if (unionCount === 0) return 0;
-    return intersectionCount / unionCount;
-  }
-
-  /**
-   * Remove any post element whose headline is "too similar" to one already kept.
-   * We keep track of word‐sets of all headlines we've accepted, then for each new one
-   * we measure its Jaccard similarity against all "seen" sets. If any overlap ≥ threshold, we remove it.
-   */
-  function removeNearDuplicateHeadlines() {
-    const container = document.getElementById("my-rss-widget");
-    if (!container) return;
-
-    // Grab every <a> under #my-rss-widget (RSS.app normally puts each item in an <a>).
-    const links = Array.from(container.querySelectorAll("a"));
-
-    // Array of word‐sets we have accepted so far
-    const seenWordSets = [];
-    // Threshold of Jaccard similarity above which we consider two headlines "duplicates"
-    const SIMILARITY_THRESHOLD = 0.65;
-
-    links.forEach(link => {
-      const rawText = link.textContent || "";
-      const words = headlineToWordArray(rawText);
-      // Compare against each seen word‐set:
-      let isDuplicate = false;
-      for (let seenWords of seenWordSets) {
-        const similarity = jaccardSimilarity(words, seenWords);
-        if (similarity >= SIMILARITY_THRESHOLD) {
-          isDuplicate = true;
-          break;
-        }
-      }
-
-      if (isDuplicate) {
-        // Remove this entire "item." Climb up until you hit a direct child of #my-rss-widget:
-        let el = link;
-        while (el && el.parentElement && el.parentElement.id !== "my-rss-widget") {
-          el = el.parentElement;
-        }
-        if (el && el.parentElement === container) {
-          container.removeChild(el);
-        }
-      } else {
-        // Not a duplicate: add this word‐array to seenWordSets
-        seenWordSets.push(words);
-      }
-    });
-  }
-
-  /**
-   * Observe #my-rss-widget until at least one <a> appears, then run the fuzzy dedupe.
-   * Also run a fallback after 3 seconds in case feed loads slowly.
-   */
-  document.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("my-rss-widget");
-    if (!container) return;
-
-    const observer = new MutationObserver((mutations, obs) => {
-      // If at least one <a> is present, RSS.app has rendered items
-      if (container.querySelector("a")) {
-        removeNearDuplicateHeadlines();
-        obs.disconnect();
-      }
-    });
-
-    observer.observe(container, { childList: true, subtree: true });
-
-    // Fallback in case feed injection is delayed
-    setTimeout(removeNearDuplicateHeadlines, 3000);
-  });
-</script>
-
-	    <!-- put this right before the closing </body> tag -->
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const breakingContainer = document.getElementById("breaking-feed");
-    if (!breakingContainer) return;
-
-    breakingContainer.addEventListener("click", async (evt) => {
-      // Only proceed if a link (<a>) was clicked inside #breaking-feed
-      const anchor = evt.target.closest("a");
-      if (!anchor || !breakingContainer.contains(anchor)) return;
-      evt.preventDefault();
-
-      const newsNowUrl = anchor.href;
-      try {
-        // 1) Fetch the NewsNow page HTML
-        const resp = await fetch(newsNowUrl, { redirect: "follow" });
-        const html = await resp.text();
-        const doc = new DOMParser().parseFromString(html, "text/html");
-
-        // 2) Look for a <meta http-equiv="refresh"> redirect
-        const metaRefresh = doc.querySelector('meta[http-equiv="refresh"]');
-        if (metaRefresh) {
-          const content = metaRefresh.getAttribute("content") || "";
-          // "content" is often like "0; URL=https://…"
-          const match = content.match(/URL=(.*)/i);
-          if (match && match[1]) {
-            window.open(match[1], "_blank");
-            return;
-          }
-        }
-
-        // 3) Fallback: check for <link rel="canonical">
-        const linkCanonical = doc.querySelector('link[rel="canonical"]');
-        if (linkCanonical && linkCanonical.href) {
-          window.open(linkCanonical.href, "_blank");
-          return;
-        }
-
-        // 4) Fallback: inspect any <script> blocks for a JS redirect
-        const scripts = Array.from(doc.querySelectorAll("script"));
-        for (const s of scripts) {
-          const txt = s.textContent || "";
-          // look for window.location.href = "…";
-          let m = txt.match(/window\.location\.href\s*=\s*['"](.*?)['"]/);
-          if (m && m[1]) {
-            window.open(m[1], "_blank");
-            return;
-          }
-          // look for location.replace("…");
-          m = txt.match(/location\.replace\s*\(\s*['"](.*?)['"]/);
-          if (m && m[1]) {
-            window.open(m[1], "_blank");
-            return;
-          }
-        }
-
-        // 5) If none of the above, just open the NewsNow URL as a last resort
-        window.open(newsNowUrl, "_blank");
-      } catch (err) {
-        // On fetch/parse error, open the original link
-        window.open(newsNowUrl, "_blank");
-      }
-    });
-  });
-</script>
-
- 
-<script>
-  // This script encapsulates the tab switching logic and calls the appropriate fetch functions.
-  function setupTabSwitching() {
-    const gamesTabs = document.querySelectorAll('.games-tab');
-    const gamesContents = document.querySelectorAll('.games-content');
-    let todayGamesIntervalId = null;
-
-    gamesTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const targetTabId = tab.dataset.tab;
-
-        // Remove 'active' from all tabs and hide all content divs
-        gamesTabs.forEach(t => t.classList.remove('active'));
-        gamesContents.forEach(content => {
-          content.style.display = 'none';
-        });
-
-        // Activate the clicked tab and its content
-        tab.classList.add('active');
-        const targetContentDiv = document.getElementById(`tv-listings-${targetTabId}`);
-        if (targetContentDiv) {
-          targetContentDiv.style.display = 'block';
-        }
-
-        // Clear existing interval for "today" tab
-        if (todayGamesIntervalId) {
-          clearInterval(todayGamesIntervalId);
-          todayGamesIntervalId = null;
-        }
-
-        // Trigger fetches for the selected tab
-        if (targetTabId === 'scores') {
-          fetchYesterdayScores();
-        } else if (targetTabId === 'today') {
-          fetchTodayGames(); // This will now call the new fetchTodayGames from testing_testing-3.html
-          todayGamesIntervalId = setInterval(fetchTodayGames, 30000);
-        } else if (targetTabId === 'live') {
-          // TODO: Add fetchLiveGames() if needed
-        }
-      });
-    });
-
-    // ✅ Default to loading the TODAY tab
-    const todayTab = document.querySelector('.games-tab[data-tab="today"]');
-    if (todayTab) {
-      todayTab.click();
-    } else {
-      const fallbackTab = document.querySelector('.games-tab[data-tab="scores"]');
-      if (fallbackTab) fallbackTab.click();
-    }
-  }
-</script>
-
 	  <script>
-  // -- FEED URLs: Replace with your real feeds --
-const HEADLINES_FEED = "https://www.espn.com/espn/rss/news";
-const BREAKING_FEED = "https://rss.app/feeds/XcFXtVdyCBGtIC6O.xml";
-const FANTASY_FEED = "https://fantasynews.cbssports.com/rss/headlines/";
-const TRANSACTIONS_FEED = "https://www.espn.com/espn/rss/mlb/news"; // EXAMPLE, replace as needed
+    // --- This script block contains all logic for Firebase, game/schedule display, and standings ---
 
-// -- Generic function to fetch and render a basic RSS feed --
-function fetchRSSFeed(url, containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  container.innerHTML = "Loading...";
-  fetch(url)
-    .then(res => res.text())
-    .then(str => {
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(str, "application/xml");
-      const items = Array.from(xml.querySelectorAll("item"));
-      if (!items.length) {
-        container.innerHTML = "<p>No stories found.</p>";
-        return;
-      }
-      const ul = document.createElement("ul");
-      ul.style.margin = "0";
-      ul.style.padding = "0";
-      ul.style.listStyle = "none";
-      items.forEach(item => {
-        const li = document.createElement("li");
-        li.style.padding = "6px 0";
-        const title = item.querySelector("title")?.textContent || "";
-        const link = item.querySelector("link")?.textContent || "#";
-        li.innerHTML = `<a href="${link}" target="_blank" style="color:#212121;text-decoration:none;">${title}</a>`;
-        ul.appendChild(li);
-      });
-      container.innerHTML = "";
-      container.appendChild(ul);
-    })
-    .catch(() => {
-      container.innerHTML = "<p>Error loading feed.</p>";
-    });
-}
+    // 1. FIREBASE CONFIGURATION
+    const firebaseConfig = {
+        apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
+        authDomain: "flashlive-daily-scraper.firebaseapp.com",
+        projectId: "flashlive-daily-scraper",
+        storageBucket: "flashlive-daily-scraper.appspot.com",
+        messagingSenderId: "124291936014",
+        appId: "1:124291936014:web:acadcaa791d6046849315f",
+        measurementId: "G-R146KS92QJ"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const gamesCollectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
 
-// -- Tabs logic for Breaking/Fantasy/Transactions
-document.addEventListener("DOMContentLoaded", function() {
-  // Load default feeds
-  fetchRSSFeed(HEADLINES_FEED, "headlines-feed");
-  fetchRSSFeed(BREAKING_FEED, "breaking-feed");
-
-  const tabs = document.querySelectorAll(".news-tab");
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      tabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      document.getElementById("breaking-feed").style.display = "none";
-      document.getElementById("fantasy-feed").style.display = "none";
-      document.getElementById("transactions-feed").style.display = "none";
-
-      if (tab.dataset.tab === "breaking") {
-        document.getElementById("breaking-feed").style.display = "block";
-        fetchRSSFeed(BREAKING_FEED, "breaking-feed");
-      }
-      if (tab.dataset.tab === "fantasy") {
-        document.getElementById("fantasy-feed").style.display = "block";
-        fetchRSSFeed(FANTASY_FEED, "fantasy-feed");
-      }
-      if (tab.dataset.tab === "transactions") {
-        document.getElementById("transactions-feed").style.display = "block";
-        fetchRSSFeed(TRANSACTIONS_FEED, "transactions-feed");
-      }
-    });
-  });
-});
-</script>
-
-	  
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const menuBtn = document.getElementById('menu-toggle');
-    const gamesBtn = document.getElementById('games-toggle');
-    const menuCol = document.querySelector('.column.main-menu');
-    const gamesCol = document.querySelector('.column.tv-listings');
-
-    if (menuBtn) {
-      menuBtn.addEventListener('click', () => {
-        if (menuCol) menuCol.classList.toggle('open');
-      });
-    }
-
-    if (gamesBtn) {
-      gamesBtn.addEventListener('click', () => {
-        if (gamesCol) gamesCol.classList.toggle('open');
-      });
-    }
-
-    // News panel switching
-    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
-      item.addEventListener("click", function () {
-        const section = item.dataset.section || "Home";
-        document.querySelectorAll(".column.news .content-section").forEach(s => {
-          s.style.display = "none";
-        });
-        const news = document.getElementById("news-" + section);
-        if (news) {
-          news.style.display = "block";
-        } else {
-          const homeNews = document.getElementById("news-Home");
-          if (homeNews) homeNews.style.display = "block";
-        }
-      });
-    });
-
-    // ✅ Init games panel switching (after DOM and fetch functions are ready)
-    setupTabSwitching();
-  });
-</script>
-
-<!-- FINAL, ISOLATED SCRIPT FOR COLUMN & F1 TAB SWITCHING -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    
-    // --- PART 1: Logic to switch between Games and F1 column content ---
-    const leftMenu = document.getElementById('menuList');
-    const gamesContent = document.getElementById('tv-listings-container');
-    const f1Content = document.getElementById('f1-column-content');
-
-    if (leftMenu && gamesContent && f1Content) {
-        leftMenu.addEventListener('click', function(event) {
-            const clickedItem = event.target.closest('li[data-section]');
-            if (!clickedItem) return;
-
-            const section = clickedItem.dataset.section;
-
-            if (section === 'FormulaOne') {
-                gamesContent.style.display = 'none';
-                f1Content.style.display = 'flex'; // Use flex to restore layout
-            } else {
-                gamesContent.style.display = 'block';
-                f1Content.style.display = 'none';
-            }
-        });
-    }
-
-    // --- PART 2: Logic for the F1 Driver/Constructor tabs ---
-    const f1TabButtonsContainer = document.getElementById('f1-tab-buttons');
-    const f1ContentPanes = document.querySelectorAll('.f1-content-pane');
-    
-    let driverStandingsLoaded = false;
-    let constructorStandingsLoaded = false;
-    
-    // Load the default tab's data immediately when the F1 panel is shown
-    // This assumes you want to load it when FormulaOne is clicked.
-    // We can also trigger this on the first click of the tab.
-    const f1MenuItem = document.querySelector('li[data-section="FormulaOne"]');
-    if (f1MenuItem) {
-        f1MenuItem.addEventListener('click', () => {
-            if (!driverStandingsLoaded) {
-                loadDriverStandings();
-                driverStandingsLoaded = true;
-            }
-        }, { once: true }); // Use { once: true } so it only fires the first time
-    }
-
-    if (f1TabButtonsContainer) {
-        f1TabButtonsContainer.addEventListener('click', function(event) {
-            const clickedButton = event.target.closest('.f1-tab-button');
-            if (!clickedButton) return;
-
-            const targetTabId = clickedButton.dataset.tab;
-            
-            // Deactivate all buttons
-            f1TabButtonsContainer.querySelectorAll('.f1-tab-button').forEach(btn => {
-                btn.style.borderBottomColor = 'transparent';
-                btn.style.color = '#9ca3af';
-            });
-
-            // Hide all panes
-            f1ContentPanes.forEach(pane => {
-                pane.style.display = 'none';
-            });
-
-            // Activate the clicked button and its pane
-            clickedButton.style.borderBottomColor = '#DC143C';
-            clickedButton.style.color = '#fff';
-            
-            const targetPane = document.getElementById(targetTabId);
-            if (targetPane) {
-                targetPane.style.display = 'block';
-            }
-            
-            // Load data if it hasn't been loaded yet
-            if (targetTabId === 'driver-standings' && !driverStandingsLoaded) {
-                loadDriverStandings();
-                driverStandingsLoaded = true; 
-            } else if (targetTabId === 'constructor-standings' && !constructorStandingsLoaded) {
-                loadConstructorStandings();
-                constructorStandingsLoaded = true;
-            }
-        });
-    }
-});
-</script>
-
-<script>
-// Google Sheets Configuration - Using published CSV URLs (no API key needed)
-const GOOGLE_SHEETS_CONFIG = {
-    DRIVER_STANDINGS_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6rs6yvXAh-KktOOVGGY6knFMjR11W75yfcq7iReQCjl-uc9hHwT3yMpZ01GqAlYwsY0VYVTADrPiR/pub?output=csv',
-    CONSTRUCTOR_STANDINGS_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQcpOkjKy5bcEPAZRofXpGGyf0_VkfIBIDDrlgUIiSuznqdUfDRAqmy_EAcVN3K1-y_F6wr78TbH6U8/pub?output=csv'
-};
-
-// Function to fetch data from published Google Sheets CSV
-async function fetchFromGoogleSheetsCSV(url) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const csvText = await response.text();
-        // Parse CSV data using a regular expression for newlines
-        const rows = csvText.split(/\r?\n/).map(row => row.split(',').map(cell => cell.trim().replace(/^\"|\"$/g, '')));
-        return rows.filter(row => row.length > 1 && row[0] !== ''); // Ensure row has content
-    } catch (error) {
-        console.error('Error fetching from Google Sheets CSV:', error);
-        throw error;
-    }
-}
-
-// Function to load driver standings
-async function loadDriverStandings() {
-    const loadingDiv = document.getElementById('driver-loading');
-    const errorDiv = document.getElementById('driver-error');
-    const table = document.getElementById('driver-table');
-    const tbody = document.getElementById('driver-tbody');
-    try {
-        loadingDiv.style.display = 'block';
-        errorDiv.style.display = 'none';
-        table.style.display = 'none';
-        const data = await fetchFromGoogleSheetsCSV(GOOGLE_SHEETS_CONFIG.DRIVER_STANDINGS_URL);
-        if (data.length === 0) throw new Error('No data found in sheet');
-        tbody.innerHTML = '';
-        for (let i = 1; i < data.length; i++) {
-            const row = data[i];
-            if (row.length >= 4) {
-                const tr = document.createElement('tr');
-                tr.style.borderTop = '1px solid #374151';
-                tr.innerHTML = `
-                    <td style="padding: 6px 4px;">${row[0]}</td>
-                    <td style="padding: 6px 4px;">${row[1]}</td>
-                    <td style="padding: 6px 4px;">${row[3]}</td>
-                    <td style="padding: 6px 4px; text-align: right; font-weight: bold;">${row[2]}</td>
-                `;
-                tbody.appendChild(tr);
-            }
-        }
-        loadingDiv.style.display = 'none';
-        table.style.display = 'table';
-    } catch (error) {
-        loadingDiv.style.display = 'none';
-        errorDiv.style.display = 'block';
-        errorDiv.textContent = `Error loading driver standings: ${error.message}`;
-        console.error('Error loading driver standings:', error);
-    }
-}
-
-// Function to load constructor standings
-async function loadConstructorStandings() {
-    const loadingDiv = document.getElementById('constructor-loading');
-    const errorDiv = document.getElementById('constructor-error');
-    const table = document.getElementById('constructor-table');
-    const tbody = document.getElementById('constructor-tbody');
-    try {
-        loadingDiv.style.display = 'block';
-        errorDiv.style.display = 'none';
-        table.style.display = 'none';
-        const data = await fetchFromGoogleSheetsCSV(GOOGLE_SHEETS_CONFIG.CONSTRUCTOR_STANDINGS_URL);
-        if (data.length === 0) throw new Error('No data found in sheet');
-        tbody.innerHTML = '';
-        for (let i = 1; i < data.length; i++) {
-            const row = data[i];
-            if (row.length >= 3) {
-                const tr = document.createElement('tr');
-                tr.style.borderTop = '1px solid #374151';
-                tr.innerHTML = `
-                    <td style="padding: 6px 4px;">${row[0]}</td>
-                    <td style="padding: 6px 4px;">${row[1]}</td>
-                    <td style="padding: 6px 4px; text-align: right; font-weight: bold;">${row[2]}</td>
-                `;
-                tbody.appendChild(tr);
-            }
-        }
-        loadingDiv.style.display = 'none';
-        table.style.display = 'table';
-    } catch (error) {
-        loadingDiv.style.display = 'none';
-        errorDiv.style.display = 'block';
-        errorDiv.textContent = `Error loading constructor standings: ${error.message}`;
-        console.error('Error loading constructor standings:', error);
-    }
-}
-
-// Initial load when F1 section is shown
-document.addEventListener('DOMContentLoaded', function () {
-    // You may want to call loadDriverStandings() here if F1 is the default tab
-});
-</script>
-
-	  <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const F1_SCHEDULE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZ9MyNW-7sVotdUg-L3rBWegNuPhhYek7C367krB8PfVRrRNBTE57AXTGPcxOXc192MqS_toeVrWER/pub?output=csv';
-    const scheduleContainer = document.getElementById('f1-schedule-container');
-
-    // Fetches and parses the F1 schedule CSV data.
-    async function fetchF1ScheduleData() {
-        try {
-            const response = await fetch(F1_SCHEDULE_URL);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const csvText = await response.text();
-            
-            const rows = csvText.split(/\r?\n/).slice(1); // Split and remove header row
-            const timeZone = 'America/Chicago'; // Times in the sheet are Central U.S. Time
-            const { DateTime } = luxon;
-
-            return rows.map(row => {
-                const columns = row.split(',');
-                if (columns.length < 6) return null; // Skip malformed rows
-
-                const date = columns[0].trim();
-                const startTimeStr = columns[1].trim();
-                const endTimeStr = columns[2].trim();
-
-                // Combine date and time to create a valid Luxon DateTime object with the correct time zone
-                const startDateTime = DateTime.fromFormat(`${date} ${startTimeStr}`, 'M/d/yyyy h:mm a', { zone: timeZone });
-                const endDateTime = DateTime.fromFormat(`${date} ${endTimeStr}`, 'M/d/yyyy h:mm a', { zone: timeZone });
-
-                return {
-                    start: startDateTime,
-                    end: endDateTime,
-                    eventHead: columns[3].trim(),
-                    eventSub: columns[4].trim(),
-                    channel: columns[5].trim()
-                };
-            }).filter(event => event && event.start.isValid); // Filter out null or invalid date rows
-        } catch (error) {
-            console.error('Error fetching or parsing F1 schedule:', error);
-            scheduleContainer.innerHTML = `<p style="color: #ef4444;">Error loading schedule.</p>`;
-            return [];
-        }
-    }
-
-    // Renders the schedule based on the current time.
-    function renderSchedule(allEvents) {
-        if (!allEvents || allEvents.length === 0) {
-            scheduleContainer.innerHTML = `<p style="color: #9ca3af;">No upcoming schedule found.</p>`;
-            return;
-        }
-
-        const now = luxon.DateTime.now();
-
-        // 1. Find the current or next race weekend to display
-        const nextEvent = allEvents.find(event => event.end > now);
-        if (!nextEvent) {
-            scheduleContainer.innerHTML = `<p style="color: #9ca3af;">The season may have concluded.</p>`;
-            return;
-        }
-        const currentRaceHead = nextEvent.eventHead;
-
-        // 2. Filter for events for that specific weekend whose end time hasn't passed
-        const eventsToDisplay = allEvents.filter(event => 
-            event.eventHead === currentRaceHead && event.end > now
-        );
-
-        // 3. Group events by date for display
-        const groupedByDate = eventsToDisplay.reduce((acc, event) => {
-            const dateKey = event.start.toFormat('yyyy-MM-dd');
-            if (!acc[dateKey]) {
-                acc[dateKey] = [];
-            }
-            acc[dateKey].push(event);
-            return acc;
-        }, {});
-        
-        // 4. Generate and inject the HTML
-        let html = '';
-        const today = now.toFormat('yyyy-MM-dd');
-        
-        for (const dateKey in groupedByDate) {
-            const dateObj = luxon.DateTime.fromISO(dateKey);
-            const dateHeader = (dateKey === today) ? 'Today' : dateObj.toFormat('MMMM d');
-            
-            html += `<h3 style="font-weight: 600; margin-bottom: 0.5rem; margin-top: 1rem;">${dateHeader}</h3>`;
-
-            groupedByDate[dateKey].forEach(event => {
-                const isLive = now >= event.start && now < event.end;
-                const timeDisplay = isLive 
-                    ? `<span style="color: #ef4444; font-weight: bold;">Live</span>`
-                    : event.start.toFormat('h:mm a');
-
-                html += `
-                    <div style="display: flex; justify-content: space-between; align-items: top; margin-bottom: 0.75rem;">
-                        <div style="flex: 0 0 70px; color: #e0e0e0;">${timeDisplay}</div>
-                        <div style="flex: 1 1 auto;">
-                            <p style="margin: 0; padding: 0; font-weight: 500;">${event.eventHead}</p>
-                            <p style="margin: 0; padding: 0; color: #9ca3af;">${event.eventSub}</p>
-                        </div>
-                        <div style="flex: 0 0 60px; text-align: right; color: #e0e0e0;">${event.channel}</div>
-                    </div>
-                `;
-            });
-        }
-
-        scheduleContainer.innerHTML = html || `<p style="color: #9ca3af;">No upcoming events for this race.</p>`;
-    }
-
-    // Main function to update the schedule
-    async function updateSchedule() {
-        const events = await fetchF1ScheduleData();
-        renderSchedule(events);
-    }
-
-    // Initial load and then update every 60 seconds to catch "Live" status changes
-    updateSchedule();
-    setInterval(updateSchedule, 60000); 
-});
-</script>
-	  
-<!-- FINAL SCRIPT WITH DEBUG LOGGING -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('[DEBUG] DOMContentLoaded: Script starting.');
-
-    // --- CONFIGURATION MAP ---
-    // This is the central map for all league-specific data sources.
+    // 2. CONFIGURATION MAP (Schedules & Standings)
     const LEAGUE_DATA_CONFIG = {
         'NFL': {
             leagueId: 'USA: NFL',
@@ -3442,18 +2298,6 @@ document.addEventListener('DOMContentLoaded', function () {
             leagueId: 'USA: WNBA',
             standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSMWPTh0lOh89-qkXYbx63Vs8FQ7gUoT0333Pa9ZgPg4WWBMgB-xERDMM_U2yIUgS3TSPOXOD5M7sVl/pub?gid=0&single=true&output=csv'
         },
-		'Soccer': {
-            leagueId: 'SOCCER_LEAGUE_ID_IN_FIRESTORE', // Replace with the actual value from Firestore
-            standingsUrl: 'YOUR_SOCCER_STANDINGS_CSV_URL_HERE'
-        },
-        'UEFAChampionsLeague': {
-            leagueId: 'EUROPE: UEFA CHAMPIONS LEAGUE',
-            standingsUrl: 'YOUR_UEFACHAMPIONSLEAGUE_STANDINGS_CSV_URL_HERE'
-        },
-        'FACup': {
-            leagueId: 'ENGLAND: FA CUP',
-            standingsUrl: 'YOUR_FACUP_STANDINGS_CSV_URL_HERE'
-        },
         'LigaMX': {
             leagueId: 'MEXICO: LIGA MX - APERTURA',
             standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSL_7HJC0jqhF1jy4tiIrrh5RLewsiH9RezMKDx6TpZtz2JHB8D7Dlx7yyZRWZ7rU5txoTasyiHk7M4/pub?gid=0&single=true&output=csv'
@@ -3462,21 +2306,9 @@ document.addEventListener('DOMContentLoaded', function () {
             leagueId: 'USA: NWSL',
             standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQJn_hnVeNfnXsDpeer_hgh6dxOcL2VOJzHKsE8cv-OTaX8EzWRYIGNLqLztvuAeuJbM4oEElA-LoiU/pub?gid=0&single=true&output=csv'
         },
-        'UEFAEuropaLeague': {
-            leagueId: 'EUROPE: EUROPA LEAGUE',
-            standingsUrl: 'YOUR_UEFAEUROPALEAGUE_STANDINGS_CSV_URL_HERE'
-        },
-        'UEFAConferenceLeague': {
-            leagueId: 'EUROPE: CONFERENCE LEAGUE',
-            standingsUrl: 'YOUR_UEFACONFERENCELEAGUE_STANDINGS_CSV_URL_HERE'
-        },
         'PGATour': {
             leagueId: 'PGA TOUR',
             standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh72gyQFguMGj0RkHvy-WrAH3EBpOMdikyKIjrOfSs5aAYYlE7NjbRJsBa7gkkJ4gV_nUUYSbCje2L/pub?gid=786471151&single=true&output=csv'
-        },
-        'UFC': {
-            leagueId: 'UFC',
-            standingsUrl: 'YOUR_UFC_STANDINGS_CSV_URL_HERE'
         },
         'Boxing': {
             leagueId: 'BOXING',
@@ -3506,14 +2338,6 @@ document.addEventListener('DOMContentLoaded', function () {
             leagueId: 'USA: NCAAW',
             standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRDKX76cBl2tx7s_rW20e2TzKX-uvA6UsPBjsv_UXhhoE8zVmUFJvDaopCxEhaDWyaOtL4wDWSVE6H7/pub?gid=0&single=true&output=csv'
         },
-        'NCAABaseball': {
-            leagueId: 'USA: NCAA BASEBALL',
-            standingsUrl: 'YOUR_NCAABASEBALL_STANDINGS_CSV_URL_HERE'
-        },
-        'NCAASoftball': {
-            leagueId: 'USA: NCAA SOFTBALL',
-            standingsUrl: 'YOUR_NCAASOFTBALL_STANDINGS_CSV_URL_HERE'
-        },
         'MotoGP': {
             leagueId: 'MOTOGP',
             standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSqOmundPRaLEu2Jcgt3KBdTRX6jy-Nmkb89fuJC_SfntbZVF_Y-tNehFSnZwqdmK2O3GJR3UlHFXms/pub?gid=0&single=true&output=csv'
@@ -3528,20 +2352,132 @@ document.addEventListener('DOMContentLoaded', function () {
         },
     };
 
-    // --- ELEMENT REFERENCES ---
-    const gamesColumn = document.getElementById('games-column');
-    const leagueSpecificColumn = document.getElementById('league-specific-column');
-    const leagueHeader = document.getElementById('league-specific-header');
-    const scheduleContent = document.getElementById('league-schedule-content');
-    const standingsContent = document.getElementById('league-standings-content');
-    const f1Content = document.getElementById('f1-column-content');
-    const gamesContentContainer = document.getElementById('tv-listings-container');
+    // 3. UTILITY FUNCTIONS
+    function getLeagueDisplayName(originalLeagueName) {
+        const exactLeagueMaps = { "USA: WNBA": "WNBA", "USA: MLB": "MLB", "EUROPE: UEFA CHAMPIONS LEAGUE": "UEFA Champions League", "EUROPE: UEFA WOMEN'S CHAMPIONS LEAGUE": "UEFA Women's Champions League", "USA: NBA": "NBA", "USA: NHL": "NHL", "USA: NFL": "NFL", "USA: NCAAB": "NCAAB", "USA: NCAAF": "NCAAF", "ENGLAND: PREMIER LEAGUE": "Premier League", "GERMANY: BUNDESLIGA": "Bundesliga", "SPAIN: LALIGA": "LaLiga", "ITALY: SERIE A": "Serie A", "FRANCE: LIGUE 1": "Ligue 1", "USA: MLS": "MLS", "USA: NFL - Pre-season": "NFL", "North & Central America: Leagues Cup": "Leagues Cup" };
+        return exactLeagueMaps[originalLeagueName] || originalLeagueName;
+    }
+    function getTeamDisplayName(originalTeamName) {
+        let processedTeamName = originalTeamName.endsWith(" W") ? processedTeamName.slice(0, -2) : originalTeamName;
+        const exactTeamMaps = { "Arizona Diamondbacks": "Diamondbacks", "Atlanta Braves": "Braves", "Baltimore Orioles": "Orioles", "Boston Red Sox": "Red Sox", "Chicago Cubs": "Cubs", "Chicago White Sox": "White Sox", "Cincinnati Reds": "Reds", "Cleveland Guardians": "Guardians", "Colorado Rockies": "Rockies", "Detroit Tigers": "Tigers", "Houston Astros": "Astros", "Kansas City Royals": "Royals", "Los Angeles Angels": "Angels", "Los Angeles Dodgers": "Dodgers", "Miami Marlins": "Marlins", "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets", "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies", "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants", "Seattle Mariners": "Mariners", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays", "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals", "Atlanta Dream": "Dream", "Chicago Sky": "Sky", "Connecticut Sun": "Sun", "Dallas Wings": "Wings", "Indiana Fever": "Fever", "Las Vegas Aces": "Aces", "Los Angeles Sparks": "Sparks", "Minnesota Lynx": "Lynx", "New York Liberty": "Liberty", "Phoenix Mercury": "Mercury", "Seattle Storm": "Storm", "Washington Mystics": "Mystics", "Golden State Valkyries": "Valkyries" };
+        return exactTeamMaps[processedTeamName] || processedTeamName;
+    }
+    const LEAGUE_DISPLAY_ORDER = [ "NFL", "MLB", "WNBA", "Leagues Cup", "NBA", "UEFA Champions League", "UEFA Women's Champions League", "Premier League", "Bundesliga", "LaLiga", "Serie A", "Ligue 1", "MLS", ];
     
+    // 4. DATA FETCHING AND RENDERING FUNCTIONS
+    
+    /**
+     * Unified function to display games, adapted from your working home page logic.
+     * @param {string} containerId - The ID of the element to render the games into.
+     * @param {string|null} leagueId - The exact name of the league to filter by. If null, shows all leagues.
+     */
+    function displayGames(containerId, leagueId = null) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = `<p style="padding: 10px; color: #9ca3af;">Loading games...</p>`;
+
+        try {
+            const { DateTime } = luxon;
+            const todayStr = DateTime.now().setZone('America/New_York').toISODate();
+            let gamesQuery = gamesCollectionRef.where('gameDate', '==', todayStr);
+
+            if (leagueId) {
+                gamesQuery = gamesQuery.where('League', '==', leagueId);
+            }
+            
+            gamesQuery.orderBy("Start Time").onSnapshot(snapshot => {
+                container.innerHTML = "";
+                if (snapshot.empty) {
+                    const message = leagueId ? `No games found for ${getLeagueDisplayName(leagueId)} today.` : `No games found for today.`;
+                    container.innerHTML = `<p style="padding: 10px;">${message}</p>`;
+                    return;
+                }
+                
+                const leagueGroups = {};
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const leagueDisplayName = getLeagueDisplayName(data.League) || "Other";
+                    if (!leagueGroups[leagueDisplayName]) leagueGroups[leagueDisplayName] = [];
+                    leagueGroups[leagueDisplayName].push(data);
+                });
+
+                const sortedLeagueNames = Object.keys(leagueGroups).sort((a, b) => {
+                    const indexA = LEAGUE_DISPLAY_ORDER.indexOf(a);
+                    const indexB = LEAGUE_DISPLAY_ORDER.indexOf(b);
+                    if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+                    if (indexA === -1) return 1;
+                    if (indexB === -1) return -1;
+                    return indexA - indexB;
+                });
+
+                for (const leagueName of sortedLeagueNames) {
+                    const games = leagueGroups[leagueName];
+                    const leagueSection = document.createElement("div");
+                    leagueSection.className = "league-section";
+                    const title = document.createElement("div");
+                    title.className = "league-title";
+                    title.textContent = leagueName;
+                    leagueSection.appendChild(title);
+                    const table = document.createElement("table");
+                    table.className = "game-table";
+                    let lastDisplayedTimeLabel = null;
+
+                    games.forEach(data => {
+                        const home = getTeamDisplayName(data["Home Team"] || "");
+                        const away = getTeamDisplayName(data["Away Team"] || "");
+                        const homeScore = data["Home Score"];
+                        const awayScore = data["Away Score"];
+                        const matchStatus = (data["Match Status"] || "").toUpperCase();
+                        const inningStatus = (data["Status"] || "").toUpperCase();
+                        const rawStart = data["Start Time"];
+                        const isLive = matchStatus.includes("PROGRESS") || matchStatus.includes("LIVE") || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
+                        const isFinal = matchStatus === "FINISHED";
+                        let currentTimeLabel = "";
+                        
+                        if (isLive) {
+                            currentTimeLabel = `<span style="color: red;">${inningStatus || 'Live'}</span>`;
+                        } else if (isFinal) {
+                            currentTimeLabel = "F";
+                        } else if (rawStart && rawStart.toDate) {
+                            currentTimeLabel = luxon.DateTime.fromJSDate(rawStart.toDate()).toFormat('h:mm a');
+                        } else {
+                            currentTimeLabel = "TBD";
+                        }
+
+                        let displayTimeLabel = currentTimeLabel;
+                        if (!isLive && !isFinal && currentTimeLabel !== "TBD") {
+                            if (currentTimeLabel === lastDisplayedTimeLabel) {
+                                displayTimeLabel = "";
+                            } else {
+                                lastDisplayedTimeLabel = currentTimeLabel;
+                            }
+                        }
+                        
+                        const row1 = table.insertRow();
+                        row1.className = "game-row";
+                        row1.innerHTML = `<td>${displayTimeLabel}</td><td class="team-cell">${away}</td><td>${(isLive || isFinal) && awayScore != null ? awayScore : ""}</td><td></td>`;
+                        const row2 = table.insertRow();
+                        row2.className = "game-row game-separator";
+                        row2.innerHTML = `<td></td><td class="team-cell">${home}</td><td>${(isLive || isFinal) && homeScore != null ? homeScore : ""}</td><td></td>`;
+                    });
+                    leagueSection.appendChild(table);
+                    container.appendChild(leagueSection);
+                }
+            }, err => {
+                console.error("Error with Firestore snapshot:", err);
+                container.innerHTML = "<p>Error loading real-time data.</p>";
+            });
+        } catch (err) {
+            console.error("Error setting up game listener:", err);
+            container.innerHTML = "<p>Failed to initialize real-time data.</p>";
+        }
+    }
+
     /**
      * Fetches and displays standings from a published Google Sheets CSV URL.
      */
     async function fetchLeagueStandings(url) {
-        console.log(`[DEBUG] fetchLeagueStandings: Fetching from URL: ${url}`);
+        const standingsContent = document.getElementById('league-standings-content');
         standingsContent.innerHTML = '<p style="color: #9ca3af;">Loading standings...</p>';
         try {
             const response = await fetch(url);
@@ -3549,8 +2485,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const csvText = await response.text();
             const rows = csvText.split(/\r?\n/).map(row => row.split(','));
             
-            console.log(`[DEBUG] fetchLeagueStandings: Found ${rows.length} rows in CSV.`);
-
             if (rows.length < 2 || (rows.length === 1 && rows[0].every(cell => cell.trim() === ''))) {
                  standingsContent.innerHTML = '<p style="color: #9ca3af;">No standings data available.</p>';
                  return;
@@ -3569,9 +2503,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             tableHtml += '</tbody></table>';
             standingsContent.innerHTML = tableHtml;
-            console.log('[DEBUG] fetchLeagueStandings: Successfully rendered standings table.');
         } catch (error) {
-            console.error('[DEBUG] fetchLeagueStandings: Error fetching or parsing standings:', error);
+            console.error('Error fetching league standings:', error);
             standingsContent.innerHTML = `<p style="color: #ef4444;">Error loading standings.</p>`;
         }
     }
@@ -3580,67 +2513,63 @@ document.addEventListener('DOMContentLoaded', function () {
      * Main function to load data for a specific league.
      */
     function loadLeagueSpecificData(section) {
-        console.log(`[DEBUG] loadLeagueSpecificData: Loading data for section: ${section}`);
         const config = LEAGUE_DATA_CONFIG[section];
         const menuItem = document.querySelector(`#menuList li[data-section="${section}"]`);
         const leagueName = menuItem ? Array.from(menuItem.childNodes).find(node => node.nodeType === 3)?.textContent.trim() : 'League';
         
-        leagueHeader.textContent = leagueName;
+        document.getElementById('league-specific-header').textContent = leagueName;
 
         if (config) {
-            console.log(`[DEBUG] loadLeagueSpecificData: Found config for ${section}:`, config);
             if (config.leagueId) {
                 displayGames('league-schedule-content', config.leagueId);
             } else {
-                scheduleContent.innerHTML = '<p style="color: #9ca3af;">Schedule not configured.</p>';
-                console.log(`[DEBUG] loadLeagueSpecificData: No leagueId for ${section}.`);
+                document.getElementById('league-schedule-content').innerHTML = '<p style="color: #9ca3af;">Schedule not configured.</p>';
             }
             if (config.standingsUrl && config.standingsUrl.startsWith('http')) {
                 fetchLeagueStandings(config.standingsUrl);
             } else {
-                standingsContent.innerHTML = '<p style="color: #9ca3af;">Standings not configured.</p>';
-                console.log(`[DEBUG] loadLeagueSpecificData: No valid standingsUrl for ${section}.`);
+                document.getElementById('league-standings-content').innerHTML = '<p style="color: #9ca3af;">Standings not configured.</p>';
             }
         } else {
-            console.log(`[DEBUG] loadLeagueSpecificData: No config found for section: ${section}.`);
-            scheduleContent.innerHTML = '<p style="color: #9ca3af;">No data configured for this league.</p>';
-            standingsContent.innerHTML = '';
+            document.getElementById('league-schedule-content').innerHTML = '<p style="color: #9ca3af;">No data configured for this league.</p>';
+            document.getElementById('league-standings-content').innerHTML = '';
         }
     }
 
-    // --- MENU CLICK LOGIC ---
-    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
-        item.addEventListener("click", e => {
-            const section = item.dataset.section;
-            console.log(`[DEBUG] Menu Click: Section '${section}' selected.`);
+    // 5. EVENT LISTENERS
+    document.addEventListener('DOMContentLoaded', function () {
+        const gamesColumn = document.getElementById('games-column');
+        const leagueSpecificColumn = document.getElementById('league-specific-column');
+        const f1Content = document.getElementById('f1-column-content');
+        const gamesContentContainer = document.getElementById('tv-listings-container');
 
-            if (section === 'Home') {
-                console.log('[DEBUG] Menu Click: Switching to Home view.');
-                gamesColumn.style.display = 'block';
-                leagueSpecificColumn.style.display = 'none';
-                gamesContentContainer.style.display = 'block';
-                f1Content.style.display = 'none';
-                displayGames('games'); // Call for home page (all games)
-            } else if (section === 'FormulaOne') {
-                console.log('[DEBUG] Menu Click: Switching to FormulaOne view.');
-                gamesColumn.style.display = 'block';
-                leagueSpecificColumn.style.display = 'none';
-                gamesContentContainer.style.display = 'none';
-                f1Content.style.display = 'flex';
-            } else {
-                console.log(`[DEBUG] Menu Click: Switching to League Specific view for ${section}.`);
-                gamesColumn.style.display = 'none';
-                leagueSpecificColumn.style.display = 'block';
-                loadLeagueSpecificData(section);
-            }
+        document.querySelectorAll("#menuList li[data-section]").forEach(item => {
+            item.addEventListener("click", e => {
+                const section = item.dataset.section;
+                if (section === 'Home') {
+                    gamesColumn.style.display = 'block';
+                    leagueSpecificColumn.style.display = 'none';
+                    gamesContentContainer.style.display = 'block';
+                    f1Content.style.display = 'none';
+                    displayGames('games');
+                } else if (section === 'FormulaOne') {
+                    gamesColumn.style.display = 'block';
+                    leagueSpecificColumn.style.display = 'none';
+                    gamesContentContainer.style.display = 'none';
+                    f1Content.style.display = 'flex';
+                } else {
+                    gamesColumn.style.display = 'none';
+                    leagueSpecificColumn.style.display = 'block';
+                    loadLeagueSpecificData(section);
+                }
+            });
         });
-    });
 
-    // Initial load for the home page games
-    console.log('[DEBUG] Initializing home page view.');
-    displayGames('games');
-});
+        // Initial load for the home page games
+        displayGames('games');
+    });
 </script>
+
 
   </body>
 </html>
