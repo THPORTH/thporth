@@ -3388,6 +3388,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	  
 <!-- ✅✅✅ THIS IS THE NEW SCRIPT YOU NEED TO EDIT ✅✅✅ -->
 <!-- FINAL SCRIPT FOR DYNAMIC LEAGUE SCHEDULES & STANDINGS -->
+<!-- FINAL SCRIPT FOR DYNAMIC LEAGUE SCHEDULES & STANDINGS -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // --- CONFIGURATION MAP ---
@@ -3536,7 +3537,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- DATA FETCHING FUNCTIONS ---
 
     /**
-     * Fetches schedule data for a given league from the main sportsGames collection in Firestore.
+     * Fetches schedule data for a given league from Firestore.
      * @param {string} leagueId The exact name of the league in the Firestore 'League' field.
      */
     async function fetchLeagueSchedule(leagueId) {
@@ -3634,7 +3635,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             scheduleContent.innerHTML = '<p style="color: #9ca3af;">No data configured for this league.</p>';
             standingsContent.innerHTML = '';
-        } 
+        }
     }
 });
 </script>
