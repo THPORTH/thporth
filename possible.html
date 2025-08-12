@@ -3387,7 +3387,6 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 	  
 <!-- FINAL SCRIPT FOR DYNAMIC LEAGUE SCHEDULES & STANDINGS -->
-<!-- FINAL SCRIPT FOR DYNAMIC LEAGUE SCHEDULES & STANDINGS -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // --- CONFIGURATION MAP ---
@@ -3538,7 +3537,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
     /**
      * Fetches and displays standings from a published Google Sheets CSV URL.
-     * @param {string} url The public URL of the Google Sheet CSV.
      */
     async function fetchLeagueStandings(url) {
         standingsContent.innerHTML = '<p style="color: #9ca3af;">Loading standings...</p>';
@@ -3571,10 +3569,9 @@ document.addEventListener('DOMContentLoaded', function () {
             standingsContent.innerHTML = `<p style="color: #ef4444;">Error loading standings.</p>`;
         }
     }
-
+    
     /**
      * Main function to load data for a specific league.
-     * @param {string} section The league's data-section identifier (e.g., 'NFL', 'PremierLeague').
      */
     function loadLeagueSpecificData(section) {
         const config = LEAGUE_DATA_CONFIG[section];
@@ -3584,13 +3581,12 @@ document.addEventListener('DOMContentLoaded', function () {
         leagueHeader.textContent = leagueName;
 
         if (config) {
-            // Call the unified displayGames function with the specific leagueId
             if (config.leagueId) {
+                // Use the unified displayGames function to show the schedule
                 displayGames('league-schedule-content', config.leagueId);
             } else {
                 scheduleContent.innerHTML = '<p style="color: #9ca3af;">Schedule not configured.</p>';
             }
-            // Fetch standings
             if (config.standingsUrl && config.standingsUrl.startsWith('http')) {
                 fetchLeagueStandings(config.standingsUrl);
             } else {
@@ -3623,7 +3619,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 leagueSpecificColumn.style.display = 'block';
                 loadLeagueSpecificData(section);
             }
-            // Your other menu click logic for news, social, etc. should also be here
         });
     });
 
