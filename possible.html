@@ -3388,14 +3388,14 @@ document.addEventListener('DOMContentLoaded', function () {
 	  
 <!-- ✅✅✅ THIS IS THE NEW SCRIPT YOU NEED TO EDIT ✅✅✅ -->
 <script>
-    // --- This is the COMBINED script for both Schedule and Standings ---
+    // --- FINAL COMBINED SCRIPT for Schedule & Standings ---
 
-    // --- LEAGUE CONFIGURATION MAP (Corrected) ---
-    // Note: It now uses 'leagueId' to search the single 'sportsGames' collection.
+    // --- LEAGUE CONFIGURATION MAP ---
+    // This map has both the 'leagueId' for the schedule and the 'standingsUrl' for standings.
     const LEAGUE_DATA_CONFIG = {
         'NFL': { 
             leagueId: 'USA: NFL', 
-            standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoXI911JBowIVpsOtYo7Jk0WwwNlujQ76rR4lgDAqxGWLa_q67gOXI0DyKsC4YkKIfbSYqerHp17-m/pub?gid=162820geo=json' 
+            standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoXI911JBowIVpsOtYo7Jk0WwwNlujQ76rR4lgDAqxGWLa_q67gOXI0DyKsC4YkKIfbSYqerHp17-m/pub?gid=1628205730&single=true&output=csv' 
         },
         'MLB': { 
             leagueId: 'USA: MLB', 
@@ -3405,7 +3405,7 @@ document.addEventListener('DOMContentLoaded', function () {
             leagueId: 'USA: WNBA', 
             standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSMWPTh0lOh89-qkXYbx63Vs8FQ7gUoT0333Pa9ZgPg4WWBMgB-xERDMM_U2yIUgS3TSPOXOD5M7sVl/pub?gid=0&single=true&output=csv' 
         },
-        // Add all your other leagues here in the same format...
+        // Add all your other leagues here...
     };
 
     // --- FIREBASE INITIALIZATION (with a Guard) ---
@@ -3429,7 +3429,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const scheduleContent = document.getElementById('league-schedule-content');
     const standingsContent = document.getElementById('league-standings-content');
     
-    // --- DATA FETCHING FUNCTION for the Schedule ---
+    // --- DATA FETCHING for Schedule ---
     function fetchLeagueSchedule(leagueId, leagueName) {
         scheduleContent.innerHTML = '<p style="color: #9ca3af;">Loading schedule...</p>';
         const { DateTime } = luxon;
@@ -3456,7 +3456,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // --- DATA FETCHING FUNCTION for Standings ---
+    // --- DATA FETCHING for Standings ---
     async function fetchLeagueStandings(url) {
         standingsContent.innerHTML = '<p style="color: #9ca3af;">Loading standings...</p>';
         try {
@@ -3485,10 +3485,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * This is the function YOUR site's code will call.
+     * This is the main function YOUR site's code will call.
      * @param {string} leagueKey - The key from LEAGUE_DATA_CONFIG (e.g., 'MLB', 'NFL').
      */
-    function loadLeagueData(leagueKey) {
+    function loadLeagueSpecificData(leagueKey) {
         const leagueInfo = LEAGUE_DATA_CONFIG[leagueKey];
         if (!leagueInfo) {
             console.error(`No configuration found for league: ${leagueKey}`);
@@ -3502,8 +3502,8 @@ document.addEventListener('DOMContentLoaded', function () {
         fetchLeagueStandings(leagueInfo.standingsUrl);
     }
 
-    // Make the function available globally so your site's logic can call it
-    window.loadLeagueData = loadLeagueData;
+    // Make the function available globally with the correct name
+    window.loadLeagueSpecificData = loadLeagueSpecificData;
 
 </script>
 
