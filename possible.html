@@ -3636,7 +3636,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 	<script>
-    // --- This script is for SCHEDULES ONLY (with Enhanced Debugging) ---
+    // --- This script is for SCHEDULES ONLY (with Initialization Guard) ---
 
     // --- LEAGUE CONFIGURATION MAP ---
     const LEAGUE_DATA_CONFIG = {
@@ -3647,6 +3647,8 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // --- FIREBASE INITIALIZATION (with a Guard) ---
+    // This check prevents conflicts with other scripts by only running if
+    // Firebase hasn't been initialized yet on this page.
     if (!firebase.apps.length) {
         const firebaseConfig = {
             apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
@@ -3672,52 +3674,30 @@ document.addEventListener('DOMContentLoaded', function () {
         const { DateTime } = luxon;
         const todayStr = DateTime.now().setZone('America/New_York').toISODate();
 
-        console.log(`--- DIAGNOSTIC LOG ---`);
-        console.log(`[1] Looking for games for league: "${leagueName}"`);
-        console.log(`[2] Using Firestore leagueId: "${leagueId}"`);
-        console.log(`[3] Using today's date: "${todayStr}"`);
-
         gamesCollectionRef.where('League', '==', leagueId).where('gameDate', '==', todayStr)
             .onSnapshot(snapshot => {
-                console.log(`[4] Main query finished. Found ${snapshot.size} games for today.`);
-
                 if (snapshot.empty) {
                     scheduleContent.innerHTML = `<p>No ${leagueName} games found for today.</p>`;
-                    
-                    // --- Diagnostic Test ---
-                    console.log(`[5] Running a test to find ANY game for this league, regardless of date...`);
-                    gamesCollectionRef.where('League', '==', leagueId).limit(1).get()
-                        .then(testSnapshot => {
-                            if (testSnapshot.empty) {
-                                console.error(`[6] TEST FAILED: No documents were found for the leagueId "${leagueId}" at all. This means the 'leagueId' in your script's config map does not match the value in your database.`);
-                            } else {
-                                const firstGameData = testSnapshot.docs[0].data();
-                                console.log(`[6] TEST PASSED: Found at least one game for this league. Here is its data:`, firstGameData);
-                                console.error(`[7] CONCLUSION: The 'leagueId' is correct, but no games have a 'gameDate' field that exactly matches "${todayStr}". Check your database for date format or timezone mismatches.`);
-                            }
-                        });
-
-                } else {
-                    const sortedDocs = snapshot.docs.sort((a, b) => a.data()["Start Time"].toMillis() - b.data()["Start Time"].toMillis());
-                    let tableHtml = '<table style="width: 100%; border-collapse: collapse;">';
-                    sortedDocs.forEach(doc => {
-                        const data = doc.data();
-                        const home = data["Home Team"] || "";
-                        const away = data["Away Team"] || "";
-                        tableHtml += `<tr style="border-bottom: 1px solid #374151;"><td style="padding: 6px 4px;">${away} vs ${home}</td></tr>`;
-                    });
-                    tableHtml += '</table>';
-                    scheduleContent.innerHTML = tableHtml;
-                    console.log(`[8] Successfully rendered ${sortedDocs.length} games.`);
+                    return;
                 }
+                const sortedDocs = snapshot.docs.sort((a, b) => a.data()["Start Time"].toMillis() - b.data()["Start Time"].toMillis());
+                let tableHtml = '<table style="width: 100%; border-collapse: collapse;">';
+                sortedDocs.forEach(doc => {
+                    const data = doc.data();
+                    const home = data["Home Team"] || "";
+                    const away = data["Away Team"] || "";
+                    tableHtml += `<tr style="border-bottom: 1px solid #374151;"><td style="padding: 6px 4px;">${away} vs ${home}</td></tr>`;
+                });
+                tableHtml += '</table>';
+                scheduleContent.innerHTML = tableHtml;
             }, err => {
                 scheduleContent.innerHTML = '<p style="color: #ef4444;">Error loading schedule.</p>';
-                console.error("Error during Firebase query:", err);
             });
     }
 
     /**
      * This is the function YOUR site's code will call.
+     * @param {string} leagueKey - The key from LEAGUE_DATA_CONFIG (e.g., 'MLB', 'NFL').
      */
     function loadLeagueData(leagueKey) {
         const leagueInfo = LEAGUE_DATA_CONFIG[leagueKey];
@@ -3730,8 +3710,9 @@ document.addEventListener('DOMContentLoaded', function () {
         fetchLeagueGames(leagueInfo.leagueId, leagueKey);
     }
 
-    // Make the function available globally
+    // Make the function available globally so your site's logic can call it
     window.loadLeagueData = loadLeagueData;
+
 </script>
 
   </body>
