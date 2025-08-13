@@ -3635,8 +3635,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-	  <script>
-    // --- This script is for SCHEDULES ONLY ---
+	<script>
+    // --- This script is for SCHEDULES ONLY (with Debug Logging) ---
 
     // --- LEAGUE CONFIGURATION MAP ---
     const LEAGUE_DATA_CONFIG = {
@@ -3648,6 +3648,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- FIREBASE INITIALIZATION ---
     // Assumes Firebase & Luxon scripts are already loaded in your <head>
+    console.log("[Debug] Initializing Firebase...");
     const firebaseConfig = {
         apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
         authDomain: "flashlive-daily-scraper.firebaseapp.com",
@@ -3659,6 +3660,7 @@ document.addEventListener('DOMContentLoaded', function () {
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const gamesCollectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
+    console.log("[Debug] Firebase initialized and collection reference created.");
 
     // --- ELEMENT REFERENCES ---
     const leagueHeader = document.getElementById('league-specific-header');
@@ -3666,28 +3668,46 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // --- DATA FETCHING FUNCTION for the Schedule ---
     function fetchLeagueGames(leagueId, leagueName) {
+        console.log(`[Debug] fetchLeagueGames called for league: "${leagueName}" with ID: "${leagueId}"`);
         scheduleContent.innerHTML = '<p style="color: #9ca3af;">Loading schedule...</p>';
+        
         const { DateTime } = luxon;
         const todayStr = DateTime.now().setZone('America/New_York').toISODate();
+        console.log(`[Debug] Querying for games on date: ${todayStr}`);
 
-        gamesCollectionRef.where('League', '==', leagueId).where('gameDate', '==', todayStr)
+        gamesCollectionRef
+            .where('League', '==', leagueId)
+            .where('gameDate', '==', todayStr)
             .onSnapshot(snapshot => {
+                console.log(`[Debug] Firestore snapshot received. Found ${snapshot.size} documents.`);
+
                 if (snapshot.empty) {
                     scheduleContent.innerHTML = `<p>No ${leagueName} games found for today.</p>`;
                     return;
                 }
+
                 const sortedDocs = snapshot.docs.sort((a, b) => a.data()["Start Time"].toMillis() - b.data()["Start Time"].toMillis());
+                
+                // Log the first document's data to check field names
+                if (sortedDocs.length > 0) {
+                    console.log("[Debug] Data from the first game found:", sortedDocs[0].data());
+                }
+
                 let tableHtml = '<table style="width: 100%; border-collapse: collapse;">';
                 sortedDocs.forEach(doc => {
                     const data = doc.data();
-                    const home = data["Home Team"] || "";
-                    const away = data["Away Team"] || "";
+                    // Using more robust rendering to avoid errors with missing data
+                    const home = data["Home Team"] || "N/A";
+                    const away = data["Away Team"] || "N/A";
                     tableHtml += `<tr style="border-bottom: 1px solid #374151;"><td style="padding: 6px 4px;">${away} vs ${home}</td></tr>`;
                 });
                 tableHtml += '</table>';
                 scheduleContent.innerHTML = tableHtml;
+                console.log(`[Debug] Successfully rendered ${sortedDocs.length} games.`);
+
             }, err => {
-                scheduleContent.innerHTML = '<p style="color: #ef4444;">Error loading schedule.</p>';
+                console.error("[Debug] Firestore query failed:", err);
+                scheduleContent.innerHTML = '<p style="color: #ef4444;">Error loading schedule. Check console for details.</p>';
             });
     }
 
@@ -3696,19 +3716,26 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {string} leagueKey - The key from LEAGUE_DATA_CONFIG (e.g., 'MLB', 'NFL').
      */
     function loadLeagueData(leagueKey) {
+        console.log(`[Debug] loadLeagueData called with leagueKey: "${leagueKey}"`);
+        
         const leagueInfo = LEAGUE_DATA_CONFIG[leagueKey];
         if (!leagueInfo) {
-            console.error(`No configuration found for league: ${leagueKey}`);
+            console.error(`[Debug] ERROR: No configuration found for league key "${leagueKey}".`);
             return;
         }
         
         // Update header and fetch game data
-        if (leagueHeader) leagueHeader.innerText = leagueKey;
+        if (leagueHeader) {
+            leagueHeader.innerText = leagueKey;
+            console.log(`[Debug] Header updated to "${leagueKey}".`);
+        }
+        
         fetchLeagueGames(leagueInfo.leagueId, leagueKey);
     }
 
     // Make the function available globally so your site's logic can call it
     window.loadLeagueData = loadLeagueData;
+    console.log("[Debug] Script loaded. The 'loadLeagueData' function is now available globally.");
 
 </script>
 
