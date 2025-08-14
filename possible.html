@@ -2950,7 +2950,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- ✅✅✅ THIS IS THE NEW SCRIPT YOU NEED TO EDIT ✅✅✅ -->
 <script>
 // --- FINAL UNIFIED SCRIPT for ALL Game, Schedule, and Standings Logic ---
-// This version CORRECTS the rendering logic to show "F" for final games.
+// This version sorts final games to the bottom of each list.
 document.addEventListener('DOMContentLoaded', function () {
 
     // --- 1. CONFIGURATION ---
@@ -3069,25 +3069,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 const homeScore = data["Home Score"], awayScore = data["Away Score"];
                 const matchStatus = (data["Match Status"] || "").toUpperCase();
                 const rawStart = data["Start Time"];
-                
-                // --- THIS IS THE CORRECTED LOGIC FOR isLive and isFinal ---
                 const isLive = matchStatus.includes("IN PROGRESS");
                 const isFinal = matchStatus.includes("FINISHED") || matchStatus.includes("FINAL");
-                // --- END OF CORRECTION ---
-
                 let currentTimeLabel = "";
 
                 if (isLive) {
                     let parsedStatus = '';
                     const displayLeague = getLeagueDisplayName(data.League);
                     if (displayLeague === "MLB") {
-                        const inningHalf = data.inningHalf || ""; // e.g., "Top"
-                        const currentInning = data.currentInning || ""; // e.g., 5
+                        const inningHalf = data.inningHalf || "";
+                        const currentInning = data.currentInning || "";
                         if (inningHalf && currentInning) {
                             parsedStatus = `${inningHalf.slice(0,3)} ${currentInning}`;
                         }
                     } else if (displayLeague === "WNBA") {
-                        const status = data.Status || ""; // e.g., "Q1 05:20"
+                        const status = data.Status || "";
                         const quarterMatch = status.match(/Q(\d+)/i);
                         if (quarterMatch) {
                             parsedStatus = `Q${quarterMatch[1]}`;
@@ -3123,6 +3119,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- 6. DATA FETCHING FUNCTIONS ---
+    
+    // --- THIS IS THE NEW SORTING FUNCTION ---
+    function sortGames(a, b) {
+        const statusA = (a["Match Status"] || "").toUpperCase();
+        const statusB = (b["Match Status"] || "").toUpperCase();
+        const isFinalA = statusA.includes("FINISHED") || statusA.includes("FINAL");
+        const isFinalB = statusB.includes("FINISHED") || statusB.includes("FINAL");
+
+        if (isFinalA && !isFinalB) return 1; // Final games go to the bottom
+        if (!isFinalA && isFinalB) return -1; // Non-final games go to the top
+
+        // If both are the same status (both final or both not final), sort by time
+        return a["Start Time"].toMillis() - b["Start Time"].toMillis();
+    }
+
     function fetchLeagueSchedule(leagueId, leagueName) {
         scheduleContent.innerHTML = '<p style="color: #9ca3af;">Loading schedule...</p>';
         const { DateTime } = luxon;
@@ -3133,7 +3144,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     scheduleContent.innerHTML = `<p>No ${leagueName} games found for today.</p>`;
                     return;
                 }
-                const gamesData = snapshot.docs.map(doc => doc.data()).sort((a, b) => a["Start Time"].toMillis() - b["Start Time"].toMillis());
+                // Apply the new sorting logic here
+                const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
                 renderGames(scheduleContent, gamesData, false);
             }, err => { scheduleContent.innerHTML = '<p style="color: #ef4444;">Error loading schedule.</p>'; });
     }
@@ -3172,13 +3184,14 @@ document.addEventListener('DOMContentLoaded', function () {
         homeErrorDiv.textContent = "";
         const { DateTime } = luxon;
         const todayStr = DateTime.now().setZone('America/New_York').toISODate();
-        gamesCollectionRef.where('gameDate', '==', todayStr).orderBy("Start Time")
+        gamesCollectionRef.where('gameDate', '==', todayStr) // Removed orderBy here, will sort in code
             .onSnapshot(snapshot => {
                 if (snapshot.empty) {
                     homeGamesContainer.innerHTML = `<p style="padding: 10px;">No games found for today.</p>`;
                     return;
                 }
-                const gamesData = snapshot.docs.map(doc => doc.data());
+                // Apply the new sorting logic here as well
+                const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
                 renderGames(homeGamesContainer, gamesData, true);
             }, err => { homeErrorDiv.textContent = "Failed to load real-time data."; });
     }
