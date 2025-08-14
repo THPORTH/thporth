@@ -1,550 +1,227 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Firestore Live Games Viewer</title>
-
-     <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script> <!-- THIS IS THE MISSING LINE -->
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
-    <!-- Luxon for date/time handling -->
-    <script src="https://cdn.jsdelivr.net/npm/luxon@3.x/build/global/luxon.min.js"></script>
-    
-    <style>
-        body {
-            background-color: #111;
-            color: #e0e0e0;
-            font-family: sans-serif;
-            padding: 2rem;
-        }
-        .league-section {
-            margin-bottom: 3rem;
-        }
-        .league-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #555;
-            padding-bottom: 0.3rem;
-            /* Ensure league title aligns with the table content */
-            padding-left: 10px; /* Match the padding of the first column */
-        }
-        .game-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .game-table td {
-            padding: 4px 10px; /* Default cell padding */
-            vertical-align: top;
-        }
-        /* --- NEW/MODIFIED CSS FOR COLUMN WIDTHS AND ALIGNMENT --- */
-        .game-table td:nth-child(1) { /* First column (time/status) */
-            width: 90px; /* Fixed width for time/status column */
-            min-width: 90px; /* Ensure it doesn't shrink */
-            text-align: left; /* Align time/status to the left */
-        }
-        .team-cell { /* Second column (team name) */
-            white-space: nowrap;
-            text-align: left; /* Ensure team name is left-aligned */
-            /* Remove explicit padding-left here, let td:nth-child(1) handle overall table padding */
-        }
-        .game-table td:nth-child(3) { /* Third column (score) */
-            width: 40px; /* Fixed width for score */
-            min-width: 40px;
-            text-align: right; /* Align score to the right */
-        }
-        .game-table td:nth-child(4) { /* Fourth column (empty spacer) */
-            width: 10px; /* Small fixed width for separation */
-            min-width: 10px;
-        }
-        /* --- END NEW/MODIFIED CSS --- */
-
-        .game-row {
-            /* Removed border-bottom from here */
-            /* border-bottom: 1px solid #333; */
-        }
-        .game-separator {
-            border-bottom: 1px solid #333; /* Apply border only to the second row of each game */
-            margin-bottom: 8px; /* Add some space between games */
-        }
-        .error {
-            color: red;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Combined Feed — Twitter Style</title>
+<style>
+  :root{
+    --bg:#000;
+    --bg-elev:#0f1419;
+    --text:#e7e9ea;
+    --muted:#8b98a5;
+    --accent:#1d9bf0;
+    --border:#2f3336;
+    --card:#0a0f14;
+    --pill:#1c2733;
+    --green:#00ba7c;
+    --pink:#f91880;
+    --yellow:#ffd400;
+    --red:#f4212e;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:680px;margin:0 auto;padding:12px}
+  header{position:sticky;top:0;background:rgba(0,0,0,.7);backdrop-filter:saturate(1.2) blur(8px);border-bottom:1px solid var(--border);z-index:5}
+  header .wrap{display:flex;align-items:center;gap:10px;padding:12px}
+  .tab{display:inline-flex;align-items:center;gap:8px;background:var(--pill);border:1px solid var(--border);padding:6px 10px;border-radius:999px;font-weight:600}
+  .feed{display:flex;flex-direction:column}
+  .tweet{display:grid;grid-template-columns:56px 1fr;gap:12px;padding:12px;border-bottom:1px solid var(--border)}
+  .avatar{width:48px;height:48px;border-radius:999px;background:#222;object-fit:cover}
+  .row-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .name{font-weight:700}
+  .handle,.dot,.time{color:var(--muted);font-size:.95rem}
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:var(--accent)}
+  .badge svg{width:12px;height:12px;fill:#000}
+  .text{white-space:pre-wrap;margin:6px 0 10px}
+  .media{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#000}
+  .media img{display:block;width:100%;height:auto}
+  .media video{display:block;width:100%;height:auto}
+  .actions{display:flex;justify-content:space-between;gap:8px;margin-top:10px;color:var(--muted)}
+  .action{display:inline-flex;align-items:center;gap:8px;padding:6px 8px;border-radius:999px}
+  .action svg{width:18px;height:18px;fill:var(--muted)}
+  .action:hover{background:#0b0f12}
+  .counts{font-size:.95rem}
+  .pill-league{display:inline-flex;align-items:center;gap:6px;background:var(--pill);border:1px solid var(--border);padding:2px 8px;border-radius:999px;font-size:.85rem;color:var(--muted);margin-bottom:8px}
+  /* compact on small screens */
+  @media (max-width:480px){
+    .tweet{grid-template-columns:44px 1fr}
+    .avatar{width:40px;height:40px}
+  }
+</style>
 </head>
 <body>
-    <h1>Live & Upcoming Games</h1>
-    <div id="games"></div>
-    <div id="error" class="error"></div>
+<header>
+  <div class="wrap">
+    <div class="tab" title="Combined timeline">Combined Feed</div>
+  </div>
+</header>
 
-  <script>
-  // Firebase Configuration (YOUR PROJECT SPECIFIC CONFIG)
-  const firebaseConfig = {
-      apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
-      authDomain: "flashlive-daily-scraper.firebaseapp.com",
-      projectId: "flashlive-daily-scraper",
-      storageBucket: "flashlive-daily-scraper.appspot.com",
-      messagingSenderId: "124291936014",
-      appId: "1:124291936014:web:acadcaa791d6046849315f",
-      measurementId: "G-R146KS92QJ"
+<main class="wrap">
+  <section id="feed" class="feed" aria-live="polite"></section>
+</main>
+
+<script>
+/**
+ * SUPPLY DATA:
+ * 1) Inline: edit FEED_DATA below, or
+ * 2) Remote: set FEED_URL to your JSON endpoint and leave FEED_DATA = null.
+ *
+ * Post schema:
+ * {
+ *   id: "unique-id",
+ *   source: "MLB",                // league/source label (optional)
+ *   name: "MLB",
+ *   handle: "@MLB",
+ *   avatar: "https://...",        // image URL (optional)
+ *   verified: true,               // boolean
+ *   created_at: "2025-08-14T13:20:00Z", // ISO string OR number (ms)
+ *   time_hint: "10h",             // optional fallback like "10h"
+ *   text: "LOGAN O'HOPPE!...",
+ *   media: [{type:"image", url:"..."}, {type:"video", url:"...", poster:"..."}],
+ *   stats: { replies:144, reposts:521, likes:3700, views:712000 }
+ * }
+ */
+
+const FEED_URL = ""; // e.g. "/feed.json"
+let FEED_DATA = [
+  {
+    id:"ex1",
+    source:"MLB",
+    name:"MLB",
+    handle:"@MLB",
+    verified:true,
+    avatar:"https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
+    created_at: Date.now() - 10*60*60*1000,
+    text:"LOGAN O'HOPPE!\n\nTHE @ANGELS TAKE THE LEAD IN THE BOTTOM OF THE 8TH!",
+    media:[{type:"video", url:"", poster:""}], // placeholder demo
+    stats:{replies:144,reposts:521,likes:3700,views:712000}
+  },
+  {
+    id:"ex2",
+    source:"NBA",
+    name:"NBA",
+    handle:"@NBA",
+    verified:true,
+    avatar:"https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
+    created_at: Date.now() - 12*60*60*1000,
+    text:"SABRINA IONESCU SPLASHES FROM DEEP 👌",
+    media:[{type:"image", url:"https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1600"}],
+    stats:{replies:27,reposts:44,likes:248,views:141000}
+  },
+  {
+    id:"ex3",
+    source:"NFL",
+    name:"NFL",
+    handle:"@NFL",
+    verified:true,
+    avatar:"https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
+    created_at: Date.now() - 15*60*60*1000,
+    text:"Schedule drops tomorrow. Are you ready?",
+    media:[],
+    stats:{replies:18,reposts:77,likes:603,views:22000}
+  }
+];
+
+/* ---- Utils ---- */
+const fmtCompact = n => {
+  if(n===undefined||n===null) return "";
+  const abs = Math.abs(n);
+  if (abs < 1000) return String(n);
+  if (abs < 1e6) return (n/1e3).toFixed(n%1000>=100?1:0).replace(/\.0$/,"")+"K";
+  if (abs < 1e9) return (n/1e6).toFixed(n%1e6>=100000?1:0).replace(/\.0$/,"")+"M";
+  return (n/1e9).toFixed(1).replace(/\.0$/,"")+"B";
+};
+const timeAgo = t => {
+  if (!t) return "";
+  const ts = typeof t === "number" ? t : Date.parse(t);
+  if (isNaN(ts)) return "";
+  const s = Math.max(1, (Date.now() - ts) / 1000);
+  if (s < 60) return `${Math.floor(s)}s`;
+  if (s < 3600) return `${Math.floor(s/60)}m`;
+  if (s < 86400) return `${Math.floor(s/3600)}h`;
+  return `${Math.floor(s/86400)}d`;
+};
+
+/* ---- Rendering ---- */
+function icon(kind){
+  const paths = {
+    reply:"M14 2a8 8 0 0 1 0 16H8l-6 4 2-6A8 8 0 0 1 14 2Z",
+    repost:"M3 7h8V4l6 5-6 5v-3H3V7Zm18 6h-8v3l-6-5 6-5v3h8v4Z",
+    like:"M16.5 3.5c-1.9 0-3.1 1-4.5 2.6C10.6 4.5 9.4 3.5 7.5 3.5A4.5 4.5 0 0 0 3 8c0 5.2 7 9 9 12 2-3 9-6.8 9-12a4.5 4.5 0 0 0-4.5-4.5Z",
+    view:"M12 5C7 5 2.7 8 1 12c1.7 4 6 7 11 7s9.3-3 11-7c-1.7-4-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z",
+    check:"M10 15l-3.5-3.5 1.4-1.4L10 12.2l5.7-5.7 1.4 1.4L10 15z"
   };
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[kind]}"/></svg>`;
+}
 
-  // Initialize Firebase app
-  firebase.initializeApp(firebaseConfig); 
-  // Get auth and firestore instances from the initialized app
-  const auth = firebase.auth(); // Correctly access auth from the global firebase object
-  const db = firebase.firestore(); // Correctly access firestore from the global firebase object
-
-  const gamesCollectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
-
-  // Function to map original league names from Firestore to desired display names
-  function getLeagueDisplayName(originalLeagueName) {
-      const exactLeagueMaps = {
-          "USA: WNBA": "WNBA",
-          "USA: MLB": "MLB",
-          "EUROPE: UEFA CHAMPIONS LEAGUE": "UEFA Champions League",
-          "EUROPE: UEFA WOMEN'S CHAMPIONS LEAGUE": "UEFA Women's Champions League",
-          "USA: NBA": "NBA",
-          "USA: NHL": "NHL",
-          "USA: NFL": "NFL",
-          "USA: NCAAB": "NCAAB",
-          "USA: NCAAF": "NCAAF",
-          "ENGLAND: PREMIER LEAGUE": "Premier League",
-          "GERMANY: BUNDESLIGA": "Bundesliga",
-          "SPAIN: LALIGA": "LaLiga",
-          "ITALY: SERIE A": "Serie A",
-          "FRANCE: LIGUE 1": "Ligue 1",
-          "USA: MLS": "MLS",
-          "North & Central America: Leagues Cup": "Leagues Cup"
-          // Add all your specific league mappings here.
-      };
-
-      if (exactLeagueMaps.hasOwnProperty(originalLeagueName)) {
-          return exactLeagueMaps[originalLeagueName];
-      }
-      return originalLeagueName;
-  }
-
-  // Function to map original team names to desired display names (mascot names)
-  function getTeamDisplayName(originalTeamName) {
-      let processedTeamName = originalTeamName;
-      if (processedTeamName.endsWith(" W")) {
-          processedTeamName = processedTeamName.slice(0, -2);
-      }
-
-      const exactTeamMaps = {
-          // MLB Teams
-          "Arizona Diamondbacks": "Diamondbacks", "Atlanta Braves": "Braves", "Baltimore Orioles": "Orioles",
-          "Boston Red Sox": "Red Sox", "Chicago Cubs": "Cubs", "Chicago White Sox": "White Sox",
-          "Cincinnati Reds": "Reds", "Cleveland Guardians": "Guardians", "Colorado Rockies": "Rockies",
-          "Detroit Tigers": "Tigers", "Houston Astros": "Astros", "Kansas City Royals": "Royals",
-          "Los Angeles Angels": "Angels", "Los Angeles Dodgers": "Dodgers", "Miami Marlins": "Marlins",
-          "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets",
-          "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies",
-          "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants",
-          "Seattle Mariners": "Mariners", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays", // Corrected "St. Louis Cardinals"
-          "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals",
-
-          // WNBA Teams
-          "Atlanta Dream": "Dream", "Chicago Sky": "Sky", "Connecticut Sun": "Sun",
-          "Dallas Wings": "Wings", "Indiana Fever": "Fever", "Las Vegas Aces": "Aces",
-          "Los Angeles Sparks": "Sparks", "Minnesota Lynx": "Lynx", "New York Liberty": "Liberty",
-          "Phoenix Mercury": "Mercury", "Seattle Storm": "Storm", "Washington Mystics": "Mystics",
-          "Golden State Valkyries": "Valkyries"
-          // Add all your specific team mappings here.
-      };
-
-      if (exactTeamMaps.hasOwnProperty(processedTeamName)) {
-          return exactTeamMaps[processedTeamName];
-      }
-      return processedTeamName;
-  }
-
-  // Define the desired order of leagues for display
-  const LEAGUE_DISPLAY_ORDER = [
-      "MLB",
-      "WNBA",
-      "Leagues Cup",
-      "NBA", // Example: Add other leagues you want to prioritize here
-      "UEFA Champions League",
-      "UEFA Women's Champions League",
-      "Premier League",
-      "Bundesliga",
-      "LaLiga",
-      "Serie A",
-      "Ligue 1",
-      "MLS",
-      // Add other league display names as needed, in desired order
-  ];
-
-
-  /**
-   * Sets up a real-time listener for games from Firestore, filters by today's Eastern Time date,
-   * groups them by mapped league name, and updates the display on the page automatically.
-   */
-  async function fetchTodayGames() {
-      const container = document.getElementById("games"); // This is the #games div inside tv-listings-today
-      const errorDiv = document.getElementById("error"); // This is the #error div inside tv-listings-today
-      errorDiv.textContent = ""; // Clear previous errors
-
-      try {
-          const { DateTime } = luxon;
-          const nowInEastern = DateTime.now().setZone('America/New_York');
-          const todayStr = nowInEastern.toISODate();
-          console.log(`[Frontend] Setting up listener for todayStr in Eastern Time: ${todayStr}`);
-
-          // Create the query
-          const gamesQuery = gamesCollectionRef // Use gamesCollectionRef defined globally
-              .where('gameDate', '==', todayStr)
-              .orderBy("Start Time");
-
-          // Set up the real-time listener using onSnapshot
-          gamesQuery.onSnapshot(snapshot => {
-              console.log("[Firestore Listener] Snapshot received, re-rendering UI."); // Debugging log
-              // Clear the container before re-rendering all games
-              container.innerHTML = "";
-
-              if (snapshot.empty) {
-                  container.innerHTML = `<p style="padding: 10px;">No games found for today (${todayStr}) in Firestore collection.</p>`;
-                  return;
-              }
-
-              const leagueGroups = {};
-
-              snapshot.docs.forEach(doc => {
-                  const data = doc.data();
-                  const leagueDisplayName = getLeagueDisplayName(data.League) || "Other";
-                  if (!leagueGroups[leagueDisplayName]) {
-                      leagueGroups[leagueDisplayName] = [];
-                  }
-                  leagueGroups[leagueDisplayName].push(data);
-              });
-
-              // Create a sorted list of league names based on LEAGUE_DISPLAY_ORDER
-              const sortedLeagueNames = [];
-              const processedLeagues = new Set();
-
-              // Add leagues from the predefined order
-              LEAGUE_DISPLAY_ORDER.forEach(orderedLeagueName => {
-                  if (leagueGroups[orderedLeagueName]) {
-                      sortedLeagueNames.push(orderedLeagueName);
-                      processedLeagues.add(orderedLeagueName);
-                  }
-              });
-
-              // Add any remaining leagues not in the predefined order
-              for (const leagueName in leagueGroups) {
-                  if (!processedLeagues.has(leagueName)) {
-                      sortedLeagueNames.push(leagueName);
-                  }
-              }
-
-              // Now iterate through the sorted league names
-              for (const leagueName of sortedLeagueNames) {
-                  const games = leagueGroups[leagueName]; // Get games for the current league
-                  
-                  const leagueSection = document.createElement("div");
-                  leagueSection.className = "league-section";
-
-                  const title = document.createElement("div");
-                  title.className = "league-title";
-                  title.textContent = leagueName;
-                  leagueSection.appendChild(title);
-
-                  const table = document.createElement("table");
-                  table.className = "game-table";
-
-                  let lastDisplayedTimeLabel = null; // This will only track *scheduled* times for deduplication
-
-                  games.forEach(data => {
-                      const home = getTeamDisplayName(data["Home Team"]) || "";
-                      const away = getTeamDisplayName(data["Away Team"]) || "";
-                      const homeScore = data["Home Score"];
-                      const awayScore = data["Away Score"];
-                      const matchStatus = (data["Match Status"] || "").toUpperCase();
-                      const inningStatus = (data["Status"] || "").toUpperCase();
-                      const rawStart = data["Start Time"];
-
-                      // isLive now includes "Q" for quarters and HALF_TIME
-                      const isLive = matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
-                      const isFinal = matchStatus === "FINISHED";
-
-                      let currentTimeLabel = ""; // The time/status label for the current game
-                      const leagueDisplayNameForGame = getLeagueDisplayName(data.League) || "Other"; // Get mapped league name for specific status logic
-
-                      if (isLive) {
-                          let statusToDisplay = inningStatus;
-                          let parsedStatus = '';
-
-                          if (leagueDisplayNameForGame === "MLB") {
-                              // MLB Innings: "Top/Bot X" or "X"
-                              const topBotMatch = statusToDisplay.match(/(TOP|BOT)\s*(\d+)(?:ST|ND|RD|TH)?/i);
-                              const inningNumMatch = statusToDisplay.match(/(\d+)(?:ST|ND|RD|TH)?(?:\s*INNING)?/i); // Broader match for just number
-                              const inningWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)_?INNING/i);
-
-                              if (topBotMatch) {
-                                  const topBot = topBotMatch[1].charAt(0).toUpperCase() + topBotMatch[1].slice(1).toLowerCase();
-                                  const inning = topBotMatch[2];
-                                  parsedStatus = `${topBot} ${inning}`;
-                              } else if (inningWordMatch) {
-                                  const wordToNum = {
-                                      "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4", "FIFTH": "5",
-                                      "SIXTH": "6", "SEVENTH": "7", "EIGHTH": "8", "NINTH": "9"
-                                  };
-                                  const inningWord = inningWordMatch[1].toUpperCase();
-                                  parsedStatus = wordToNum[inningWord] || inningWord;
-                              } else if (inningNumMatch) {
-                                  parsedStatus = inningNumMatch[1]; // Just the number (e.g., "1", "2")
-                              }
-
-                              // If parsedStatus is empty, it means no specific inning info was found.
-                              // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
-                              currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
-
-                          } else if (leagueDisplayNameForGame === "WNBA") {
-                              let parsedStatus = '';
-                              // Try to match "Q1", "Q2", etc.
-                              const quarterMatch = statusToDisplay.match(/Q(\d+)/i);
-                              // Try to match "FIRST_QUARTER", "SECOND_QUARTER", etc.
-                              const quarterWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH)_?QUARTER/i);
-
-                              if (quarterMatch && quarterMatch[1]) {
-                                  parsedStatus = `Q${quarterMatch[1]}`;
-                              } else if (quarterWordMatch) {
-                                  const wordToNum = {
-                                      "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4"
-                                  };
-                                  const quarterWord = quarterWordMatch[1].toUpperCase();
-                                  parsedStatus = `Q${wordToNum[quarterWord] || quarterWord}`;
-                              } else if (statusToDisplay === "HALF_TIME") {
-                                  parsedStatus = "Half";
-                              }
-                              
-                              // If parsedStatus is empty, it means no specific quarter/half info was found.
-                              // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
-                              currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
-
-                          } else {
-                              // Default live status for other leagues (not MLB/WNBA)
-                              // This will show the raw inningStatus or matchStatus (e.g., "LIVE"), not in red.
-                              currentTimeLabel = inningStatus || matchStatus;
-                          }
-                      } else if (isFinal) {
-                          currentTimeLabel = "F";
-                      } else if (rawStart) {
-                          let gameDateFromFirestore;
-                          if (typeof rawStart?.toDate === "function") {
-                              gameDateFromFirestore = rawStart.toDate();
-                          } else if (typeof rawStart === "number") {
-                              gameDateFromFirestore = new Date(rawStart * 1000);
-                          } else {
-                              gameDateFromFirestore = new Date(rawStart);
-                          }
-
-                          const startTimeLuxon = luxon.DateTime.fromJSDate(gameDateFromFirestore).setZone(luxon.DateTime.local().zoneName);
-                          currentTimeLabel = startTimeLuxon.toFormat('h:mm a');
-                      } else {
-                          currentTimeLabel = "TBD";
-                      }
-
-                      let displayTimeLabel = currentTimeLabel;
-
-                      // Determine if the current label is a scheduled time (not live, not final, not TBD)
-                      const isScheduledTime = !(currentTimeLabel.includes('<span style="color: red;">') ||
-                                                 currentTimeLabel === "F" ||
-                                                 currentTimeLabel === "TBD");
-
-                      if (isScheduledTime) {
-                          // Apply deduplication only for scheduled times
-                          if (currentTimeLabel === lastDisplayedTimeLabel) {
-                              displayTimeLabel = ""; // Hide if same as previously displayed scheduled time
-                          } else {
-                              lastDisplayedTimeLabel = currentTimeLabel; // Update last displayed scheduled time
-                          }
-                      }
-                      // If it's a live/final/TBD status, displayTimeLabel remains currentTimeLabel,
-                      // and lastDisplayedTimeLabel is NOT updated by these, preserving the last scheduled time.
-
-                      const row1 = document.createElement("tr");
-                      row1.className = "game-row";
-                      row1.innerHTML = `
-                          <td>${displayTimeLabel}</td>
-                          <td class="team-cell">${away}</td>
-                          <td>${(isLive || isFinal) && typeof awayScore !== "undefined" && awayScore !== '' ? awayScore : ""}</td>
-                          <td></td>
-                      `;
-
-                      const row2 = document.createElement("tr");
-                      row2.className = "game-row game-separator"; /* Added game-separator class here */
-                      row2.innerHTML = `
-                          <td></td>
-                          <td class="team-cell">${home}</td>
-                          <td>${(isLive || isFinal) && typeof homeScore !== "undefined" && homeScore !== '' ? homeScore : ""}</td>
-                          <td></td>
-                      `;
-
-                      table.appendChild(row1);
-                      table.appendChild(row2);
-                  });
-
-                  leagueSection.appendChild(table);
-                  container.appendChild(leagueSection);
-              }
-          }, err => {
-              // Error handling for the snapshot listener
-              console.error("Error listening to Firestore updates:", err);
-              errorDiv.textContent = "Failed to load real-time data: " + err.message;
-          });
-
-      } catch (err) {
-          // Error handling for initial setup of the listener
-          console.error("Error setting up game listener:", err);
-          errorDiv.textContent = "Failed to initialize real-time data: " + err.message;
-      }
-  }
-
-
-  // fetchYesterdayScores function (from index-7.html, slightly modified to use getTeamDisplayName)
-  async function fetchYesterdayScores() {
-    const loadingElement = document.getElementById('scoresLoading');
-    const errorMessageDiv = document.getElementById('scoresErrorMessage');
-    const errorTextSpan = document.getElementById('scoresErrorText');
-    const contentDiv = document.getElementById('dynamicScoresContent');
-
-    if (loadingElement) loadingElement.classList.remove('hidden');
-    if (contentDiv) { contentDiv.classList.add('hidden'); contentDiv.innerHTML = ''; }
-    if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
-
-    const yesterday = luxon.DateTime.now().setZone('America/New_York').minus({ days: 1 }).toISODate();
-    const FINISHED_STATUSES = ['Finished', 'Final'];
-
-    try {
-      gamesCollectionRef
-        .where('gameDate', '==', yesterday)
-        .where('Match Status', 'in', FINISHED_STATUSES)
-        .orderBy('Start Time')
-        .onSnapshot((snapshot) => {
-          const games = snapshot.docs.map(doc => doc.data());
-          if (games.length === 0) {
-            if (errorTextSpan) errorTextSpan.textContent = 'No finished games for yesterday.';
-            if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-            if (loadingElement) loadingElement.classList.add('hidden');
-            if (contentDiv) contentDiv.classList.add('hidden');
-            return;
-          }
-
-          const groupedGames = games.reduce((acc, game) => {
-            const league = game.League || 'Other';
-            if (!acc[league]) acc[league] = [];
-            acc[league].push(game);
-            return acc;
-          }, {});
-
-          const sortedLeagueNames = Object.keys(groupedGames).sort(); // Sort alphabetically for scores
-
-          if (contentDiv) {
-            contentDiv.innerHTML = '';
-            sortedLeagueNames.forEach(leagueName => {
-              const leagueSection = document.createElement('div');
-              leagueSection.classList.add('league-section');
-              const leagueHeader = document.createElement('h2');
-              leagueHeader.classList.add('league-header');
-              leagueHeader.textContent = getLeagueDisplayName(leagueName); // Use getLeagueDisplayName
-              leagueSection.appendChild(leagueHeader);
-              const gamesListContainer = document.createElement('div');
-              gamesListContainer.classList.add('game-entry-wrapper');
-
-              const leagueGames = groupedGames[leagueName];
-              leagueGames.forEach(game => {
-                const row = document.createElement('div');
-                row.className = 'game-entry';
-
-                const timeDiv = document.createElement('div');
-                timeDiv.className = 'time-cell status-finished'; // Always finished for this tab
-                timeDiv.textContent = 'F'; // 'F' for Final
-                row.appendChild(timeDiv);
-
-                const teamsDiv = document.createElement('div');
-                teamsDiv.className = 'game-details';
-                teamsDiv.innerHTML = `
-                  <div class="team-name">${getTeamDisplayName(game['Away Team'] || '')}</div>
-                  <div class="team-name">${getTeamDisplayName(game['Home Team'] || '')}</div>
-                `;
-                row.appendChild(teamsDiv);
-
-                const scoreDiv = document.createElement('div');
-                scoreDiv.className = 'game-scores';
-                const awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
-                const homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
-
-                // Determine winner for bolding
-                const isAwayWinner = parseInt(awayScore) > parseInt(homeScore);
-                const isHomeWinner = parseInt(homeScore) > parseInt(awayScore);
-
-                scoreDiv.innerHTML = `
-                  <div class="score-value ${isAwayWinner ? 'winner' : ''}">${awayScore}</div>
-                  <div class="score-value ${isHomeWinner ? 'winner' : ''}">${homeScore}</div>
-                `;
-                row.appendChild(scoreDiv);
-
-                const channelDiv = document.createElement('div');
-                channelDiv.className = 'channel-cell';
-                channelDiv.textContent = game.Channels || '';
-                row.appendChild(channelDiv);
-
-                gamesListContainer.appendChild(row);
-              });
-
-              leagueSection.appendChild(gamesListContainer);
-              contentDiv.appendChild(leagueSection);
-            });
-            contentDiv.classList.remove('hidden');
-          }
-
-          if (loadingElement) loadingElement.classList.add('hidden');
-        },
-        (error) => {
-          console.error("onSnapshot failed for yesterday's scores:", error);
-          if (errorTextSpan) errorTextSpan.textContent = `Failed to load yesterday's scores: ${error.message}`;
-          if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-          if (loadingElement) loadingElement.classList.add('hidden');
-          if (contentDiv) contentDiv.classList.add('hidden');
-        });
-    } catch (error) {
-      console.error("Error setting up snapshot listener for yesterday's scores:", error);
-      if (errorTextSpan) errorTextSpan.textContent = `Setup error for yesterday's scores: ${error.message}.`;
-      if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-      if (loadingElement) loadingElement.classList.add('hidden');
-      if (contentDiv) contentDiv.classList.add('hidden');
+function makeTweet(post){
+  const ago = post.time_hint || timeAgo(post.created_at);
+  const avatar = post.avatar || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'><rect width='100%' height='100%' fill='%23222'/></svg>";
+  const league = post.source ? `<div class="pill-league"> ${post.source} </div>` : "";
+  let mediaHtml = "";
+  if (Array.isArray(post.media) && post.media.length){
+    const m = post.media[0]; // simple: one primary media
+    if (m.type === "video" && m.url){
+      mediaHtml = `<div class="media"><video ${m.poster?`poster="${m.poster}"`:''} controls playsinline muted preload="metadata" src="${m.url}"></video></div>`;
+    } else if (m.type === "image" && m.url){
+      mediaHtml = `<div class="media"><img loading="lazy" src="${m.url}" alt="" /></div>`;
     }
   }
+  const stats = post.stats || {};
+  return `
+  <article class="tweet" data-id="${post.id}">
+    <img class="avatar" alt="" src="${avatar}">
+    <div>
+      ${league}
+      <div class="row-top">
+        <span class="name">${post.name||""}</span>
+        ${post.verified?`<span class="badge" title="Verified">${icon("check")}</span>`:""}
+        <span class="handle">${post.handle||""}</span>
+        <span class="dot">·</span>
+        <span class="time" title="${new Date(post.created_at||Date.now()).toLocaleString()}">${ago}</span>
+      </div>
+      <div class="text">${(post.text||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>")}</div>
+      ${mediaHtml}
+      <div class="actions" role="group" aria-label="Tweet actions">
+        <div class="action" title="Reply">${icon("reply")} <span class="counts">${fmtCompact(stats.replies||0)}</span></div>
+        <div class="action" title="Repost">${icon("repost")} <span class="counts">${fmtCompact(stats.reposts||0)}</span></div>
+        <div class="action" title="Like">${icon("like")} <span class="counts">${fmtCompact(stats.likes||0)}</span></div>
+        <div class="action" title="Views">${icon("view")} <span class="counts">${fmtCompact(stats.views||0)}</span></div>
+      </div>
+    </div>
+  </article>`;
+}
 
-  // Initial setup of the real-time listener when the page loads
-  // Ensure authentication is ready before fetching games
-  document.addEventListener('DOMContentLoaded', function() {
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        console.log("Firebase Auth Ready. User:", user.uid);
-        // Now that auth is ready, fetch games
-        fetchTodayGames();
-        // If you also want to fetch yesterday's scores on load, uncomment the line below:
-        // fetchYesterdayScores();
-      } else {
-        // Attempt anonymous sign-in if not already signed in
-        auth.signInAnonymously().then(() => {
-          console.log("Anonymous sign-in successful. Fetching games.");
-          fetchTodayGames();
-          // If you also want to fetch yesterday's scores on load, uncomment the line below:
-          // fetchYesterdayScores();
-        }).catch((error) => {
-          console.error("Anonymous sign-in failed:", error);
-          // Fallback: Even if sign-in fails, try to fetch games (though it might still fail due to rules)
-          fetchTodayGames();
-          // fetchYesterdayScores(); // Uncomment if needed
-        });
-      }
-    });
+function renderFeed(list){
+  // Sort newest first by created_at if present
+  list.sort((a,b)=>{
+    const ta = typeof a.created_at === "number" ? a.created_at : Date.parse(a.created_at||0);
+    const tb = typeof b.created_at === "number" ? b.created_at : Date.parse(b.created_at||0);
+    return (tb||0) - (ta||0);
   });
+  const html = list.map(makeTweet).join("");
+  document.getElementById("feed").innerHTML = html;
+}
+
+/* ---- Boot ---- */
+(async function init(){
+  try{
+    let data = FEED_DATA;
+    if (!data && FEED_URL){
+      const res = await fetch(FEED_URL,{cache:"no-store"});
+      data = await res.json();
+    }
+    if (!Array.isArray(data)) data = [];
+    renderFeed(data);
+  }catch(e){
+    console.error(e);
+    document.getElementById("feed").innerHTML =
+      `<div style="padding:16px;color:var(--muted)">Failed to load feed.</div>`;
+  }
+})();
 </script>
 </body>
 </html>
