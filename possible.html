@@ -713,6 +713,37 @@
     border-right: 1px solid #1f1f1f;
   }
 
+	   .headlines-tabs-column {
+    /* New styles for the tab column */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: #1f1f1f;
+  }
+  
+  .headlines-tabs-column .headlines-tab {
+    /* Styles for the individual tab buttons in the new column */
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    text-align: left;
+    font-size: 14px;
+    background-color: #333;
+    color: white;
+    border-bottom: 1px solid #444;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .headlines-tabs-column .headlines-tab:hover {
+    background-color: #555;
+  }
+  
+  .headlines-tabs-column .headlines-tab.active {
+    background-color: #151515;
+    font-weight: bold;
+  }
+
   .headlines-tab:last-child {
     border-right: none;
   }
@@ -1687,111 +1718,459 @@
     </div>
   </div>
 
-  <!-- League-Specific News Sections (all hidden by default) -->
-    <div id="news-MLB" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-_somo8H8eOG8npoO2"><h4>MLB</h4><div class="feed-content">Loading MLB feed...</div></div>
+ <div id="news-MLB" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-MLB" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-NBA" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-_wbelLijqAwfJLCJd"><h4>NBA</h4><div class="feed-content">Loading NBA feed...</div></div>
+</div>
+<div id="news-NBA" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-NBA" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-NBA" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-NFL" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-_lAj37RJzPmNOxjz4"><h4>NFL</h4><div class="feed-content">Loading NFL feed...</div></div>
+</div>
+<div id="news-NFL" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-NFL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-NFL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-NHL" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-_Upexy7Yp5vjsRWf8"><h4>NHL</h4><div class="feed-content">Loading NHL feed...</div></div>
+</div>
+<div id="news-NHL" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-NHL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-NHL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-MLS" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-_pBOHW7eyjbGkaiZq"><h4>MLS</h4><div class="feed-content">Loading MLS feed...</div></div>
+</div>
+<div id="news-MLS" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-MLS" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-MLS" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-PremierLeague" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-PremierLeague"><h4>Premier League</h4><div class="feed-content">Loading Premier League feed...</div></div>
+</div>
+<div id="news-PremierLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-PremierLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-PremierLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-UEFAChampionsLeague" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-UEFAChampionsLeague"><h4>UEFA Champions League</h4><div class="feed-content">Loading UEFA Champions League feed...</div></div>
+</div>
+<div id="news-UEFAChampionsLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-UEFAChampionsLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-UEFAChampionsLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-SerieA" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-SerieA"><h4>Serie A</h4><div class="feed-content">Loading Serie A feed...</div></div>
+</div>
+<div id="news-SerieA" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-SerieA" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-SerieA" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-Bundesliga" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-Bundesliga"><h4>Bundesliga</h4><div class="feed-content">Loading Bundesliga feed...</div></div>
+</div>
+<div id="news-Bundesliga" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-Bundesliga" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-Bundesliga" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-LaLiga" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-LaLiga"><h4>LaLiga</h4><div class="feed-content">Loading LaLiga feed...</div></div>
+</div>
+<div id="news-LaLiga" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-LaLiga" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-LaLiga" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-Soccer" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-Soccer"><h4>Soccer</h4><div class="feed-content">Loading Soccer feed...</div></div>
+</div>
+<div id="news-Soccer" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-Soccer" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-Soccer" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-FACup" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-FACup"><h4>FA Cup</h4><div class="feed-content">Loading FA Cup feed...</div></div>
+</div>
+<div id="news-FACup" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-FACup" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-FACup" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-LigaMX" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-LigaMX"><h4>Liga MX</h4><div class="feed-content">Loading Liga MX feed...</div></div>
+</div>
+<div id="news-LigaMX" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-LigaMX" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-LigaMX" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-NWSL" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NWSL"><h4>NWSL</h4><div class="feed-content">Loading NWSL feed...</div></div>
+</div>
+<div id="news-NWSL" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-NWSL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-NWSL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-Ligue1" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-Ligue1"><h4>Ligue 1</h4><div class="feed-content">Loading Ligue 1 feed...</div></div>
+</div>
+<div id="news-Ligue1" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-Ligue1" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-Ligue1" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-UEFAEuropaLeague" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-UEFAEuropaLeague"><h4>UEFA Europa League</h4><div class="feed-content">Loading UEFA Europa League feed...</div></div>
+</div>
+<div id="news-UEFAEuropaLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-UEFAEuropaLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-UEFAEuropaLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-UEFAConferenceLeague" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-UEFAConferenceLeague"><h4>UEFA Conference League</h4><div class="feed-content">Loading UEFA Conference League feed...</div></div>
+</div>
+<div id="news-UEFAConferenceLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-UEFAConferenceLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-UEFAConferenceLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-FormulaOne" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-FormulaOne"><h4>Formula One</h4><div class="feed-content">Loading Formula One feed...</div></div>
+</div>
+<div id="news-FormulaOne" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-FormulaOne" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-FormulaOne" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-NCAAF" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NCAAF"><h4>NCAAF</h4><div class="feed-content">Loading NCAAF feed...</div></div>
+</div>
+<div id="news-NCAAF" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-NCAAF" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-NCAAF" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-PGATour" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-PGATour"><h4>PGA Tour</h4><div class="feed-content">Loading PGA Tour feed...</div></div>
+</div>
+<div id="news-PGATour" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-PGATour" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-PGATour" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-UFC" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-UFC"><h4>UFC</h4><div class="feed-content">Loading UFC feed...</div></div>
+</div>
+<div id="news-UFC" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-UFC" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-UFC" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-Boxing" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-Boxing"><h4>Boxing</h4><div class="feed-content">Loading Boxing feed...</div></div>
+</div>
+<div id="news-Boxing" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-Boxing" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-Boxing" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-NASCARCupSeries" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NASCARCupSeries"><h4>NASCAR Cup Series</h4><div class="feed-content">Loading NASCAR Cup Series feed...</div></div>
+</div>
+<div id="news-NASCARCupSeries" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-NASCARCupSeries" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-NASCARCupSeries" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-Tennis" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-Tennis"><h4>Tennis</h4><div class="feed-content">Loading Tennis feed...</div></div>
+</div>
+<div id="news-Tennis" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-Tennis" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-Tennis" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-WNBA" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-WNBA"><h4>WNBA</h4><div class="feed-content">Loading WNBA feed...</div></div>
+</div>
+<div id="news-WNBA" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-WNBA" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-WNBA" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-LIVGolf" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-LIVGolf"><h4>LIV Golf</h4><div class="feed-content">Loading LIV Golf feed...</div></div>
+</div>
+<div id="news-LIVGolf" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-LIVGolf" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-LIVGolf" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-IndyCar" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-IndyCar"><h4>IndyCar</h4><div class="feed-content">Loading IndyCar feed...</div></div>
+</div>
+<div id="news-IndyCar" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-IndyCar" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-IndyCar" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-NCAAM" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NCAAM"><h4>NCAAM</h4><div class="feed-content">Loading NCAAM feed...</div></div>
+</div>
+<div id="news-NCAAM" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-NCAAM" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-NCAAM" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-NCAAW" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NCAAW"><h4>NCAAW</h4><div class="feed-content">Loading NCAAW feed...</div></div>
+</div>
+<div id="news-NCAAW" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-NCAAW" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-NCAAW" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-UFL" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-UFL"><h4>UFL</h4><div class="feed-content">Loading UFL feed...</div></div>
+</div>
+<div id="news-UFL" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-UFL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-UFL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-NCAABaseball" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NCAABaseball"><h4>NCAA Baseball</h4><div class="feed-content">Loading NCAA Baseball feed...</div></div>
+</div>
+<div id="news-NCAABaseball" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-NCAABaseball" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-NCAABaseball" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-NCAASoftball" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NCAASoftball"><h4>NCAA Softball</h4><div class="feed-content">Loading NCAA Softball feed...</div></div>
+</div>
+<div id="news-NCAASoftball" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-NCAASoftball" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-NCAASoftball" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-MotoGP" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-MotoGP"><h4>MotoGP</h4><div class="feed-content">Loading MotoGP feed...</div></div>
+</div>
+<div id="news-MotoGP" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-MotoGP" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-MotoGP" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-LPGATour" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-LPGATour"><h4>LPGA Tour</h4><div class="feed-content">Loading LPGA Tour feed...</div></div>
+</div>
+<div id="news-LPGATour" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-LPGATour" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-LPGATour" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="news-TrackAndField" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-TrackAndField"><h4>Track & Field</h4><div class="feed-content">Loading Track & Field feed...</div></div>
+</div>
+<div id="news-TrackAndField" class="content-section" style="display: none; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-TrackAndField" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+        </div>
+        <div id="headlines-content-TrackAndField" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1955,281 +2334,212 @@
       </script>
 
     <!-- News Feeds Script -->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // --- GRAB ELEMENTS FOR COLUMN SWITCHING (Added here) ---
-        const gamesColumn = document.getElementById('games-column');
-        const leagueSpecificColumn = document.getElementById('league-specific-column');
-        const f1Content = document.getElementById('f1-column-content');
-        const gamesContent = document.getElementById('tv-listings-container');
+   <script>
+// This is the complete, rewritten script block.
+// It replaces the old, hard-coded feed logic with a new, dynamic system.
 
-        // Helper function to fetch and render an XML feed
-        function fetchFeed(containerSelector, feedUrl) {
-          const container = document.querySelector(containerSelector);
-          if (!container) return;
-          fetch(feedUrl)
+document.addEventListener("DOMContentLoaded", () => {
+
+    // --- HARD-CODED TAB NAMES AND URLs ---
+    // Define the news sources for each league. Add or remove entries as needed.
+    const LEAGUE_TABS = {
+      NFL: [
+        { name: "NFL.com", url: "https://www.nfl.com/news/all-news-feed/rss.xml" },
+        { name: "Pro Football Talk", url: "https://profootballtalk.nbcsports.com/feed/" },
+        { name: "Bleacher Report", url: "https://bleacherreport.com/feed/nfl" }
+      ],
+      MLB: [
+        { name: "MLB.com", url: "https://www.mlb.com/feeds/news/rss.xml" },
+        { name: "The Athletic", url: "https://theathletic.com/mlb/feed/" },
+        { name: "Baseball America", url: "https://www.baseballamerica.com/rss/" }
+      ],
+      NBA: [
+        { name: "Hoops Rumors", url: "https://www.hoopsrumors.com/feed/" },
+        { name: "Bleacher Report", url: "https://bleacherreport.com/feed/nba" },
+        { name: "ESPN", url: "https://www.espn.com/espn/rss/nba/news" }
+      ],
+      NHL: [
+        { name: "NHL.com", url: "https://www.nhl.com/rss/news" },
+        { name: "Hockey News", url: "https://thehockeynews.com/.rss/full" }
+      ],
+      PremierLeague: [
+        { name: "BBC Sport", url: "http://feeds.bbci.co.uk/sport/football/rss.xml" },
+        { name: "Sky Sports", url: "https://www.skysports.com/rss/0,20443,11661_8700,00.xml" }
+      ],
+      // This is the Home page's news feed configuration
+      Home: [
+        { name: "ESPN", url: "https://www.espn.com/espn/rss/news" },
+        { name: "CBS", url: "https://rss.app/feeds/qQ90C7XC0oUECOLP.xml" },
+        { name: "Yahoo", url: "https://rss.app/feeds/OvSpAK6PF8gmF37d.xml" },
+        { name: "FOX", url: "https://rss.app/feeds/gqwmnxZNc8bSqdto.xml" }
+      ]
+    };
+
+    // Helper function to fetch and render an XML feed
+    function fetchRSSFeed(url, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container || !url) {
+            console.error("Invalid container or URL", containerId, url);
+            return;
+        }
+        container.innerHTML = "Loading...";
+        fetch(url)
             .then(res => res.text())
             .then(str => {
-              const parser = new DOMParser();
-              const xml = parser.parseFromString(str, "application/xml");
-              const items = Array.from(xml.querySelectorAll("item"));
-              if (items.length > 0) {
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(str, "text/xml");
+                const items = Array.from(xml.querySelectorAll("item"));
+                if (!items.length) {
+                    container.innerHTML = "<p>No stories found.</p>";
+                    return;
+                }
                 const ul = document.createElement("ul");
                 ul.style.margin = "0";
                 ul.style.padding = "0";
                 ul.style.listStyle = "none";
                 items.forEach(item => {
-                  const title = item.querySelector("title")?.textContent || "No title";
-                  const link = item.querySelector("link")?.textContent || "#";
-                  const li = document.createElement("li");
-                  li.style.marginBottom = "0.5em";
-                  const a = document.createElement("a");
-                  a.href = link;
-                  a.target = "_blank";
-                  a.textContent = title;
-                  li.appendChild(a);
-                  ul.appendChild(li);
+                    const li = document.createElement("li");
+                    li.style.padding = "6px 0";
+                    const title = item.querySelector("title")?.textContent || "";
+                    const link = item.querySelector("link")?.textContent || "#";
+                    li.innerHTML = `<a href="${link}" target="_blank" style="color:#212121;text-decoration:none;">${title}</a>`;
+                    ul.appendChild(li);
                 });
                 container.innerHTML = "";
                 container.appendChild(ul);
-                ul.querySelectorAll("a").forEach(link => {
-                  link.addEventListener("click", () => {
-                    link.classList.add("clicked");
-                  });
-                });
-              } else {
-                container.innerHTML = "<p>No items found.</p>";
-              }
             })
-            .catch(error => {
-              console.error("Error loading feed:", error);
-              container.innerHTML = "<p>Error loading feed.</p>";
+            .catch(() => {
+                container.innerHTML = "<p>Error loading feed.</p>";
             });
+    }
+
+    // New function to set up tabs for a specific league
+    function setupNewsTabsForLeague(leagueName) {
+        // If leagueName is Home, we handle it differently (or dynamically)
+        const isHome = leagueName === "Home";
+        const tabsContainer = isHome ? 
+          document.getElementById(`headlines-tabs`) :
+          document.getElementById(`headlines-tabs-${leagueName}`);
+        
+        const contentContainer = isHome ? 
+          document.getElementById(`espn-feed`) : // We'll just load ESPN's feed into the first div
+          document.getElementById(`headlines-content-${leagueName}`);
+
+        if (!tabsContainer || !contentContainer) return;
+        
+        // Clear previous content
+        tabsContainer.innerHTML = '';
+        contentContainer.innerHTML = '';
+        
+        const leagueTabs = LEAGUE_TABS[leagueName];
+        if (!leagueTabs || leagueTabs.length === 0) {
+            contentContainer.innerHTML = '<p style="padding: 10px;">No news sources available for this league.</p>';
+            return;
         }
 
-        // Feed maps and fetching logic (unchanged)
-        const feedMap = {
-          espn: "https://www.espn.com/espn/rss/news",
-          cbs: "https://rss.app/feeds/qQ90C7XC0oUECOLP.xml",
-          yahoo: "https://rss.app/feeds/OvSpAK6PF8gmF37d.xml",
-          fox: "https://rss.app/feeds/gqwmnxZNc8bSqdto.xml"
-        };
-        Object.entries(feedMap).forEach(([source, url]) => {
-          fetchFeed(`#${source}-feed`, url);
-        });
-        fetchFeed("#feed-_somo8H8eOG8npoO2 .feed-content", "https://rss.app/feeds/_somo8H8eOG8npoO2.xml");
-        fetchFeed("#feed-_wbelLijqAwfJLCJd .feed-content", "https://rss.app/feeds/_wbelLijqAwfJLCJd.xml");
-        fetchFeed("#feed-_lAj37RJzPmNOxjz4 .feed-content", "https://rss.app/feeds/_lAj37RJzPmNOxjz4.xml");
-        fetchFeed("#feed-_pBOHW7eyjbGkaiZq .feed-content", "https://rss.app/feeds/_pBOHW7eyjbGkaiZq.xml");
-        fetchFeed("#feed-PremierLeague .feed-content", "https://rss.app/feeds/_un3EHST14mfp29GT.xml");
-        fetchFeed("#feed-UEFAChampionsLeague .feed-content", "https://rss.app/feeds/hJ27BTRwkcUlwvsf.xml");
-        fetchFeed("#feed-SerieA .feed-content", "https://rss.app/feeds/_IEjWrVaKRW3QNEkB.xml");
-        fetchFeed("#feed-Bundesliga .feed-content", "https://rss.app/feeds/_OFOWQNsn38MFTtLv.xml");
-        fetchFeed("#feed-LaLiga .feed-content", "https://rss.app/feeds/_zvRqo1UuuoLB5czl.xml");
-        fetchFeed("#feed-_Upexy7Yp5vjsRWf8 .feed-content", "https://rss.app/feeds/_Upexy7Yp5vjsRWf8.xml");
-        fetchFeed("#feed-UFC .feed-content", "https://rss.app/feeds/_YGmr1TjOD0yXmfU1.xml");
-        fetchFeed("#feed-Boxing .feed-content", "https://rss.app/feeds/_7DfbEtxpn8RPNIMf.xml");
-        fetchFeed("#feed-NASCARCupSeries .feed-content", "https://rss.app/feeds/_D7Q3jbrHjR3bGj8O.xml");
-        fetchFeed("#feed-Tennis .feed-content", "https://rss.app/feeds/_tGSXi2957CegL2kC.xml");
-        fetchFeed("#feed-WNBA .feed-content", "https://rss.app/feeds/_JsIgbwln4EnDHpSE.xml");
-        fetchFeed("#feed-LIVGolf .feed-content", "https://rss.app/feeds/_s7tH2abPc7ZQXhLp.xml");
-        fetchFeed("#feed-IndyCar .feed-content", "https://rss.app/feeds/_TqIJuTCX0SmFe0lM.xml");
-        fetchFeed("#feed-NCAAM .feed-content", "https://rss.app/feeds/_va6EQaZAxOx6z8xR.xml");
-        fetchFeed("#feed-NCAAW .feed-content", "https://rss.app/feeds/_2P4NcD95YPwU8T51.xml");
-        fetchFeed("#feed-NCAABaseball .feed-content", "https://rss.app/feeds/_q2SYr186Ed7j8jud.xml");
-        fetchFeed("#feed-NCAASoftball .feed-content", "https://rss.app/feeds/_y4zf68Y0lK5bkT47.xml");
-        fetchFeed("#feed-MotoGP .feed-content", "https://rss.app/feeds/_4Bpke8POCqxzxfKq.xml");
-        fetchFeed("#feed-LPGATour .feed-content", "https://rss.app/feeds/_a4W47htGlhRlO2ju.xml");
-        fetchFeed("#feed-NCAAF .feed-content", "https://rss.app/feeds/_e8BTSPZYg61J9CYu.xml");
-        fetchFeed("#feed-PGATour .feed-content", "https://rss.app/feeds/_QQsPX3f8GnzYvAXX.xml");
-        fetchFeed("#feed-FACup .feed-content", "https://rss.app/feeds/Wlg6SgkaP1M71ZJK.xml");
-        fetchFeed("#feed-LigaMX .feed-content", "https://rss.app/feeds/_JgpA2OqGGC8IrApe.xml");
-        fetchFeed("#feed-NWSL .feed-content", "https://rss.app/feeds/_1kbC9b791rPZgjg6.xml");
-        fetchFeed("#feed-FormulaOne .feed-content", "https://rss.app/feeds/_32mCoV3PIKhpjo2K.xml");
-        fetchFeed("#feed-Ligue1 .feed-content", "https://rss.app/feeds/_9nS7hLmB3aUlWcjH.xml");
-        fetchFeed("#feed-UEFAEuropaLeague .feed-content", "https://rss.app/feeds/_Op8jopGsYny0gt0e.xml");
-        fetchFeed("#feed-UEFAConferenceLeague .feed-content", "https://rss.app/feeds/_BjsIqdRuSa1z3U9p.xml");
-        fetchFeed("#feed-TrackAndField .feed-content", "https://rss.app/feeds/_rZcwsn3Z2MR5N2Zq.xml");
-        fetchFeed("#feed-Soccer .feed-content", "https://rss.app/feeds/_Vqk4SoQYrKBPOvx6.xml");
-
-        // Existing menu functionality
-        let selectedSection = "Home";
-        document.querySelectorAll(".menu-filter").forEach(filter => {
-          filter.addEventListener("click", () => {
-            document.getElementById("menuSearch").value = "";
-            ["123", "az", "group"].forEach(type => {
-              document.querySelectorAll("#menuList-" + type + " li").forEach(li => {
-                li.style.display = "";
-              });
-            });
-            document.querySelectorAll(".menu-filter").forEach(f =>
-              f.classList.remove("active")
-            );
-            filter.classList.add("active");
-            const type = filter.dataset.filter;
-            document.getElementById("menuList-123").style.display =
-              type === "123" ? "block" : "none";
-            document.getElementById("menuList-az").style.display =
-              type === "az" ? "block" : "none";
-            document.getElementById("menuList-group").style.display =
-              type === "group" ? "block" : "none";
-            const newList = document.getElementById("menuList-" + type);
-            if (newList) {
-              newList.querySelectorAll("li[data-section]").forEach(li => {
-                li.classList.toggle("selected", li.dataset.section === selectedSection);
-              });
+        leagueTabs.forEach((tab, index) => {
+            const tabButton = document.createElement('div');
+            tabButton.className = 'headlines-tab';
+            tabButton.textContent = tab.name;
+            tabButton.dataset.url = tab.url;
+            if (index === 0) {
+                tabButton.classList.add('active');
             }
-          });
+            tabsContainer.appendChild(tabButton);
         });
 
-        // --- THIS IS THE CORRECTED CLICK HANDLER ---
-        document.querySelectorAll("#menuList li").forEach(item => {
-          item.addEventListener("click", e => {
-            if (
-              item.classList.contains("spacer-line") ||
-              item.classList.contains("soccer-more-toggle") ||
-              item.querySelector("strong")
-            ) {
-              e.stopPropagation();
-              return;
+        // Add click listeners to the dynamically created tabs
+        const tabs = tabsContainer.querySelectorAll(".headlines-tab");
+        tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                tabs.forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
+                const url = tab.dataset.url;
+                fetchRSSFeed(url, contentContainer.id);
+            });
+        });
+
+        // Initial load for the first tab
+        if (tabs.length > 0) {
+            tabs[0].click();
+        }
+    }
+
+    // --- GRAB ELEMENTS FOR COLUMN SWITCHING AND EXISTING FUNCTIONALITY ---
+    const gamesColumn = document.getElementById('games-column');
+    const leagueSpecificColumn = document.getElementById('league-specific-column');
+    const f1Content = document.getElementById('f1-column-content');
+    const gamesContent = document.getElementById('tv-listings-container');
+    const newsHomeSection = document.getElementById("news-Home");
+
+    // Handle the main menu clicks to switch news content
+    document.querySelectorAll("#menuList li").forEach(item => {
+        item.addEventListener("click", e => {
+            // Stop propagation to prevent nested list items from triggering parent's click
+            if (item.classList.contains("spacer-line") || item.querySelector("strong")) {
+                e.stopPropagation();
+                return;
             }
             e.stopPropagation();
-            if (item.dataset.section) {
-              selectedSection = item.dataset.section;
-            }
-            document
-              .querySelectorAll("#menuList li[data-section]")
-              .forEach(li => li.classList.remove("selected"));
-            item.classList.add("selected");
+
             const section = item.dataset.section;
 
-            // --- START: CORRECTED LOGIC ---
-            if (section === 'Home') {
+            // Remove 'selected' class from all menu items and add it to the clicked one
+            document.querySelectorAll("#menuList li[data-section]").forEach(li => li.classList.remove("selected"));
+            item.classList.add("selected");
+
+            // Handle games/league column visibility
+            if (section === 'Home' || section === 'FormulaOne') {
                 gamesColumn.style.display = 'block';
                 leagueSpecificColumn.style.display = 'none';
-                
-                // Inside games column, ensure correct view
-                gamesContent.style.display = 'block';
-                f1Content.style.display = 'none';
-
-            } else if (section === 'FormulaOne') {
-                gamesColumn.style.display = 'block'; // F1 content is INSIDE this column
-                leagueSpecificColumn.style.display = 'none';
-
-                // Toggle visibility within the games column
-                gamesContent.style.display = 'none';
-                f1Content.style.display = 'flex'; 
-            } else { // For all other leagues
+                gamesContent.style.display = (section === 'Home') ? 'block' : 'none';
+                f1Content.style.display = (section === 'FormulaOne') ? 'flex' : 'none';
+            } else {
                 gamesColumn.style.display = 'none';
                 leagueSpecificColumn.style.display = 'block';
-                
-                // Trigger data load for the specific league
                 loadLeagueSpecificData(section);
             }
 
-            // 2. Handle the news panel switching (existing logic)
-            document.querySelectorAll(".news .content-section").forEach(
-              s => (s.style.display = "none")
-            );
-            document.querySelectorAll("#social-feed-container .content-section").forEach(s => s.style.display = "none");
+            // Handle news panel switching
+            document.querySelectorAll(".news .content-section").forEach(s => s.style.display = "none");
+            const newsSection = document.getElementById(`news-${section}`);
 
-            const news = document.getElementById("news-" + section);
-            const social = document.getElementById("social-" + section);
-            if (news) {
-              news.style.display = "block";
-              
-              const newsSubMenu = document.getElementById("newsSubMenu");
-              if (section === "Home") {
-                if (newsSubMenu) newsSubMenu.style.display = "flex";
-                const container = document.querySelector(".news");
-                if (container) {
-                    container.scrollTop = 0;
-                    container.dispatchEvent(new Event("scroll"));
-                }
-              } else {
-                if (newsSubMenu) newsSubMenu.style.display = "none";
-              }
+            if (newsSection) {
+              newsSection.style.display = "block";
+              // Call the new setup function for all pages
+              setupNewsTabsForLeague(section);
+            } else {
+              // Fallback to Home if the league has no news page
+              newsHomeSection.style.display = "block";
+              setupNewsTabsForLeague("Home");
             }
-            if (social) social.style.display = "block";
-            // --- END: CORRECTED LOGIC ---
-          });
+            
+            // Re-apply Breaking/Fantasy/Transactions tab logic for Home page
+            if(section === "Home") {
+                const homeBreakingTabs = document.querySelectorAll("#news-Home .news-tab");
+                homeBreakingTabs.forEach(tab => {
+                    tab.addEventListener("click", () => {
+                      homeBreakingTabs.forEach(t => t.classList.remove("active"));
+                      tab.classList.add("active");
+                      document.getElementById("breaking-feed").style.display = (tab.dataset.tab === "breaking") ? "block" : "none";
+                      document.getElementById("fantasy-feed").style.display = (tab.dataset.tab === "fantasy") ? "block" : "none";
+                      document.getElementById("transactions-feed").style.display = (tab.dataset.tab === "transactions") ? "block" : "none";
+                    });
+                });
+                // Ensure default tab is active
+                document.querySelector("#news-Home .news-tab[data-tab='breaking']").click();
+            }
         });
-
-        const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
-        const newsPanel = document.querySelector(".news");
-        newsPanel.addEventListener("scroll", () => {
-          const newsSubMenu = document.getElementById("newsSubMenu");
-          if (!newsSubMenu) return; 
-
-          const top = newsPanel.getBoundingClientRect().top;
-          const offset = newsSubMenu.offsetHeight + 50;
-          let active = 0;
-          for (let i = 0; i < feeds.length; i++) {
-            const el = document.getElementById(feeds[i]);
-            if (!el) continue;
-            const h4 = el.querySelector("h4");
-            if (!h4) continue;
-            if (h4.getBoundingClientRect().top > top + offset) break;
-            active = i;
-          }
-          const feedName = feeds[active].replace("feed-", "").toLowerCase();
-          document.querySelectorAll(".news-menu-item").forEach(item => {
-            item.classList.toggle(
-              "active",
-              item.dataset.feed.toLowerCase() === feedName
-            );
-          });
-        });
-
-        document.getElementById("menuSearch").addEventListener("keyup", function () {
-          const query = this.value.toLowerCase();
-          const activeFilterElem = document.querySelector(".menu-filter.active");
-          if (!activeFilterElem) return;
-          const activeFilter = activeFilterElem.dataset.filter;
-          const activeList = document.getElementById("menuList-" + activeFilter);
-          if (activeList) {
-            activeList.querySelectorAll("li").forEach(li => {
-              li.style.display = li.textContent.toLowerCase().includes(query)
-                ? ""
-                : "none";
-            });
-          }
-        });
-
-        window.toggleSoccerMore = function () {
-          const section = document.getElementById("soccer-more");
-          const toggle = document.querySelector(".soccer-more-toggle");
-          const expanded = section.style.display === "block";
-          section.style.display = expanded ? "none" : "block";
-          toggle.textContent = expanded ? "More…" : "Less…";
-        };
-
-        document.querySelectorAll(".rss-feed a").forEach(link => {
-          link.setAttribute("target", "_blank");
-          link.addEventListener("click", () => {
-            link.classList.add("clicked");
-          });
-        });
-      });
-
-     function showSecondSocialSection(section) {
-      document.querySelectorAll("#second-social-panel .content-section").forEach(el => {
-        el.style.display = "none";
-      });
-      const target = document.getElementById("social2-" + section);
-      if (target) {
-        target.style.display = "block";
-      }
-    }
-
-    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
-      item.addEventListener("click", () => {
-        const section = item.dataset.section;
-        showSecondSocialSection(section);
-        showDiscussionSection(section);
-      });
     });
-    </script>
+
+    // The old, hardcoded feeds and their fetching logic are now obsolete.
+    // The new `LEAGUE_TABS` object and `setupNewsTabsForLeague` function handle this dynamically.
+    
+    // Initial load of the Home page's news tabs
+    setupNewsTabsForLeague("Home");
+});
+</script>
+
 
 <!-- This script now contains the logic for both "Today" and "Scores" tabs -->
 
