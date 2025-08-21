@@ -22,15 +22,7 @@
     );
   }
 </script>
-	 <style>
-      /* RESTORED: Original CSS for news tabs */
-      .news-tab[data-tab="fantasy"],
-      .news-tab[data-tab="transactions"],
-      #fantasy-feed,
-      #transactions-feed {
-        display: none !important;
-      }
-    </style>
+	
 	  
 
 
@@ -65,7 +57,7 @@
 <meta name="twitter:title" content="THPORTH | All the latest sports news" />
 <meta name="twitter:description" content="Get the latest sports news, social buzz, and live scores for NFL, NBA, MLB, and more — all in one place." />
 <meta name="twitter:image" content="https://github.com/ajolly2/ajolly2.github.io/blob/master/thporth_AllSportsNews_logo-red.png?raw=true" />
-   <style>
+  <style>
   /* ────────────────────────────────────────────────────────── */
   /* Global Resets                        */
   /* ────────────────────────────────────────────────────────── */
@@ -722,29 +714,6 @@
     color: #111;
   }
 
-	   .news-feed-content {
-  /* This was inheriting padding from a parent class.
-     Setting it to 0 and re-adding padding specifically
-     to the right side for the scrollbar fixes the issue. */
-  padding: 0 !important;
-  padding-right: 10px !important;
-}
-
-	   .news-main-container {
-  /* This parent container had a hardcoded height calculation
-     that was causing the empty space. Flexbox will now handle
-     the height correctly, so we can remove the explicit calculation. */
-  height: 100% !important;
-}
-
-	   .news-main-container .breaking-section {
-  /* This container had a max-height that was preventing it
-     from stretching to the bottom. Setting it to `auto` or
-     `100%` allows it to fill the remaining space. */
-  max-height: 100% !important;
-  flex: 1 1 auto !important;
-}
-
   /* 5a) ESPN feed-entry styling */
  /* Apply identical styling to ESPN, CBS, Yahoo and FOX feeds */
 #espn-feed ul,
@@ -844,17 +813,12 @@
   .news-tab {
     flex: 1 1 0;
     text-align: center;
-    cursor: pointer;
     font-size: 10px;
+    line-height: 18px;
     color: #aaa;
-    background: #3c3c3c;
-    border-right: 1px solid #2a2a2a;
-    border-bottom: none;
-    transition: background 0.2s, color 0.2s;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    cursor: pointer;
+    background-color: #2a2a2a;
+    border-right: 1px solid #1f1f1f;
   }
 
   .news-tab:last-child {
