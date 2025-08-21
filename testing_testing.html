@@ -621,39 +621,52 @@
   /* News Column (Split Scroll Areas)          */
   /* ────────────────────────────────────────────────────────── */
 
-/* ────────────────────────────────────────────────────────── */
-/* News Column (Split Scroll Areas) - REVISED                  */
-/* ────────────────────────────────────────────────────────── */
+  /* 1) Keep "News" bar pinned at the top: */
+  .column.news .news-header {
+    position: sticky;
+    top: 0;
+    z-index: 30; /* above everything in news column */
+    background: #3c3c3c;
+    width: 100%;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    padding-left: 1px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    border-bottom: 1px solid #1f1f1f;
+  }
 
-/* 1) Main News Column. Remove all padding to make content flush with edges. */
-.column.news {
-    padding: 0 !important;
-}
-
-/* 2) Main container for headlines and breaking news.
-      Ensure it fills the full available height. */
-.news-main-container {
+  /* 2) Structure: headlines-section (60%) on top, breaking-section (40%) below */
+  .news-main-container {
     display: flex;
     flex-direction: column;
-    height: calc(100% - 18px) !important; /* Fixes space below "News" header */
-}
+    height: calc(100% - 18px); /* Full column height minus "News" bar */
+  }
 
-/* 3) Headlines section. Make it flexible. */
-.headlines-section {
-    flex: 1 1 60% !important;
+  .headlines-section {
+    flex: 0 0 60%;
     display: flex;
     flex-direction: column;
     border-bottom: 2px solid #d4d4d4;
-    min-height: auto !important;
-    max-height: 60% !important;
+    min-height: 120px;
+    max-height: 60%;
     overflow: hidden;
-    padding: 0 !important; /* Crucial: Remove internal padding */
-}
+  }
 
-/* 4) "Headlines" header. Remove any potential margins/padding. */
-.headlines-section .news-section-header {
+  .breaking-section {
+    flex: 1 1 40%;
+    display: flex;
+    flex-direction: column;
+    min-height: 80px;
+    max-height: 40%;
+    overflow: hidden;
+  }
+
+  /* 3) "Headlines" header pinned at top of headlines-section (no gap under "News"): */
+  .headlines-section .news-section-header {
     position: sticky;
-    top: 0;
+    top: 0; /* directly under the "News" bar (no extra gap) */
     z-index: 29;
     background: #3c3c3c;
     color: #fff;
@@ -662,122 +675,51 @@
     height: 18px;
     display: flex;
     align-items: center;
-    padding: 0 10px !important; /* Keep internal padding for text */
+    padding: 0 10px;
     border-bottom: 1px solid #2a2a2a;
     font-weight: bold;
     letter-spacing: 0.5px;
-    margin: 0 !important; /* Crucial: Remove top margin */
-}
+  }
 
-/* 5) Horizontal tabs container on Home page. Remove margins/padding. */
-#headlines-tabs {
+  /* 4) ESPN │ CBS │ Yahoo │ FOX tabs pinned below "Headlines": */
+  #headlines-tabs {
     position: sticky;
-    top: 18px;
+    top: 18px; /* 18px ("Headlines") under the "News" bar */
     z-index: 28;
     display: flex;
     height: 18px;
     background-color: #2a2a2a;
-    margin: 0 !important; /* Crucial: Remove margin around tabs */
-    padding: 0 !important;
-}
+    margin: 0;
+  }
 
-/* 6) News feed content area. Remove all padding to align it to the left edge. */
-.headlines-section .news-feed-content {
-    flex: 1 1 auto !important;
+  .headlines-tab {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    line-height: 18px;
+    color: #aaa;
+    cursor: pointer;
+    background-color: #2a2a2a;
+    border-right: 1px solid #1f1f1f;
+  }
+
+  .headlines-tab:last-child {
+    border-right: none;
+  }
+
+  .headlines-tab.active {
+    background-color: #3c3c3c;
+    color: #fff;
+  }
+
+  /* 5) Each feed area within headlines-section scrolls independently */
+  .headlines-section .news-feed-content {
+    flex: 1 1 auto; /* fill remaining area under header and tabs */
     overflow-y: auto;
-    padding: 0 !important; /* Fixes left and top padding issues */
+    padding: 36px 10px 10px; 
     background: #fafaf9;
     font-size: 11px;
     color: #111;
-}
-
-/* 7) Ensure list items have padding for readability after removing container padding. */
-.headlines-section .news-feed-content ul {
-    list-style: none;
-    padding: 0 10px !important; /* Add left and right padding to the list itself */
-    margin: 0 !important;
-}
-
-.headlines-section .news-feed-content ul li {
-    padding: 5px 0 !important; /* Add vertical padding to list items */
-    border-bottom: 1px solid #C9C8C7;
-}
-
-/* 8) Breaking news section. Ensure it fills the rest of the space. */
-.breaking-section {
-    flex: 1 1 40% !important;
-    display: flex;
-    flex-direction: column;
-    min-height: 80px;
-    max-height: 40%;
-    overflow: hidden;
-    padding: 0 !important; /* Crucial: Remove internal padding */
-}
-
-/* 9) Breaking news header. Remove any margin. */
-.breaking-section .news-section-header {
-    margin: 0 !important;
-    padding: 0 10px !important;
-}
-
-/* 10) Breaking news content. Adjust padding. */
-.breaking-section .news-feed-content {
-    padding: 0 10px !important;
-}
-
-
-	   .news-feed-content {
-  /* This was inheriting padding from a parent class.
-     Setting it to 0 and re-adding padding specifically
-     to the right side for the scrollbar fixes the issue. */
-  padding: 0 !important;
-  padding-right: 10px !important;
-}
-
-	   .news-main-container {
-  /* This parent container had a hardcoded height calculation
-     that was causing the empty space. Flexbox will now handle
-     the height correctly, so we can remove the explicit calculation. */
-  height: 100% !important;
-}
-
-	   .news-main-container .breaking-section {
-  /* This container had a max-height that was preventing it
-     from stretching to the bottom. Setting it to `auto` or
-     `100%` allows it to fill the remaining space. */
-  max-height: 100% !important;
-  flex: 1 1 auto !important;
-}
-
-	    .league.headlines-tabs-column {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    background-color: #1f1f1f;
-    width: 20%;
-    flex-shrink: 0;
-  }
-
-  .league.headlines-tabs-column .league.headlines-tab {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-    text-align: left;
-    font-size: 14px;
-    background-color: #333;
-    color: white;
-    border-bottom: 1px solid #444;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  .league.headlines-tabs-column .league.headlines-tab:hover {
-    background-color: #555;
-  }
-
-  .league.headlines-tabs-column .league.headlines-tab.active {
-    background-color: #151515;
-    font-weight: bold;
   }
 
   /* 5a) ESPN feed-entry styling */
@@ -1191,7 +1133,6 @@
     flex: 0 0 auto !important;
     width: 80% !important;
     min-width: 0;
-	  padding: 0;
   }
 
   /* Social below at full width */
