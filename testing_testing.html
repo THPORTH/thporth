@@ -745,6 +745,37 @@
   flex: 1 1 auto !important;
 }
 
+	    .league.headlines-tabs-column {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: #1f1f1f;
+    width: 20%;
+    flex-shrink: 0;
+  }
+
+  .league.headlines-tabs-column .league.headlines-tab {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    text-align: left;
+    font-size: 14px;
+    background-color: #333;
+    color: white;
+    border-bottom: 1px solid #444;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .league.headlines-tabs-column .league.headlines-tab:hover {
+    background-color: #555;
+  }
+
+  .league.headlines-tabs-column .league.headlines-tab.active {
+    background-color: #151515;
+    font-weight: bold;
+  }
+
   /* 5a) ESPN feed-entry styling */
  /* Apply identical styling to ESPN, CBS, Yahoo and FOX feeds */
 #espn-feed ul,
