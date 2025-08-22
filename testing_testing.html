@@ -690,6 +690,42 @@
     padding: 0 !important;
 }
 
+	     /* 5a) ESPN feed-entry styling */
+ /* Apply identical styling to ESPN, CBS, Yahoo and FOX feeds */
+#espn-feed ul,
+#cbs-feed ul,
+#yahoo-feed ul,
+#fox-feed ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#espn-feed ul li,
+#cbs-feed ul li,
+#yahoo-feed ul li,
+#fox-feed ul li {
+  margin-bottom: 0.5em;
+}
+
+#espn-feed ul li a,
+#cbs-feed ul li a,
+#yahoo-feed ul li a,
+#fox-feed ul li a {
+  color: black;
+  text-decoration: none;
+  line-height: 1;
+  word-break: break-word;
+}
+
+#espn-feed ul li a:visited,
+#cbs-feed ul li a:visited,
+#yahoo-feed ul li a:visited,
+#fox-feed ul li a:visited {
+  color: lightgray;
+}
+
+
 /* 6) The news feed content area. This needs to be padding-free. */
 .headlines-section .news-feed-content {
     flex: 1 1 auto !important;
