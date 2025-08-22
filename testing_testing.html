@@ -715,33 +715,50 @@
 }
 
 /* 8) Breaking news section. Ensure it fills the rest of the available height. */
-.breaking-section {
-    flex: 1 1 auto !important;
-    display: flex !important;
-    flex-direction: column !important;
-    min-height: auto !important;
-    max-height: none !important;
-    overflow: hidden !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
+  .breaking-section {
+    flex: 1 1 40%;
+    display: flex;
+    flex-direction: column;
+    min-height: 80px;
+    max-height: 40%;
+    overflow: hidden;
+  }
 
-/* 9) The Breaking News header. */
-.breaking-section .news-section-header {
-    margin: 0 !important;
-    padding: 0 10px !important;
-}
+
+ /* 6) "Breaking" header pinned at top of breaking-section */
+  .breaking-section .news-section-header {
+    position: sticky;
+    top: 0; /* directly at top of breaking-section (under headlines-section) */
+    z-index: 27;
+    background: #3c3c3c;
+    color: #fff;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+
+	     /* 7) Breaking │ Fantasy │ Transactions tabs pinned under "Breaking" header */
+  .breaking-tabs-header {
+    position: sticky;
+    top: 18px; /* just under the 18px-high "Breaking" header */
+    z-index: 26;
+    display: flex;
+    gap: 0;
+    padding: 0;
+    height: 18px;
+    background-color: #3c3c3c;
+  }
+
 
 /* 10) The Breaking News content. Adjust padding. */
 .breaking-section .news-feed-content {
     padding: 0 10px !important;
-}
-
-	   /* This rule targets the active breaking news tab and applies the requested styling. */
-.news-tab.active[data-tab="breaking"] {
-  background-color: black;
-  color: white;
-  font-weight: bold; /* Optional: adds bolding for emphasis */
 }
 
 /* 11) New styles for the tabs themselves (Home page style). */
