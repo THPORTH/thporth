@@ -1572,36 +1572,35 @@
             padding-left: 1px; z-index: 11; border-bottom: 1px solid #1f1f1f;">News</div>
 
         <!-- Home News Section (Headlines + Breaking) -->
-        <div id="news-Home" class="content-section" style="display: block; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <!-- Headlines Section -->
-            <div class="news-section headlines-section" style="flex: 0 0 60%; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div id="headlines-tabs">
-                <div class="headlines-tab active" data-source="espn">ESPN</div>
-                <div class="headlines-tab" data-source="cbs">CBS</div>
-                <div class="headlines-tab" data-source="yahoo">Yahoo</div>
-                <div class="headlines-tab" data-source="fox">FOX</div>
-              </div>
-              <div class="news-feed-content" id="espn-feed">Loading ESPN...</div>
-              <div class="news-feed-content" id="cbs-feed" style="display:none;">Loading CBS...</div>
-              <div class="news-feed-content" id="yahoo-feed" style="display:none;">Loading Yahoo...</div>
-              <div class="news-feed-content" id="fox-feed" style="display:none;">Loading FOX...</div>
-            </div>
-            <!-- Breaking/Fantasy/Transactions Tabs Section -->
-            <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-              <div class="news-section-header breaking-tabs-header">
-                <span class="news-tab active" data-tab="breaking">Breaking</span>
-                <span class="news-tab" data-tab="fantasy">Fantasy</span>
-                <span class="news-tab" data-tab="transactions">Transactions</span>
-              </div>
-              <!-- IMPORTANT: Set breaking-feed to display: block; by default -->
-              <div class="news-feed-content" id="breaking-feed" style="display: block;">Loading breaking news...</div>
-              <div class="news-feed-content" id="fantasy-feed" style="display:none;">Loading fantasy news...</div>
-              <div class="news-feed-content" id="transactions-feed" style="display:none;">Loading transactions...</div>
-            </div>
-          </div>
-        </div>
+      <div id="news-Home" class="content-section" style="display: block; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <!-- Headlines Section -->
+    <div class="news-section headlines-section" style="flex: 0 0 60%; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div id="headlines-tabs">
+        <div class="headlines-tab active" data-source="espn">ESPN</div>
+        <div class="headlines-tab" data-source="cbs">CBS</div>
+        <div class="headlines-tab" data-source="yahoo">Yahoo</div>
+        <div class="headlines-tab" data-source="fox">FOX</div>
+      </div>
+      <div class="news-feed-content" id="espn-feed" style="display: block;">Loading ESPN...</div>
+      <div class="news-feed-content" id="cbs-feed" style="display:none;">Loading CBS...</div>
+      <div class="news-feed-content" id="yahoo-feed" style="display:none;">Loading Yahoo...</div>
+      <div class="news-feed-content" id="fox-feed" style="display:none;">Loading FOX...</div>
+    </div>
+    <!-- Breaking/Fantasy/Transactions Tabs Section -->
+    <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+      <div class="news-section-header breaking-tabs-header">
+        <span class="news-tab active" data-tab="breaking">Breaking</span>
+        <span class="news-tab" data-tab="fantasy">Fantasy</span>
+        <span class="news-tab" data-tab="transactions">Transactions</span>
+      </div>
+      <div class="news-feed-content" id="breaking-feed" style="display: block;">Loading breaking news...</div>
+      <div class="news-feed-content" id="fantasy-feed" style="display:none;">Loading fantasy news...</div>
+      <div class="news-feed-content" id="transactions-feed" style="display:none;">Loading transactions...</div>
+    </div>
+  </div>
+</div>
 
         <!-- League-Specific News Sections (all hidden by default) -->
         <div id="news-MLB" class="content-section" style="display: none; height: calc(100% - 18px);">
