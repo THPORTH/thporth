@@ -49,7 +49,7 @@
     <meta name="robots" content="index, follow" />
     <title>THPORTH | All the latest sports news</title>
    
-<link rel="icon" type="image/png" href="https://www.thporth.com/thporth_AllSportsNews_logo-black.png" />
+<link rel="icon" type="image/png" href="https://github.com/THPORTH/thporth/blob/main/thporth_AllSportsNews_logo-white.png?raw=true" />
   
     <link rel="canonical" href="https://www.thporth.com/" />
     
@@ -112,25 +112,15 @@
 .league-title:first-child {
     margin-top: 10px;
 }
-.game-table {
-    width: 100%;
-    border-collapse: collapse;
-	
-}
 .game-table td {
     padding: 4px 10px; /* Default cell padding */
     vertical-align: top;
+    font-size: 12px; /* Set a single font size for all cells */
 }
 .game-table td:nth-child(1) { /* First column (time/status) */
     width: 90px;
     min-width: 90px;
     text-align: left;
-    font-size: 12px;
-}
-.team-cell { /* Second column (team name) */
-    white-space: nowrap;
-    text-align: left;
-     font-size: 12px;
 }
 .game-table td:nth-child(3) { /* Third column (score) */
     width: 40px;
@@ -313,18 +303,21 @@
 /* Custom scrollbar for overflow-y-auto */
 .column.tv-listings::-webkit-scrollbar,
 .games-content::-webkit-scrollbar,
-.game-entry-wrapper::-webkit-scrollbar {
+.game-entry-wrapper::-webkit-scrollbar,
+#league-specific-column::-webkit-scrollbar { /* Added new column */
     width: 8px;
 }
 .column.tv-listings::-webkit-scrollbar-thumb,
 .games-content::-webkit-scrollbar-thumb,
-.game-entry-wrapper::-webkit-scrollbar-thumb {
+.game-entry-wrapper::-webkit-scrollbar-thumb,
+#league-specific-column::-webkit-scrollbar-thumb { /* Added new column */
     background-color: #4a4a4a; /* Darker gray */
     border-radius: 4px;
 }
 .column.tv-listings::-webkit-scrollbar-track,
 .games-content::-webkit-scrollbar-track,
-.game-entry-wrapper::-webkit-scrollbar-track {
+.game-entry-wrapper::-webkit-scrollbar-track,
+#league-specific-column::-webkit-scrollbar-track { /* Added new column */
     background-color: #2a2a2a; /* Even darker gray */
 }
 
@@ -416,7 +409,7 @@
 
   .column {
     overflow: auto;
-    padding: 10px 0;
+    padding: 0;
   }
 
   .column.tv-listings {
@@ -607,7 +600,7 @@
 
   .content-section {
     display: none;
-    padding: 10px;
+    padding: 0;
   }
 
   .expand-button {
@@ -628,108 +621,76 @@
   /* News Column (Split Scroll Areas)          */
   /* ────────────────────────────────────────────────────────── */
 
-  /* 1) Keep "News" bar pinned at the top: */
-  .column.news .news-header {
-    position: sticky;
-    top: 0;
-    z-index: 30; /* above everything in news column */
-    background: #3c3c3c;
-    width: 100%;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    padding-left: 1px;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 10px;
-    border-bottom: 1px solid #1f1f1f;
-  }
+ /* ────────────────────────────────────────────────────────── */
+/* News Column (Split Scroll Areas) - REVISED AND CORRECTED    */
+/* ────────────────────────────────────────────────────────── */
 
-  /* 2) Structure: headlines-section (60%) on top, breaking-section (40%) below */
-  .news-main-container {
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 18px); /* Full column height minus "News" bar */
-  }
+/* 1) Main News Column. Remove all padding to make content flush with edges. */
+.column.news {
+    flex: 0 0 370px !important;
+    background-color: #fafaf9 !important;
+    padding: 0 !important;
+}
 
-  .headlines-section {
-    flex: 0 0 60%;
-    display: flex;
-    flex-direction: column;
-    border-bottom: 2px solid #d4d4d4;
-    min-height: 120px;
-    max-height: 60%;
-    overflow: hidden;
-  }
+/* 2) Main container for both headlines and breaking news sections.
+      It needs to fill the full available height of the news column minus the header. */
+.news-main-container {
+    display: flex !important;
+    flex-direction: column !important;
+    height: calc(100% - 18px) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
 
-  .breaking-section {
-    flex: 1 1 40%;
-    display: flex;
-    flex-direction: column;
-    min-height: 80px;
-    max-height: 40%;
-    overflow: hidden;
-  }
+/* 3) The Headlines section container. It's now a horizontal tab layout. */
+.headlines-section {
+    flex: 0 0 60% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-bottom: 2px solid #d4d4d4 !important;
+    min-height: auto !important;
+    max-height: 60% !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
 
-  /* 3) "Headlines" header pinned at top of headlines-section (no gap under "News"): */
-  .headlines-section .news-section-header {
-    position: sticky;
-    top: 0; /* directly under the "News" bar (no extra gap) */
-    z-index: 29;
-    background: #3c3c3c;
-    color: #fff;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    border-bottom: 1px solid #2a2a2a;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-  }
+/* 4) The "Headlines" header bar. Ensure it has no top margin/padding issues. */
+.headlines-section .news-section-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 29 !important;
+    background: #3c3c3c !important;
+    color: #fff !important;
+    font-family: Helvetica, Arial, sans-serif !important;
+    font-size: 12px !important;
+    height: 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 10px !important;
+    border-bottom: 1px solid #2a2a2a !important;
+    font-weight: bold !important;
+    letter-spacing: 0.5px !important;
+    margin: 0 !important;
+}
 
-  /* 4) ESPN │ CBS │ Yahoo │ FOX tabs pinned below "Headlines": */
-  #headlines-tabs {
-    position: sticky;
-    top: 18px; /* 18px ("Headlines") under the "News" bar */
-    z-index: 28;
-    display: flex;
-    height: 18px;
-    background-color: #2a2a2a;
-    margin: 0;
-  }
+/* 5) The horizontal tabs container. */
+#headlines-tabs,
+#headlines-tabs-Home,
+#headlines-tabs-MLB,
+#headlines-tabs-NBA,
+#headlines-tabs-NFL {
+    position: sticky !important;
+    top: 18px !important;
+    z-index: 28 !important;
+    display: flex !important;
+    height: 18px !important;
+    background-color: #2a2a2a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
-  .headlines-tab {
-    flex: 1;
-    text-align: center;
-    font-size: 10px;
-    line-height: 18px;
-    color: #aaa;
-    cursor: pointer;
-    background-color: #2a2a2a;
-    border-right: 1px solid #1f1f1f;
-  }
-
-  .headlines-tab:last-child {
-    border-right: none;
-  }
-
-  .headlines-tab.active {
-    background-color: #3c3c3c;
-    color: #fff;
-  }
-
-  /* 5) Each feed area within headlines-section scrolls independently */
-  .headlines-section .news-feed-content {
-    flex: 1 1 auto; /* fill remaining area under header and tabs */
-    overflow-y: auto;
-    padding: 36px 10px 10px; 
-    background: #fafaf9;
-    font-size: 11px;
-    color: #111;
-  }
-
-  /* 5a) ESPN feed-entry styling */
+	     /* 5a) ESPN feed-entry styling */
  /* Apply identical styling to ESPN, CBS, Yahoo and FOX feeds */
 #espn-feed ul,
 #cbs-feed ul,
@@ -764,8 +725,76 @@
   color: lightgray;
 }
 
+	  /*
+  This is the corrected CSS to apply identical styling to the breaking news feed.
+  It uses `!important` to override any conflicting inline or lower-specificity rules.
+*/
 
-  /* 6) "Breaking" header pinned at top of breaking-section */
+/* Apply identical styling to breaking news feed as the headlines feeds */
+#breaking-feed ul {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#breaking-feed ul li {
+    margin-bottom: 0.5em !important;
+    padding: 0 !important; /* Ensure no padding on the li itself */
+	font-size: 12px;
+	border-bottom: 1px solid #C9C8C7;
+}
+
+#breaking-feed ul li a {
+    color: black !important;
+    text-decoration: none !important;
+    line-height: 1 !important;
+    word-break: break-word !important;
+    padding: 5px 10px !important; /* Add padding here for space around the link text */
+	font-size: 12px;
+}
+
+#breaking-feed ul li a:visited {
+    color: lightgray !important;
+	font-size: 12px;
+}
+
+
+/* 6) The news feed content area. This needs to be padding-free. */
+.headlines-section .news-feed-content {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+    background: #fafaf9 !important;
+    font-size: 11px !important;
+    color: #111 !important;
+    margin: 0 !important;
+}
+
+/* 7) Ensure list items have padding for readability after removing container padding. */
+.headlines-section .news-feed-content ul {
+    list-style: none !important;
+    padding: 0 10px !important;
+    margin: 0 !important;
+}
+
+.headlines-section .news-feed-content ul li {
+    padding: 5px 0 !important;
+    border-bottom: 1px solid #C9C8C7;
+    margin: 0 !important;
+}
+
+/* 8) Breaking news section. Ensure it fills the rest of the available height. */
+  .breaking-section {
+    flex: 1 1 40%;
+    display: flex;
+    flex-direction: column;
+    min-height: 80px;
+    max-height: 40%;
+    overflow: auto !important;
+  }
+
+
+ /* 6) "Breaking" header pinned at top of breaking-section */
   .breaking-section .news-section-header {
     position: sticky;
     top: 0; /* directly at top of breaking-section (under headlines-section) */
@@ -783,7 +812,7 @@
     letter-spacing: 0.5px;
   }
 
-  /* 7) Breaking │ Fantasy │ Transactions tabs pinned under "Breaking" header */
+	     /* 7) Breaking │ Fantasy │ Transactions tabs pinned under "Breaking" header */
   .breaking-tabs-header {
     position: sticky;
     top: 18px; /* just under the 18px-high "Breaking" header */
@@ -795,42 +824,34 @@
     background-color: #3c3c3c;
   }
 
-  .news-tab {
-    flex: 1 1 0;
-    text-align: center;
-    cursor: pointer;
-    font-size: 10px;
-    color: #aaa;
-    background: #3c3c3c;
-    border-right: 1px solid #2a2a2a;
-    border-bottom: none;
-    transition: background 0.2s, color 0.2s;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 
-  .news-tab:last-child {
-    border-right: none;
-  }
+/* 10) The Breaking News content. Adjust padding. */
+.breaking-section .news-feed-content {
+    padding: 0 10px !important;
+}
 
-  .news-tab.active {
-    background: #fff;
-    color: #222;
-    font-weight: bold;
-    border-bottom: 2px solid #dc143c;
-  }
+/* 11) New styles for the tabs themselves (Home page style). */
+.headlines-tab {
+    flex: 1 !important;
+    text-align: center !important;
+    font-size: 10px !important;
+    line-height: 18px !important;
+    color: #aaa !important;
+    cursor: pointer !important;
+    background-color: #2a2a2a !important;
+    border-right: 1px solid #1f1f1f !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
-  /* 8) Each feed area within breaking-section scrolls independently */
-  .breaking-section .news-feed-content {
-    flex: 1 1 auto; /* fill remaining area under header and tabs */
-    overflow-y: auto;
-    padding: 0 10px;
-    background: #fafaf9;
-    font-size: 11px;
-    color: #111;
-  }
+.headlines-tab:last-child {
+    border-right: none !important;
+}
+
+.headlines-tab.active {
+    background-color: #3c3c3c !important;
+    color: #fff !important;
+}
 
   /* ────────────────────────────────────────────────────────── */
   /* TV-Listings (Games) Styling               */
@@ -982,13 +1003,6 @@
   }
 
   @font-face {
-    font-family: 'Owners XX Wide';
-    src: url('https://www.thporth.com/fonts/OwnersXXWide-Black.woff') format('woff');
-    font-weight: 900;
-    font-style: normal;
-  }
-
-  @font-face {
     font-family: 'Owners XXWideXBlack';
     src: url('https://www.thporth.com/fonts/OwnersXXWide-XBlack.woff') format('woff');
     font-weight: 950;
@@ -1083,6 +1097,7 @@
     flex: 0 0 auto !important;
     width: 250px;
     min-width: 200px;
+	  padding: 0;
   }
 
   /* hide anything else (dividers, other columns) */
@@ -1260,7 +1275,6 @@
             <li data-section="Cricket">Cricket</li>
             <li data-section="Cycling">Cycling</li>
             <li data-section="DFBPokal">DFB-Pokal</li>
-            <li data-section="DPWorldTour">DP World Tour</li>
             <li data-section="EFLChampionship">EFL Championship</li>
             <li data-section="EuroLeague">EuroLeague</li> -->
             <li data-section="FACup">FA Cup</li>
@@ -1311,11 +1325,11 @@
               <li data-section="Soccer">Soccer</li>
             <li data-section="Tennis">Tennis</li>
          <!--   <li data-section="TGL">TGL</li> -->
-            <li data-section="TrackAndField">Track &amp; Field</li>
+            <li data-section="TrackAndField">Track & Field</li>
 <!--
             <li data-section="USOpenCup">U.S. Open Cup</li> -->
             <li data-section="UFC">UFC</li>
-            <!--<li data-section="UFL">UFL</li>-->
+            <!--<li data-section="UFL">UFL)-->
             <li data-section="UEFAChampionsLeague">UEFA Champions League</li>
             <li data-section="UEFAConferenceLeague">UEFA Conference League</li>
             <li data-section="UEFAEuropaLeague">UEFA Europa League</li>
@@ -1337,8 +1351,8 @@
             <ul style="padding-left: 10px;">
               <li data-section="NFL">NFL</li>
                <!-- <li data-section="NCAAF">NCAAF</li> -->
-             <!-- <li data-section="UFL">UFL</li> -->
-              <!-- <li data-section="CFL">CFL</li> -->
+             <!-- <li data-section="UFL">UFL)-->
+              <!-- <li data-section="CFL">CFL)-->
             </ul>
             <li class="spacer-line"></li>
             <li><strong>BASEBALL</strong></li>
@@ -1481,10 +1495,10 @@
               <li data-section="HorseRacing">Horse Racing</li>
               <li data-section="Olympics">Olympics</li> -->
              <li data-section="TrackAndField">Tennis</li>
-              <li data-section="TrackAndField">Track &amp; Field</li>
+              <li data-section="TrackAndField">Track & Field</li>
                <!--
               <li data-section="Volleyball">Volleyball</li>
-              <li data-section="XGames">X Games</li>  -->
+              <li data-section="XGames">XGames</li>  -->
               <li class="spacer-line"></li>
               <li class="spacer-line"></li>
               <li class="spacer-line"></li>
@@ -1497,11 +1511,10 @@
       <!-- Divider between main menu and standings -->
 <div class="divider"></div>
 
-<!-- ─── TV-LISTINGS COLUMN ───────────────────────────────────────────────────────── -->
-<div class="column tv-listings" style="flex: 0 0 250px; background-color: #1f1f1f;">
-  
+<!-- ─── TV-LISTINGS COLUMN (Default View) ──────────────────────────────────────── -->
+<div class="column tv-listings" id="games-column" style="flex: 0 0 250px; background-color: #1f1f1f;">
   <!-- This is the original Games content container -->
-  <div id="tv-listings-container">
+  <div id="tv-listings-container" style="display: block;">
     <div id="games-header" style="
         position: sticky; top: 0; width: 100%; height: 18px;
         background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif;
@@ -1549,7 +1562,7 @@
     <div id="tv-listings-live" class="games-content" style="display: none;"></div>
   </div>
 
-  <!-- START: NEW F1 CONTENT BLOCK -->
+  <!-- START: F1 CONTENT BLOCK (Inside the same column, toggled with games) -->
   <div id="f1-column-content" style="display: none; height: 100%; flex-direction: column; background-color: #1f1f1f; color: #e5e7eb;">
       
       <!-- Header 1: Schedule -->
@@ -1582,204 +1595,563 @@
           </div>
           <!-- Tab Content Area -->
           <div style="padding: 0.5rem; flex: 1; overflow-y: auto;">
-              <!-- START: NATIVE DRIVER STANDINGS TABLE -->
-             <!-- START: DYNAMIC DRIVER STANDINGS TABLE -->
-<div id="driver-standings" class="f1-content-pane">
-  <div id="driver-loading" style="text-align: center; padding: 20px; color: #9ca3af;">Loading driver standings...</div>
-  <div id="driver-error" style="display: none; color: #ef4444; text-align: center; padding: 20px;"></div>
-  <table id="driver-table" style="width: 100%; border-collapse: collapse; font-size: 11px; display: none;">
-    <thead>
-      <tr style="text-align: left;">
-        <th style="padding: 6px 4px; width: 25px;">#</th>
-        <th style="padding: 6px 4px;">Driver</th>
-        <th style="padding: 6px 4px;">Team</th>
-        <th style="padding: 6px 4px; text-align: right;">Pts</th>
-      </tr>
-    </thead>
-    <tbody id="driver-tbody"></tbody>
-  </table>
-</div>
-<!-- END: DYNAMIC DRIVER STANDINGS TABLE -->
-
-<!-- START: DYNAMIC CONSTRUCTOR STANDINGS TABLE -->
-<div id="constructor-standings" class="f1-content-pane" style="display: none;">
-  <div id="constructor-loading" style="text-align: center; padding: 20px; color: #9ca3af;">Loading constructor standings...</div>
-  <div id="constructor-error" style="display: none; color: #ef4444; text-align: center; padding: 20px;"></div>
-  <table id="constructor-table" style="width: 100%; border-collapse: collapse; font-size: 11px; display: none;">
-    <thead>
-      <tr style="text-align: left;">
-        <th style="padding: 6px 4px; width: 25px;">#</th>
-        <th style="padding: 6px 4px;">Team</th>
-        <th style="padding: 6px 4px; text-align: right;">Pts</th>
-      </tr>
-    </thead>
-    <tbody id="constructor-tbody"></tbody>
-  </table>
-</div>
-<!-- END: DYNAMIC CONSTRUCTOR STANDINGS TABLE -->
-              <!-- END: NATIVE CONSTRUCTOR STANDINGS TABLE -->
+             <div id="driver-standings" class="f1-content-pane">
+              <div id="driver-loading" style="text-align: center; padding: 20px; color: #9ca3af;">Loading driver standings...</div>
+              <div id="driver-error" style="display: none; color: #ef4444; text-align: center; padding: 20px;"></div>
+              <table id="driver-table" style="width: 100%; border-collapse: collapse; font-size: 11px; display: none;">
+                <thead>
+                  <tr style="text-align: left;">
+                    <th style="padding: 6px 4px; width: 25px;">#</th>
+                    <th style="padding: 6px 4px;">Driver</th>
+                    <th style="padding: 6px 4px;">Team</th>
+                    <th style="padding: 6px 4px; text-align: right;">Pts</th>
+                  </tr>
+                </thead>
+                <tbody id="driver-tbody"></tbody>
+              </table>
+            </div>
+            <div id="constructor-standings" class="f1-content-pane" style="display: none;">
+              <div id="constructor-loading" style="text-align: center; padding: 20px; color: #9ca3af;">Loading constructor standings...</div>
+              <div id="constructor-error" style="display: none; color: #ef4444; text-align: center; padding: 20px;"></div>
+              <table id="constructor-table" style="width: 100%; border-collapse: collapse; font-size: 11px; display: none;">
+                <thead>
+                  <tr style="text-align: left;">
+                    <th style="padding: 6px 4px; width: 25px;">#</th>
+                    <th style="padding: 6px 4px;">Team</th>
+                    <th style="padding: 6px 4px; text-align: right;">Pts</th>
+                  </tr>
+                </thead>
+                <tbody id="constructor-tbody"></tbody>
+              </table>
+            </div>
           </div>
       </div>
   </div>
-  <!-- END: NEW F1 CONTENT BLOCK -->
-
+  <!-- END: F1 CONTENT BLOCK -->
 </div>
 
 
+<!-- ─── LEAGUE-SPECIFIC COLUMN (New, Initially Hidden) ────────────────────────── -->
+<div class="column" id="league-specific-column" style="display: none; flex: 0 0 250px; background-color: #1f1f1f; color: #e5e7eb; padding: 0;">
+    <!-- Header will be dynamically set -->
+    <div id="league-specific-header" style="position: sticky; top: 0; width: 100%; height: 18px; background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif; font-size: 10px; display: flex; align-items: center; padding-left: 10px; z-index: 11; border-bottom: 1px solid #1f1f1f; font-weight: bold;">
+        League Info
+    </div>
+    
+    <!-- Container for Schedule -->
+    <div id="league-schedule-container" style="padding: 1rem;">
+        <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff; margin-bottom: 1rem;">Schedule</h2>
+        <div id="league-schedule-content"><p style="color: #9ca3af;">Loading schedule...</p></div>
+    </div>
+
+    <!-- Container for Standings -->
+    <div id="league-standings-container" style="padding: 1rem; border-top: 1px solid #374151;">
+        <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff; margin-bottom: 1rem;">Standings</h2>
+        <div id="league-standings-content"><p style="color: #9ca3af;">Loading standings...</p></div>
+    </div>
+</div>
 
 
-<!-- Divider between standings and news -->
-<div class="divider"></div>
+      <!-- DIVIDER BETWEEN STANDINGS AND NEWS -->
+      <div class="divider"></div>
 
 
       <!-- NEWS PANEL -->
-<div class="column news" style="height: 100%;">
-  <!-- News header -->
-  <div class="news-header" style="width: 100%; height: 18px;
-      background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif;
-      font-size: 10px; display: flex; align-items: center;
-      padding-left: 1px; z-index: 11; border-bottom: 1px solid #1f1f1f;">News</div>
+      <div class="column news" style="height: 100%;">
+        <!-- News header -->
+        <div class="news-header" style="width: 100%; height: 18px;
+            background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif;
+            font-size: 10px; display: flex; align-items: center;
+            padding-left: 1px; z-index: 11; border-bottom: 1px solid #1f1f1f;">News</div>
 
-  <!-- Home News Section (Headlines + Breaking) -->
-  <div id="news-Home" class="content-section" style="display: block; height: calc(100% - 18px);">
-    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-      <!-- Headlines Section -->
-      <div class="news-section headlines-section" style="flex: 0 0 60%; min-height: 0;">
-        <div class="news-section-header">Headlines</div>
-        <div id="headlines-tabs">
-          <div class="headlines-tab active" data-source="espn">ESPN</div>
-          <div class="headlines-tab" data-source="cbs">CBS</div>
-          <div class="headlines-tab" data-source="yahoo">Yahoo</div>
-          <div class="headlines-tab" data-source="fox">FOX</div>
-        </div>
-        <div class="news-feed-content" id="espn-feed">Loading ESPN...</div>
-        <div class="news-feed-content" id="cbs-feed" style="display:none;">Loading CBS...</div>
-        <div class="news-feed-content" id="yahoo-feed" style="display:none;">Loading Yahoo...</div>
-        <div class="news-feed-content" id="fox-feed" style="display:none;">Loading FOX...</div>
+        <!-- Home News Section (Headlines + Breaking) -->
+      <div id="news-Home" class="content-section" style="display: block; height: calc(100% - 18px);">
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <!-- Headlines Section -->
+    <div class="news-section headlines-section" style="flex: 0 0 60%; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div id="headlines-tabs">
+        <div class="headlines-tab active" data-source="espn">ESPN</div>
+        <div class="headlines-tab" data-source="cbs">CBS</div>
+        <div class="headlines-tab" data-source="yahoo">Yahoo</div>
+        <div class="headlines-tab" data-source="fox">FOX</div>
       </div>
-      <!-- Breaking/Fantasy/Transactions Tabs Section -->
-     <!-- Breaking/Fantasy/Transactions Tabs Section -->
-      <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-        <div class="news-section-header breaking-tabs-header">
-          <span class="news-tab active" data-tab="breaking">Breaking</span>
-          <span class="news-tab" data-tab="fantasy">Fantasy</span>
-          <span class="news-tab" data-tab="transactions">Transactions</span>
-        </div>
-        <!-- IMPORTANT: Set breaking-feed to display: block; by default -->
-        <div class="news-feed-content" id="breaking-feed" style="display: block;">Loading breaking news...</div>
-        <div class="news-feed-content" id="fantasy-feed" style="display:none;">Loading fantasy news...</div>
-        <div class="news-feed-content" id="transactions-feed" style="display:none;">Loading transactions...</div>
+      <div class="news-feed-content" id="espn-feed" style="display: block;">Loading ESPN...</div>
+      <div class="news-feed-content" id="cbs-feed" style="display:none;">Loading CBS...</div>
+      <div class="news-feed-content" id="yahoo-feed" style="display:none;">Loading Yahoo...</div>
+      <div class="news-feed-content" id="fox-feed" style="display:none;">Loading FOX...</div>
+    </div>
+    <!-- Breaking/Fantasy/Transactions Tabs Section -->
+    <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+      <div class="news-section-header breaking-tabs-header">
+        <span class="news-tab active" data-tab="breaking">Breaking</span>
+        <span class="news-tab" data-tab="fantasy">Fantasy</span>
+        <span class="news-tab" data-tab="transactions">Transactions</span>
       </div>
+      <div class="news-feed-content" id="breaking-feed" style="display: block;">Loading breaking news...</div>
+      <div class="news-feed-content" id="fantasy-feed" style="display:none;">Loading fantasy news...</div>
+      <div class="news-feed-content" id="transactions-feed" style="display:none;">Loading transactions...</div>
     </div>
   </div>
-
-  <!-- League-Specific News Sections (all hidden by default) -->
-    <div id="news-MLB" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-_somo8H8eOG8npoO2"><h4>MLB</h4><div class="feed-content">Loading MLB feed...</div></div>
-  </div>
-  <div id="news-NBA" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-_wbelLijqAwfJLCJd"><h4>NBA</h4><div class="feed-content">Loading NBA feed...</div></div>
-  </div>
-  <div id="news-NFL" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-_lAj37RJzPmNOxjz4"><h4>NFL</h4><div class="feed-content">Loading NFL feed...</div></div>
-  </div>
-  <div id="news-NHL" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-_Upexy7Yp5vjsRWf8"><h4>NHL</h4><div class="feed-content">Loading NHL feed...</div></div>
-  </div>
-  <div id="news-MLS" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-_pBOHW7eyjbGkaiZq"><h4>MLS</h4><div class="feed-content">Loading MLS feed...</div></div>
-  </div>
-  <div id="news-PremierLeague" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-PremierLeague"><h4>Premier League</h4><div class="feed-content">Loading Premier League feed...</div></div>
-  </div>
-  <div id="news-UEFAChampionsLeague" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-UEFAChampionsLeague"><h4>UEFA Champions League</h4><div class="feed-content">Loading UEFA Champions League feed...</div></div>
-  </div>
-  <div id="news-SerieA" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-SerieA"><h4>Serie A</h4><div class="feed-content">Loading Serie A feed...</div></div>
-  </div>
-  <div id="news-Bundesliga" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-Bundesliga"><h4>Bundesliga</h4><div class="feed-content">Loading Bundesliga feed...</div></div>
-  </div>
-  <div id="news-LaLiga" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-LaLiga"><h4>LaLiga</h4><div class="feed-content">Loading LaLiga feed...</div></div>
-  </div>
-  <div id="news-Soccer" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-Soccer"><h4>Soccer</h4><div class="feed-content">Loading Soccer feed...</div></div>
-  </div>
-  <div id="news-FACup" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-FACup"><h4>FA Cup</h4><div class="feed-content">Loading FA Cup feed...</div></div>
-  </div>
-  <div id="news-LigaMX" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-LigaMX"><h4>Liga MX</h4><div class="feed-content">Loading Liga MX feed...</div></div>
-  </div>
-  <div id="news-NWSL" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NWSL"><h4>NWSL</h4><div class="feed-content">Loading NWSL feed...</div></div>
-  </div>
-  <div id="news-Ligue1" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-Ligue1"><h4>Ligue 1</h4><div class="feed-content">Loading Ligue 1 feed...</div></div>
-  </div>
-  <div id="news-UEFAEuropaLeague" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-UEFAEuropaLeague"><h4>UEFA Europa League</h4><div class="feed-content">Loading UEFA Europa League feed...</div></div>
-  </div>
-  <div id="news-UEFAConferenceLeague" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-UEFAConferenceLeague"><h4>UEFA Conference League</h4><div class="feed-content">Loading UEFA Conference League feed...</div></div>
-  </div>
-  <div id="news-FormulaOne" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-FormulaOne"><h4>Formula One</h4><div class="feed-content">Loading Formula One feed...</div></div>
-  </div>
-  <div id="news-NCAAF" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NCAAF"><h4>NCAAF</h4><div class="feed-content">Loading NCAAF feed...</div></div>
-  </div>
-  <div id="news-PGATour" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-PGATour"><h4>PGA Tour</h4><div class="feed-content">Loading PGA Tour feed...</div></div>
-  </div>
-  <div id="news-UFC" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-UFC"><h4>UFC</h4><div class="feed-content">Loading UFC feed...</div></div>
-  </div>
-  <div id="news-Boxing" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-Boxing"><h4>Boxing</h4><div class="feed-content">Loading Boxing feed...</div></div>
-  </div>
-  <div id="news-NASCARCupSeries" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NASCARCupSeries"><h4>NASCAR Cup Series</h4><div class="feed-content">Loading NASCAR Cup Series feed...</div></div>
-  </div>
-  <div id="news-Tennis" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-Tennis"><h4>Tennis</h4><div class="feed-content">Loading Tennis feed...</div></div>
-  </div>
-  <div id="news-WNBA" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-WNBA"><h4>WNBA</h4><div class="feed-content">Loading WNBA feed...</div></div>
-  </div>
-  <div id="news-LIVGolf" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-LIVGolf"><h4>LIV Golf</h4><div class="feed-content">Loading LIV Golf feed...</div></div>
-  </div>
-  <div id="news-IndyCar" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-IndyCar"><h4>IndyCar</h4><div class="feed-content">Loading IndyCar feed...</div></div>
-  </div>
-  <div id="news-NCAAM" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NCAAM"><h4>NCAAM</h4><div class="feed-content">Loading NCAAM feed...</div></div>
-  </div>
-  <div id="news-NCAAW" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NCAAW"><h4>NCAAW</h4><div class="feed-content">Loading NCAAW feed...</div></div>
-  </div>
-  <div id="news-UFL" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-UFL"><h4>UFL</h4><div class="feed-content">Loading UFL feed...</div></div>
-  </div>
-  <div id="news-NCAABaseball" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NCAABaseball"><h4>NCAA Baseball</h4><div class="feed-content">Loading NCAA Baseball feed...</div></div>
-  </div>
-  <div id="news-NCAASoftball" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-NCAASoftball"><h4>NCAA Softball</h4><div class="feed-content">Loading NCAA Softball feed...</div></div>
-  </div>
-  <div id="news-MotoGP" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-MotoGP"><h4>MotoGP</h4><div class="feed-content">Loading MotoGP feed...</div></div>
-  </div>
-  <div id="news-LPGATour" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-LPGATour"><h4>LPGA Tour</h4><div class="feed-content">Loading LPGA Tour feed...</div></div>
-  </div>
-  <div id="news-TrackAndField" class="content-section" style="display: none;">
-    <div class="rss-feed" id="feed-TrackAndField"><h4>Track &amp; Field</h4><div class="feed-content">Loading Track &amp; Field feed...</div></div>
-  </div>
 </div>
+
+        <!-- League-Specific News Sections (all hidden by default) -->
+        <div id="news-MLB" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-MLB" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-NBA" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-NBA" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-NBA" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-NFL" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-NFL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-NFL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-NHL" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-NHL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-NHL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-MLS" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-MLS" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-MLS" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-PremierLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-PremierLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-PremierLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-UEFAChampionsLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-UEFAChampionsLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-UEFAChampionsLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-SerieA" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-SerieA" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-SerieA" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-Bundesliga" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-Bundesliga" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-Bundesliga" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-LaLiga" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-LaLiga" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-LaLiga" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-Soccer" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-Soccer" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-Soccer" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-FACup" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-FACup" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-FACup" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-LigaMX" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-LigaMX" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-LigaMX" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-NWSL" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-NWSL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-NWSL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-Ligue1" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-Ligue1" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-Ligue1" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-UEFAEuropaLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-UEFAEuropaLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-UEFAEuropaLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-UEFAConferenceLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-UEFAConferenceLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-UEFAConferenceLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-FormulaOne" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-FormulaOne" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-FormulaOne" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-NCAAF" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-NCAAF" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-NCAAF" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-PGATour" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-PGATour" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-PGATour" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-UFC" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-UFC" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-UFC" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-Boxing" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-Boxing" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-Boxing" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-NASCARCupSeries" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-NASCARCupSeries" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-NASCARCupSeries" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-Tennis" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-Tennis" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-Tennis" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-WNBA" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-WNBA" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-WNBA" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-LIVGolf" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-LIVGolf" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-LIVGolf" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-IndyCar" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-IndyCar" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-IndyCar" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-NCAAM" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-NCAAM" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-NCAAM" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-NCAAW" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-NCAAW" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-NCAAW" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-UFL" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-UFL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-UFL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-NCAABaseball" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-NCAABaseball" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-NCAABaseball" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-NCAASoftball" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-NCAASoftball" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-NCAASoftball" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-MotoGP" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-MotoGP" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-MotoGP" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-LPGATour" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-LPGATour" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-LPGATour" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="news-TrackAndField" class="content-section" style="display: none; height: calc(100% - 18px);">
+          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+              <div class="news-section-header">Headlines</div>
+              <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-TrackAndField" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                </div>
+                <div id="headlines-content-TrackAndField" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- DIVIDER BETWEEN NEWS PANEL AND SOCIAL PANEL -->
       <div class="divider"></div>
@@ -1944,8 +2316,10 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         // --- GRAB ELEMENTS FOR COLUMN SWITCHING (Added here) ---
-        const gamesContent = document.getElementById('tv-listings-container');
+        const gamesColumn = document.getElementById('games-column');
+        const leagueSpecificColumn = document.getElementById('league-specific-column');
         const f1Content = document.getElementById('f1-column-content');
+        const gamesContent = document.getElementById('tv-listings-container');
 
         // Helper function to fetch and render an XML feed
         function fetchFeed(containerSelector, feedUrl) {
@@ -2087,14 +2461,28 @@
             item.classList.add("selected");
             const section = item.dataset.section;
 
-            // --- START: MODIFIED LOGIC ---
-            // 1. Handle the column content switching
-            if (section === 'FormulaOne') {
-                if(gamesContent) gamesContent.style.display = 'none';
-                if(f1Content) f1Content.style.display = 'flex';
-            } else {
-                if(gamesContent) gamesContent.style.display = 'block';
-                if(f1Content) f1Content.style.display = 'none';
+            // --- START: CORRECTED LOGIC ---
+            if (section === 'Home') {
+                gamesColumn.style.display = 'block';
+                leagueSpecificColumn.style.display = 'none';
+                
+                // Inside games column, ensure correct view
+                gamesContent.style.display = 'block';
+                f1Content.style.display = 'none';
+
+            } else if (section === 'FormulaOne') {
+                gamesColumn.style.display = 'block'; // F1 content is INSIDE this column
+                leagueSpecificColumn.style.display = 'none';
+
+                // Toggle visibility within the games column
+                gamesContent.style.display = 'none';
+                f1Content.style.display = 'flex'; 
+            } else { // For all other leagues
+                gamesColumn.style.display = 'none';
+                leagueSpecificColumn.style.display = 'block';
+                
+                // Trigger data load for the specific league
+                loadLeagueSpecificData(section);
             }
 
             // 2. Handle the news panel switching (existing logic)
@@ -2108,7 +2496,6 @@
             if (news) {
               news.style.display = "block";
               
-              // --- START: ERROR FIX ---
               const newsSubMenu = document.getElementById("newsSubMenu");
               if (section === "Home") {
                 if (newsSubMenu) newsSubMenu.style.display = "flex";
@@ -2120,21 +2507,17 @@
               } else {
                 if (newsSubMenu) newsSubMenu.style.display = "none";
               }
-              // --- END: ERROR FIX ---
             }
             if (social) social.style.display = "block";
-            // --- END: MODIFIED LOGIC ---
+            // --- END: CORRECTED LOGIC ---
           });
         });
 
         const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
         const newsPanel = document.querySelector(".news");
         newsPanel.addEventListener("scroll", () => {
-          // --- START: ERROR FIX ---
           const newsSubMenu = document.getElementById("newsSubMenu");
-          // If the element doesn't exist, we can't calculate offset, so exit.
           if (!newsSubMenu) return; 
-          // --- END: ERROR FIX ---
 
           const top = newsPanel.getBoundingClientRect().top;
           const offset = newsSubMenu.offsetHeight + 50;
@@ -2185,35 +2568,6 @@
             link.classList.add("clicked");
           });
         });
-
-        // --- Logic for F1 Driver/Constructor tabs (moved here) ---
-        const f1TabButtonsContainer = document.getElementById('f1-tab-buttons');
-        const f1ContentPanes = document.querySelectorAll('.f1-content-pane');
-        
-        if (f1TabButtonsContainer) {
-            f1TabButtonsContainer.addEventListener('click', function(event) {
-                const clickedButton = event.target.closest('.f1-tab-button');
-                if (!clickedButton) return;
-
-                const targetTabId = clickedButton.dataset.tab;
-                
-                f1TabButtonsContainer.querySelectorAll('.f1-tab-button').forEach(btn => {
-                    btn.style.borderBottomColor = 'transparent';
-                    btn.style.color = '#9ca3af';
-                });
-                f1ContentPanes.forEach(pane => {
-                    pane.style.display = 'none';
-                });
-
-                clickedButton.style.borderBottomColor = '#DC143C';
-                clickedButton.style.color = '#fff';
-                
-                const targetPane = document.getElementById(targetTabId);
-                if (targetPane) {
-                    targetPane.style.display = 'block';
-                }
-            });
-        }
       });
 
      function showSecondSocialSection(section) {
@@ -2236,446 +2590,7 @@
     </script>
 
 <!-- This script now contains the logic for both "Today" and "Scores" tabs -->
-<script>
-  // Firebase Configuration (YOUR PROJECT SPECIFIC CONFIG)
-  const firebaseConfig = {
-      apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
-      authDomain: "flashlive-daily-scraper.firebaseapp.com",
-      projectId: "flashlive-daily-scraper",
-      storageBucket: "flashlive-daily-scraper.appspot.com",
-      messagingSenderId: "124291936014",
-      appId: "1:124291936014:web:acadcaa791d6046849315f",
-      measurementId: "G-R146KS92QJ"
-  };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const gamesCollectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
-
-  // Function to map original league names from Firestore to desired display names
-  function getLeagueDisplayName(originalLeagueName) {
-      const exactLeagueMaps = {
-          "USA: WNBA": "WNBA",
-          "USA: MLB": "MLB",
-          "EUROPE: UEFA CHAMPIONS LEAGUE": "UEFA Champions League",
-          "EUROPE: UEFA WOMEN'S CHAMPIONS LEAGUE": "UEFA Women's Champions League",
-          "USA: NBA": "NBA",
-          "USA: NHL": "NHL",
-          "USA: NFL": "NFL",
-          "USA: NCAAB": "NCAAB",
-          "USA: NCAAF": "NCAAF",
-          "ENGLAND: PREMIER LEAGUE": "Premier League",
-          "GERMANY: BUNDESLIGA": "Bundesliga",
-          "SPAIN: LALIGA": "LaLiga",
-          "ITALY: SERIE A": "Serie A",
-          "FRANCE: LIGUE 1": "Ligue 1",
-          "USA: MLS": "MLS",
-	  "USA: NFL - Pre-season": "NFL",
-          "North & Central America: Leagues Cup": "Leagues Cup"
-          // Add all your specific league mappings here.
-      };
-
-      if (exactLeagueMaps.hasOwnProperty(originalLeagueName)) {
-          return exactLeagueMaps[originalLeagueName];
-      }
-      return originalLeagueName;
-  }
-
-  // Function to map original team names to desired display names (mascot names)
-  function getTeamDisplayName(originalTeamName) {
-      let processedTeamName = originalTeamName;
-      if (processedTeamName.endsWith(" W")) {
-          processedTeamName = processedTeamName.slice(0, -2);
-      }
-
-      const exactTeamMaps = {
-          // MLB Teams
-          "Arizona Diamondbacks": "Diamondbacks", "Atlanta Braves": "Braves", "Baltimore Orioles": "Orioles",
-          "Boston Red Sox": "Red Sox", "Chicago Cubs": "Cubs", "Chicago White Sox": "White Sox",
-          "Cincinnati Reds": "Reds", "Cleveland Guardians": "Guardians", "Colorado Rockies": "Rockies",
-          "Detroit Tigers": "Tigers", "Houston Astros": "Astros", "Kansas City Royals": "Royals",
-          "Los Angeles Angels": "Angels", "Los Angeles Dodgers": "Dodgers", "Miami Marlins": "Marlins",
-          "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets",
-          "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies",
-          "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants",
-          "Seattle Mariners": "Mariners", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays", // Corrected "St. Louis Cardinals"
-          "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals",
-
-          // WNBA Teams
-          "Atlanta Dream": "Dream", "Chicago Sky": "Sky", "Connecticut Sun": "Sun",
-          "Dallas Wings": "Wings", "Indiana Fever": "Fever", "Las Vegas Aces": "Aces",
-          "Los Angeles Sparks": "Sparks", "Minnesota Lynx": "Lynx", "New York Liberty": "Liberty",
-          "Phoenix Mercury": "Mercury", "Seattle Storm": "Storm", "Washington Mystics": "Mystics",
-          "Golden State Valkyries": "Valkyries"
-          // Add all your specific team mappings here.
-      };
-
-      if (exactTeamMaps.hasOwnProperty(processedTeamName)) {
-          return exactTeamMaps[processedTeamName];
-      }
-      return processedTeamName;
-  }
-
-  // Define the desired order of leagues for display
-  const LEAGUE_DISPLAY_ORDER = [
-      "NFL",
-      "MLB",
-      "WNBA",
-      "Leagues Cup",
-      "NBA", // Example: Add other leagues you want to prioritize here
-      "UEFA Champions League",
-      "UEFA Women's Champions League",
-      "Premier League",
-      "Bundesliga",
-      "LaLiga",
-      "Serie A",
-      "Ligue 1",
-      "MLS",
-      // Add other league display names as needed, in desired order
-  ];
-
-
-  /**
-   * Sets up a real-time listener for games from Firestore, filters by today's Eastern Time date,
-   * groups them by mapped league name, and updates the display on the page automatically.
-   */
-  async function fetchTodayGames() {
-      const container = document.getElementById("games"); // This is the #games div inside tv-listings-today
-      const errorDiv = document.getElementById("error"); // This is the #error div inside tv-listings-today
-      errorDiv.textContent = ""; // Clear previous errors
-
-      try {
-          const { DateTime } = luxon;
-          const nowInEastern = DateTime.now().setZone('America/New_York');
-          const todayStr = nowInEastern.toISODate();
-          console.log(`[Frontend] Setting up listener for todayStr in Eastern Time: ${todayStr}`);
-
-          // Create the query
-          const gamesQuery = gamesCollectionRef // Use gamesCollectionRef defined globally
-              .where('gameDate', '==', todayStr)
-              .orderBy("Start Time");
-
-          // Set up the real-time listener using onSnapshot
-          gamesQuery.onSnapshot(snapshot => {
-              console.log("[Firestore Listener] Snapshot received, re-rendering UI."); // Debugging log
-              // Clear the container before re-rendering all games
-              container.innerHTML = "";
-
-              if (snapshot.empty) {
-                  container.innerHTML = `<p style="padding: 10px;">No games found for today (${todayStr}) in Firestore collection.</p>`;
-                  return;
-              }
-
-              const leagueGroups = {};
-
-              snapshot.docs.forEach(doc => {
-                  const data = doc.data();
-                  const leagueDisplayName = getLeagueDisplayName(data.League) || "Other";
-                  if (!leagueGroups[leagueDisplayName]) {
-                      leagueGroups[leagueDisplayName] = [];
-                  }
-                  leagueGroups[leagueDisplayName].push(data);
-              });
-
-              // Create a sorted list of league names based on LEAGUE_DISPLAY_ORDER
-              const sortedLeagueNames = [];
-              const processedLeagues = new Set();
-
-              // Add leagues from the predefined order
-              LEAGUE_DISPLAY_ORDER.forEach(orderedLeagueName => {
-                  if (leagueGroups[orderedLeagueName]) {
-                      sortedLeagueNames.push(orderedLeagueName);
-                      processedLeagues.add(orderedLeagueName);
-                  }
-              });
-
-              // Add any remaining leagues not in the predefined order
-              for (const leagueName in leagueGroups) {
-                  if (!processedLeagues.has(leagueName)) {
-                      sortedLeagueNames.push(leagueName);
-                  }
-              }
-
-              // Now iterate through the sorted league names
-              for (const leagueName of sortedLeagueNames) {
-                  const games = leagueGroups[leagueName]; // Get games for the current league
-                  
-                  const leagueSection = document.createElement("div");
-                  leagueSection.className = "league-section";
-
-                  const title = document.createElement("div");
-                  title.className = "league-title";
-                  title.textContent = leagueName;
-                  leagueSection.appendChild(title);
-
-                  const table = document.createElement("table");
-                  table.className = "game-table";
-
-                  let lastDisplayedTimeLabel = null; // This will only track *scheduled* times for deduplication
-
-                  games.forEach(data => {
-                      const home = getTeamDisplayName(data["Home Team"]) || "";
-                      const away = getTeamDisplayName(data["Away Team"]) || "";
-                      const homeScore = data["Home Score"];
-                      const awayScore = data["Away Score"];
-                      const matchStatus = (data["Match Status"] || "").toUpperCase();
-                      const inningStatus = (data["Status"] || "").toUpperCase();
-                      const rawStart = data["Start Time"];
-
-                      // isLive now includes "Q" for quarters and HALF_TIME
-                      const isLive = matchStatus === "IN PROGRESS" || matchStatus === "LIVE" || inningStatus.includes("INNING") || inningStatus.includes("Q") || inningStatus === "HALF_TIME";
-                      const isFinal = matchStatus === "FINISHED";
-
-                      let currentTimeLabel = ""; // The time/status label for the current game
-                      const leagueDisplayNameForGame = getLeagueDisplayName(data.League) || "Other"; // Get mapped league name for specific status logic
-
-                      if (isLive) {
-                          let statusToDisplay = inningStatus;
-                          let parsedStatus = '';
-
-                          if (leagueDisplayNameForGame === "MLB") {
-                              // MLB Innings: "Top/Bot X" or "X"
-                              const topBotMatch = statusToDisplay.match(/(TOP|BOT)\s*(\d+)(?:ST|ND|RD|TH)?/i);
-                              const inningNumMatch = statusToDisplay.match(/(\d+)(?:ST|ND|RD|TH)?(?:\s*INNING)?/i); // Broader match for just number
-                              const inningWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)_?INNING/i);
-
-                              if (topBotMatch) {
-                                  const topBot = topBotMatch[1].charAt(0).toUpperCase() + topBotMatch[1].slice(1).toLowerCase();
-                                  const inning = topBotMatch[2];
-                                  parsedStatus = `${topBot} ${inning}`;
-                              } else if (inningWordMatch) {
-                                  const wordToNum = {
-                                      "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4", "FIFTH": "5",
-                                      "SIXTH": "6", "SEVENTH": "7", "EIGHTH": "8", "NINTH": "9"
-                                  };
-                                  const inningWord = inningWordMatch[1].toUpperCase();
-                                  parsedStatus = wordToNum[inningWord] || inningWord;
-                              } else if (inningNumMatch) {
-                                  parsedStatus = inningNumMatch[1]; // Just the number (e.g., "1", "2")
-                              }
-
-                              // If parsedStatus is empty, it means no specific inning info was found.
-                              // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
-                              currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
-
-                          } else if (leagueDisplayNameForGame === "WNBA") {
-                              let parsedStatus = '';
-                              // Try to match "Q1", "Q2", etc.
-                              const quarterMatch = statusToDisplay.match(/Q(\d+)/i);
-                              // Try to match "FIRST_QUARTER", "SECOND_QUARTER", etc.
-                              const quarterWordMatch = statusToDisplay.match(/(FIRST|SECOND|THIRD|FOURTH)_?QUARTER/i);
-
-                              if (quarterMatch && quarterMatch[1]) {
-                                  parsedStatus = `Q${quarterMatch[1]}`;
-                              } else if (quarterWordMatch) {
-                                  const wordToNum = {
-                                      "FIRST": "1", "SECOND": "2", "THIRD": "3", "FOURTH": "4"
-                                  };
-                                  const quarterWord = quarterWordMatch[1].toUpperCase();
-                                  parsedStatus = `Q${wordToNum[quarterWord] || quarterWord}`;
-                              } else if (statusToDisplay === "HALF_TIME") {
-                                  parsedStatus = "Half";
-                              }
-                              
-                              // If parsedStatus is empty, it means no specific quarter/half info was found.
-                              // As per your instruction, we leave it empty if no specific info, no "LIVE" fallback.
-                              currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : "";
-
-                          } else {
-                              // Default live status for other leagues (not MLB/WNBA)
-                              // This will show the raw inningStatus or matchStatus (e.g., "LIVE"), not in red.
-                              currentTimeLabel = inningStatus || matchStatus;
-                          }
-                      } else if (isFinal) {
-                          currentTimeLabel = "F";
-                      } else if (rawStart) {
-                          let gameDateFromFirestore;
-                          if (typeof rawStart?.toDate === "function") {
-                              gameDateFromFirestore = rawStart.toDate();
-                          } else if (typeof rawStart === "number") {
-                              gameDateFromFirestore = new Date(rawStart * 1000);
-                          } else {
-                              gameDateFromFirestore = new Date(rawStart);
-                          }
-
-                          const startTimeLuxon = luxon.DateTime.fromJSDate(gameDateFromFirestore).setZone(luxon.DateTime.local().zoneName);
-                          currentTimeLabel = startTimeLuxon.toFormat('h:mm a');
-                      } else {
-                          currentTimeLabel = "TBD";
-                      }
-
-                      let displayTimeLabel = currentTimeLabel;
-
-                      // Determine if the current label is a scheduled time (not live, not final, not TBD)
-                      const isScheduledTime = !(currentTimeLabel.includes('<span style="color: red;">') ||
-                                                 currentTimeLabel === "F" ||
-                                                 currentTimeLabel === "TBD");
-
-                      if (isScheduledTime) {
-                          // Apply deduplication only for scheduled times
-                          if (currentTimeLabel === lastDisplayedTimeLabel) {
-                              displayTimeLabel = ""; // Hide if same as previously displayed scheduled time
-                          } else {
-                              lastDisplayedTimeLabel = currentTimeLabel; // Update last displayed scheduled time
-                          }
-                      }
-                      // If it's a live/final/TBD status, displayTimeLabel remains currentTimeLabel,
-                      // and lastDisplayedTimeLabel is NOT updated by these, preserving the last scheduled time.
-
-                      const row1 = document.createElement("tr");
-                      row1.className = "game-row";
-                      row1.innerHTML = `
-                          <td>${displayTimeLabel}</td>
-                          <td class="team-cell">${away}</td>
-                          <td>${(isLive || isFinal) && typeof awayScore !== "undefined" && awayScore !== '' ? awayScore : ""}</td>
-                          <td></td>
-                      `;
-
-                      const row2 = document.createElement("tr");
-                      row2.className = "game-row game-separator"; /* Added game-separator class here */
-                      row2.innerHTML = `
-                          <td></td>
-                          <td class="team-cell">${home}</td>
-                          <td>${(isLive || isFinal) && typeof homeScore !== "undefined" && homeScore !== '' ? homeScore : ""}</td>
-                          <td></td>
-                      `;
-
-                      table.appendChild(row1);
-                      table.appendChild(row2);
-                  });
-
-                  leagueSection.appendChild(table);
-                  container.appendChild(leagueSection);
-              }
-          }, err => {
-              // Error handling for the snapshot listener
-              console.error("Error listening to Firestore updates:", err);
-              errorDiv.textContent = "Failed to load real-time data: " + err.message;
-          });
-
-      } catch (err) {
-          // Error handling for initial setup of the listener
-          console.error("Error setting up game listener:", err);
-          errorDiv.textContent = "Failed to initialize real-time data: " + err.message;
-      }
-  }
-
-
-  // fetchYesterdayScores function (from index-7.html, slightly modified to use getTeamDisplayName)
-  async function fetchYesterdayScores() {
-    const loadingElement = document.getElementById('scoresLoading');
-    const errorMessageDiv = document.getElementById('scoresErrorMessage');
-    const errorTextSpan = document.getElementById('scoresErrorText');
-    const contentDiv = document.getElementById('dynamicScoresContent');
-
-    if (loadingElement) loadingElement.classList.remove('hidden');
-    if (contentDiv) { contentDiv.classList.add('hidden'); contentDiv.innerHTML = ''; }
-    if (errorMessageDiv) errorMessageDiv.classList.add('hidden');
-
-    const yesterday = luxon.DateTime.now().setZone('America/New_York').minus({ days: 1 }).toISODate();
-    const FINISHED_STATUSES = ['Finished', 'Final'];
-
-    try {
-      gamesCollectionRef
-        .where('gameDate', '==', yesterday)
-        .where('Match Status', 'in', FINISHED_STATUSES)
-        .orderBy('Start Time')
-        .onSnapshot((snapshot) => {
-          const games = snapshot.docs.map(doc => doc.data());
-          if (games.length === 0) {
-            if (errorTextSpan) errorTextSpan.textContent = 'No finished games for yesterday.';
-            if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-            if (loadingElement) loadingElement.classList.add('hidden');
-            if (contentDiv) contentDiv.classList.add('hidden');
-            return;
-          }
-
-          const groupedGames = games.reduce((acc, game) => {
-            const league = game.League || 'Other';
-            if (!acc[league]) acc[league] = [];
-            acc[league].push(game);
-            return acc;
-          }, {});
-
-          const sortedLeagueNames = Object.keys(groupedGames).sort(); // Sort alphabetically for scores
-
-          if (contentDiv) {
-            contentDiv.innerHTML = '';
-            sortedLeagueNames.forEach(leagueName => {
-              const leagueSection = document.createElement('div');
-              leagueSection.classList.add('league-section');
-              const leagueHeader = document.createElement('h2');
-              leagueHeader.classList.add('league-header');
-              leagueHeader.textContent = getLeagueDisplayName(leagueName); // Use getLeagueDisplayName
-              leagueSection.appendChild(leagueHeader);
-              const gamesListContainer = document.createElement('div');
-              gamesListContainer.classList.add('game-entry-wrapper');
-
-              const leagueGames = groupedGames[leagueName];
-              leagueGames.forEach(game => {
-                const row = document.createElement('div');
-                row.className = 'game-entry';
-
-                const timeDiv = document.createElement('div');
-                timeDiv.className = 'time-cell status-finished'; // Always finished for this tab
-                timeDiv.textContent = 'F'; // 'F' for Final
-                row.appendChild(timeDiv);
-
-                const teamsDiv = document.createElement('div');
-                teamsDiv.className = 'game-details';
-                teamsDiv.innerHTML = `
-                  <div class="team-name">${getTeamDisplayName(game['Away Team'] || '')}</div>
-                  <div class="team-name">${getTeamDisplayName(game['Home Team'] || '')}</div>
-                `;
-                row.appendChild(teamsDiv);
-
-                const scoreDiv = document.createElement('div');
-                scoreDiv.className = 'game-scores';
-                const awayScore = (game['Away Score'] != null && game['Away Score'] !== 'N/A') ? game['Away Score'] : '';
-                const homeScore = (game['Home Score'] != null && game['Home Score'] !== 'N/A') ? game['Home Score'] : '';
-
-                // Determine winner for bolding
-                const isAwayWinner = parseInt(awayScore) > parseInt(homeScore);
-                const isHomeWinner = parseInt(homeScore) > parseInt(awayScore);
-
-                scoreDiv.innerHTML = `
-                  <div class="score-value ${isAwayWinner ? 'winner' : ''}">${awayScore}</div>
-                  <div class="score-value ${isHomeWinner ? 'winner' : ''}">${homeScore}</div>
-                `;
-                row.appendChild(scoreDiv);
-
-                const channelDiv = document.createElement('div');
-                channelDiv.className = 'channel-cell';
-                channelDiv.textContent = game.Channels || '';
-                row.appendChild(channelDiv);
-
-                gamesListContainer.appendChild(row);
-              });
-
-              leagueSection.appendChild(gamesListContainer);
-              contentDiv.appendChild(leagueSection);
-            });
-            contentDiv.classList.remove('hidden');
-          }
-
-          if (loadingElement) loadingElement.classList.add('hidden');
-        },
-        (error) => {
-          console.error("onSnapshot failed for yesterday's scores:", error);
-          if (errorTextSpan) errorTextSpan.textContent = `Failed to load yesterday's scores: ${error.message}`;
-          if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-          if (loadingElement) loadingElement.classList.add('hidden');
-          if (contentDiv) contentDiv.classList.add('hidden');
-        });
-    } catch (error) {
-      console.error("Error setting up snapshot listener for yesterday's scores:", error);
-      if (errorTextSpan) errorTextSpan.textContent = `Setup error for yesterday's scores: ${error.message}.`;
-      if (errorMessageDiv) errorMessageDiv.classList.remove('hidden');
-      if (loadingElement) loadingElement.classList.add('hidden');
-      if (contentDiv) contentDiv.classList.add('hidden');
-    }
-  }
-</script>
 
 
  <script>
@@ -2914,7 +2829,7 @@
 
  
 <script>
-  // This script encapsulates the tab switching logic and calls the appropriate fetch functions.
+  // This script now contains the logic for both "Today" and "Scores" tabs
   function setupTabSwitching() {
     const gamesTabs = document.querySelectorAll('.games-tab');
     const gamesContents = document.querySelectorAll('.games-content');
@@ -3390,7 +3305,300 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 	  
+<!-- ✅✅✅ THIS IS THE NEW SCRIPT YOU NEED TO EDIT ✅✅✅ -->
+<script>
+// --- FINAL UNIFIED SCRIPT for ALL Game, Schedule, and Standings Logic ---
+// This version sorts final games to the bottom of each list.
+document.addEventListener('DOMContentLoaded', function () {
+
+    // --- 1. CONFIGURATION ---
+    const LEAGUE_DATA_CONFIG = {
+        'NFL': { leagueId: 'USA: NFL', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoXI911JBowIVpsOtYo7Jk0WwwNlujQ76rR4lgDAqxGWLa_q67gOXI0DyKsC4YkKIfbSYqerHp17-m/pub?gid=1628205730&single=true&output=csv' },
+        'NBA': { leagueId: 'USA: NBA', standingsUrl: 'YOUR_NBA_STANDINGS_CSV_URL_HERE' },
+        'MLB': { leagueId: 'USA: MLB', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRQHOSDTxfJ554E0MhgZPfmnarCUunnYmxDBSZ78APQ3QfvPWBnn1i68JPSuNCNByd1IzYEbj-6AVAZ/pub?gid=1312763847&single=true&output=csv' },
+        'NHL': { leagueId: 'USA: NHL', standingsUrl: 'YOUR_NHL_STANDINGS_CSV_URL_HERE' },
+        'PremierLeague': { leagueId: 'ENGLAND: PREMIER LEAGUE', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8lEnnlz6Uhb47U4yOnsSUOcsfBS3TrpEXri3g6S2Yj2FUkq1rSSgE4SveKPoAJQsu6U2kkfdGtmhO/pub?gid=0&single=true&output=csv' },
+        'MLS': { leagueId: 'USA: MLS', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQ-fXiJCsMWxpSzu9x_vE7DhdtHBBpL54Ue3vnPnk21OeTsGwZoQnJK7FNAZkT9Nfj8Ox8tuV21pwp/pub?gid=0&single=true&output=csv' },
+        'LaLiga': { leagueId: 'SPAIN: LALIGA', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS8ZGW33Hc9fDIq8mJZZqVj8GJdm3p08Jug6e5fTP0-KBtGpFB6BIXgDKkvHqyHnJRKZ9Ba24I3hekV/pub?gid=0&single=true&output=csv' },
+        'SerieA': { leagueId: 'ITALY: SERIE A', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRaaFrDXpcgY4EiGwkYfT0zodrVA1GJU2A6qcrc1GcLxkPjHh43ksM3T4c4p5nFdqKJoj96eEpUKST3/pub?gid=0&single=true&output=csv' },
+        'Bundesliga': { leagueId: 'GERMANY: BUNDESLIGA', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwpzErtNqiT5mq4kII0P1OxnY41WAgyY4fi7kiThIgNSgf6lr3kslZ9OBAP3-I2YJ4_aA0p0LNjsaH/pub?gid=0&single=true&output=csv' },
+        'Ligue1': { leagueId: 'FRANCE: LIGUE 1', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRD-758CxWtSSl1PCJRdVREjXqhrxTBjYBtnxx4ot8wUdEGfw7ONCzQNfTIdvntZoi1Kme0F7Nkt4Wa/pub?gid=0&single=true&output=csv' },
+        'NCAAF': { leagueId: 'USA: NCAAF', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRiThcO5BjAuw3818zbgA9WxlLQFK8T3n5LCPxAihwjANmnxme5ynsLG2EyD2RyPvACe4wGlY36ekF7/pub?gid=0&single=true&output=csv' },
+        'WNBA': { leagueId: 'USA: WNBA', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSMWPTh0lOh89-qkXYbx63Vs8FQ7gUoT0333Pa9ZgPg4WWBMgB-xERDMM_U2yIUgS3TSPOXOD5M7sVl/pub?gid=0&single=true&output=csv' },
+        'Soccer': { leagueId: 'WORLD: SOCCER', standingsUrl: 'YOUR_SOCCER_STANDINGS_CSV_URL_HERE' },
+        'UEFAChampionsLeague': { leagueId: 'EUROPE: UEFA CHAMPIONS LEAGUE', standingsUrl: 'YOUR_UEFACHAMPIONSLEAGUE_STANDINGS_CSV_URL_HERE' },
+        'FACup': { leagueId: 'ENGLAND: FA CUP', standingsUrl: 'YOUR_FACUP_STANDINGS_CSV_URL_HERE' },
+        'LigaMX': { leagueId: 'MEXICO: LIGA MX', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSL_7HJC0jqhF1jy4tiIrrh5RLewsiH9RezMKDx6TpZtz2JHB8D7Dlx7yyZRWZ7rU5txoTasyiHk7M4/pub?gid=0&single=true&output=csv' },
+        'NWSL': { leagueId: 'USA: NWSL', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQJn_hnVeNfnXsDpeer_hgh6dxOcL2VOJzHKsE8cv-OTaX8EzWRYIGNLqLztvuAeuJbM4oEElA-LoiU/pub?gid=0&single=true&output=csv' },
+        'UEFAEuropaLeague': { leagueId: 'EUROPE: UEFA EUROPA LEAGUE', standingsUrl: 'YOUR_UEFAEUROPALEAGUE_STANDINGS_CSV_URL_HERE' },
+        'UEFAConferenceLeague': { leagueId: 'EUROPE: UEFA CONFERENCE LEAGUE', standingsUrl: 'YOUR_UEFACONFERENCELEAGUE_STANDINGS_CSV_URL_HERE' },
+        'FormulaOne': { leagueId: 'WORLD: FORMULA ONE', standingsUrl: 'YOUR_FORMULAONE_STANDINGS_CSV_URL_HERE' },
+        'PGATour': { leagueId: 'WORLD: PGA TOUR', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh72gyQFguMGj0RkHvy-WrAH3EBpOMdikyKIjrOfSs5aAYYlE7NjbRJsBa7gkkJ4gV_nUUYSbCje2L/pub?gid=786471151&single=true&output=csv' },
+        'UFC': { leagueId: 'WORLD: UFC', standingsUrl: 'YOUR_UFC_STANDINGS_CSV_URL_HERE' },
+        'Boxing': { leagueId: 'WORLD: BOXING', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRthmvN_N-bKFQdsc5V_Otx92FF5qwjYkI9YXHoKgKyV5jvfmb6skABo0Ncbh1x0ehEU-4Je3w_KPmb/pub?gid=1100984840&single=true&output=csv' },
+        'NASCARCupSeries': { leagueId: 'USA: NASCAR CUP SERIES', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzMLdfLfGydr1dpjhS8hr1PLCBod_Jm-J9ABvGaeyhttkAep5HAtWfB5hGeCaLHteZBapJMhNExe0l/pub?gid=0&single=true&output=csv' },
+        'Tennis': { leagueId: 'WORLD: TENNIS', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ74Qw3ZgBqRAKd_HVAnGLI9zDqk_JILTBTtlrFKI8oCosRHnLQZ9Nu8BIAVYdLq932wzE8oz3UNCIP/pub?gid=0&single=true&output=csv' },
+        'LIVGolf': { leagueId: 'WORLD: LIV GOLF', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZ7zf4PAme33oOeQ5NFNVE3W1OXJDJ2-qN0_TKLYaditRtpsa7yfxGY3lsGJQxZLQxhIKGzAH7NgBo/pub?gid=0&single=true&output=csv' },
+        'IndyCar': { leagueId: 'USA: INDYCAR', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQWqPs7Krfm7U1_bU2MShMSgAGF5RIXqIVUZ6vQO2XWz0waDHd48eiawVeOwXwAkeZBdoNA1X4Mkzs3/pub?gid=0&single=true&output=csv' },
+        'NCAAM': { leagueId: 'USA: NCAAM', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRWwuY4T7aQXTeW_8WDncuzDZUAIr9JDhV2MjP4ZFAM0EjuUWgpKBb2sWjI9gZxvqCxnON9JTN7lo2i/pub?gid=0&single=true&output=csv' },
+        'NCAAW': { leagueId: 'USA: NCAAW', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRDKX76cBl2tx7s_rW20e2TzKX-uvA6UsPBjsv_UXhhoE8zVmUFJvDaopCxEhaDWyaOtL4wDWSVE6H7/pub?gid=0&single=true&output=csv' },
+        'NCAABaseball': { leagueId: 'USA: NCAA BASEBALL', standingsUrl: 'YOUR_NCAABASEBALL_STANDINGS_CSV_URL_HERE' },
+        'NCAASoftball': { leagueId: 'USA: NCAA SOFTBALL', standingsUrl: 'YOUR_NCAASOFTBALL_STANDINGS_CSV_URL_HERE' },
+        'MotoGP': { leagueId: 'WORLD: MOTOGP', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSqOmundPRaLEu2Jcgt3KBdTRX6jy-Nmkb89fuJC_SfntbZVF_Y-tNehFSnZwqdmK2O3GJR3UlHFXms/pub?gid=0&single=true&output=csv' },
+        'LPGATour': { leagueId: 'WORLD: LPGA TOUR', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSgv4aRqL4dKgbADnZNH1e_oR8rgnbGOY9roEzXNVas0C6nlkx3RggqK7RCq0Cl148yFD0DfxAxtK4q/pub?gid=0&single=true&output=csv' },
+        'TrackAndField': { leagueId: 'WORLD: TRACK AND FIELD', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnsEETRJkJlYNokKws_nlk6-OfyJKg8aoq8AldZZgRcdV5YtuQ1kdINCKvR2H-XQZJVxRxcZaKOq2/pub?gid=2060167316&single=true&output=csv' }
+    };
+   const LEAGUE_DISPLAY_ORDER = ["NFL", "NBA", "MLB", "Premier League", "UEFA Champions League", "ATP", "WTA", "LaLiga", "WNBA", "Leagues Cup", "NWSL", "Copa Libertadores", "Coppa Italia", "DFB-Pokal", "Brasileirão", "Super Lig", "Copa Sudamericana", "Club Friendly"]; 
+
+    // --- 2. FIREBASE INITIALIZATION (SINGLETON) ---
+    if (!firebase.apps.length) {
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
+            authDomain: "flashlive-daily-scraper.firebaseapp.com",
+            projectId: "flashlive-daily-scraper",
+            storageBucket: "flashlive-daily-scraper.appspot.com",
+            messagingSenderId: "124291936014",
+            appId: "1:124291936014:web:acadcaa791d6046849315f"
+        };
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+    const gamesCollectionRef = db.collection("artifacts/flashlive-daily-scraper/public/data/sportsGames");
+
+    // --- 3. ELEMENT REFERENCES ---
+    const leagueHeader = document.getElementById('league-specific-header');
+    const scheduleContent = document.getElementById('league-schedule-content');
+    const standingsContent = document.getElementById('league-standings-content');
+    const homeGamesContainer = document.getElementById("games");
+    const homeErrorDiv = document.getElementById("error");
+    
+    // --- 4. HELPER FUNCTIONS ---
+    function getLeagueDisplayName(name) {
+        const map = { "USA: WNBA": "WNBA", "USA: MLB": "MLB", "USA: NFL": "NFL", "ENGLAND: PREMIER LEAGUE": "Premier League", "USA: NWSL Women": "NWSL", "World: Club Friendly": "Club Friendly", "USA: Cleveland WTA, hard": "WTA", "Germany: DFB Pokal": "DFB-Pokal", "Italy: Coppa Italia": "Coppa Italia", "Turkey: Super Lig": "Super Lig", "Spain: LaLiga": "LaLiga", "England: Premier League": "Premier League", "Europe: Champions League - Qualification": "UEFA Champions League", "Brazil: Serie A Betano": "Brasileirão", "South America: Copa Libertadores - Play Offs": "Copa Libertadores", "North & Central America: Leagues Cup - Play Offs": "Leagues Cup", "South America: Copa Sudamericana - Play Offs": "Copa Sudamericana", "USA: NFL - Pre-season": "NFL" };
+        return map[name] || name;
+    }
+    function getTeamDisplayName(name) {
+        let p = name.endsWith(" W") ? name.slice(0, -2) : name;
+        const map = { "Arizona Diamondbacks": "Diamondbacks", "Atlanta Braves": "Braves", "Baltimore Orioles": "Orioles", "Boston Red Sox": "Red Sox", "Chicago Cubs": "Cubs", "Chicago White Sox": "White Sox", "Cincinnati Reds": "Reds", "Cleveland Guardians": "Guardians", "Colorado Rockies": "Rockies", "Detroit Tigers": "Tigers", "Houston Astros": "Astros", "Kansas City Royals": "Royals", "Los Angeles Angels": "Angels", "Los Angeles Dodgers": "Dodgers", "Miami Marlins": "Marlins", "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets", "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies", "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants", "Seattle Mariners": "Mariners", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays", "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals", "Atlanta Dream": "Dream", "Chicago Sky": "Sky", "Connecticut Sun": "Sun", "Dallas Wings": "Wings", "Indiana Fever": "Fever", "Las Vegas Aces": "Aces", "Los Angeles Sparks": "Sparks", "Minnesota Lynx": "Lynx", "New York Liberty": "Liberty", "Phoenix Mercury": "Mercury", "Seattle Storm": "Storm", "Washington Mystics": "Mystics" };
+        return map[p] || p;
+    }
+    function getOrdinal(n) {
+        const s = ["th", "st", "nd", "rd"], v = n % 100;
+        return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    }
+
+    // --- 5. CORE RENDERING FUNCTION (Used by BOTH Home and League pages) ---
+function renderGames(container, gamesData, isGroupedByLeague) {
+    container.innerHTML = "";
+    const leagueGroups = {};
+
+    if (isGroupedByLeague) {
+        gamesData.forEach(game => {
+            const leagueDisplayName = getLeagueDisplayName(game.League) || "Other";
+            if (!leagueGroups[leagueDisplayName]) leagueGroups[leagueDisplayName] = [];
+            leagueGroups[leagueDisplayName].push(game);
+        });
+    } else {
+        leagueGroups['singleLeague'] = gamesData;
+    }
+
+    const sortedLeagueNames = isGroupedByLeague 
+        ? Object.keys(leagueGroups).sort((a, b) => (LEAGUE_DISPLAY_ORDER.indexOf(a) === -1 ? 99 : LEAGUE_DISPLAY_ORDER.indexOf(a)) - (LEAGUE_DISPLAY_ORDER.indexOf(b) === -1 ? 99 : LEAGUE_DISPLAY_ORDER.indexOf(b)))
+        : ['singleLeague'];
+
+    sortedLeagueNames.forEach(leagueNameKey => {
+        const games = leagueGroups[leagueNameKey];
+        const leagueSection = document.createElement("div");
+        if(isGroupedByLeague) {
+            leagueSection.className = "league-section";
+            const title = document.createElement("div");
+            title.className = "league-title";
+            title.textContent = leagueNameKey;
+            leagueSection.appendChild(title);
+        }
+
+        const table = document.createElement("table");
+        table.className = "game-table";
+        let lastDisplayedTimeLabel = null;
+
+        games.forEach(data => {
+            const home = getTeamDisplayName(data["Home Team"] || "");
+            const away = getTeamDisplayName(data["Away Team"] || "");
+            const homeScore = data["Home Score"], awayScore = data["Away Score"];
+            const matchStatus = (data["Match Status"] || "").toUpperCase();
+            const rawStart = data["Start Time"];
+            const isLive = matchStatus.includes("IN PROGRESS");
+            const isFinal = matchStatus.includes("FINISHED") || matchStatus.includes("FINAL");
+            let currentTimeLabel = "";
+
+            if (isLive) {
+                let parsedStatus = '';
+                const displayLeague = getLeagueDisplayName(data.League);
+                if (displayLeague === "MLB") {
+                    const inningHalf = data.inningHalf || "";
+                    const currentInning = data.currentInning || "";
+                    if (inningHalf && currentInning) {
+                        parsedStatus = `${inningHalf.slice(0,3)} ${currentInning}`;
+                    }
+                } else if (displayLeague === "WNBA") {
+                    const status = data.Status || "";
+                    const quarterMatch = status.match(/Q(\d+)/i);
+                    if (quarterMatch) {
+                        parsedStatus = `Q${quarterMatch[1]}`;
+                    } else if (status.toUpperCase() === "HALF_TIME") {
+                        parsedStatus = "Half";
+                    }
+                }
+                currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : '<span style="color: red;">Live</span>';
+            } else if (isFinal) {
+                currentTimeLabel = "F";
+            } else if (rawStart && rawStart.toDate) {
+                currentTimeLabel = luxon.DateTime.fromJSDate(rawStart.toDate()).toFormat('h:mm a');
+            } else {
+                currentTimeLabel = "TBD";
+            }
+
+            let displayTimeLabel = currentTimeLabel;
+            if (!isLive && !isFinal && currentTimeLabel !== "TBD") {
+                if (currentTimeLabel === lastDisplayedTimeLabel) displayTimeLabel = "";
+                else lastDisplayedTimeLabel = currentTimeLabel;
+            }
+            
+            // ** This is the section to modify **
+            let displayAwayScore = awayScore ?? '';
+            let displayHomeScore = homeScore ?? '';
+            
+            if (!isLive && !isFinal) {
+              displayAwayScore = '';
+              displayHomeScore = '';
+            }
+
+            const row1 = table.insertRow();
+            row1.className = "game-row";
+            row1.innerHTML = `<td rowspan="2" style="width: 90px; text-align: left; font-size: 12px; vertical-align: top;">${displayTimeLabel}</td><td class="team-cell">${away}</td><td style="width: 40px; text-align: right;">${displayAwayScore}</td>`;
+            const row2 = table.insertRow();
+            row2.className = "game-row game-separator";
+            row2.innerHTML = `<td class="team-cell">${home}</td><td style="text-align: right;">${displayHomeScore}</td>`;
+        });
+        leagueSection.appendChild(table);
+        container.appendChild(leagueSection);
+    });
+}
+
+    // --- 6. DATA FETCHING FUNCTIONS ---
+    
+    // --- THIS IS THE NEW SORTING FUNCTION ---
+    function sortGames(a, b) {
+        const statusA = (a["Match Status"] || "").toUpperCase();
+        const statusB = (b["Match Status"] || "").toUpperCase();
+        const isFinalA = statusA.includes("FINISHED") || statusA.includes("FINAL");
+        const isFinalB = statusB.includes("FINISHED") || statusB.includes("FINAL");
+
+        if (isFinalA && !isFinalB) return 1; // Final games go to the bottom
+        if (!isFinalA && isFinalB) return -1; // Non-final games go to the top
+
+        // If both are the same status (both final or both not final), sort by time
+        return a["Start Time"].toMillis() - b["Start Time"].toMillis();
+    }
+
+    function fetchLeagueSchedule(leagueId, leagueName) {
+        scheduleContent.innerHTML = '<p style="color: #9ca3af;">Loading schedule...</p>';
+        const { DateTime } = luxon;
+        const todayStr = DateTime.now().setZone('America/New_York').toISODate();
+        gamesCollectionRef.where('League', '==', leagueId).where('gameDate', '==', todayStr)
+            .onSnapshot(snapshot => {
+                if (snapshot.empty) {
+                    scheduleContent.innerHTML = `<p>No ${leagueName} games found for today.</p>`;
+                    return;
+                }
+                // Apply the new sorting logic here
+                const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
+                renderGames(scheduleContent, gamesData, false);
+            }, err => { scheduleContent.innerHTML = '<p style="color: #ef4444;">Error loading schedule.</p>'; });
+    }
+
+    async function fetchLeagueStandings(url) {
+        standingsContent.innerHTML = '<p style="color: #9ca3af;">Loading standings...</p>';
+        try {
+            if (!url || !url.startsWith('http')) {
+                standingsContent.innerHTML = '<p>Standings not available.</p>';
+                return;
+            }
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const csvText = await response.text();
+            const rows = csvText.split(/\r?\n/).map(row => row.split(','));
+            if (rows.length < 2) {
+                standingsContent.innerHTML = '<p>No standings data available.</p>';
+                return;
+            }
+            let tableHtml = '<table style="width: 100%; border-collapse: collapse; font-size: 11px;"><thead><tr>';
+            rows[0].forEach(header => tableHtml += `<th style="padding: 4px; text-align: left; border-bottom: 1px solid #4a4a4a;">${header.trim().replace(/^"|"$/g, '')}</th>`);
+            tableHtml += '</tr></thead><tbody>';
+            for (let i = 1; i < rows.length; i++) {
+                if (rows[i].length < 2) continue;
+                tableHtml += `<tr style="border-top: 1px solid #374151;">`;
+                rows[i].forEach(cell => tableHtml += `<td style="padding: 4px;">${cell.trim().replace(/^"|"$/g, '')}</td>`);
+                tableHtml += '</tr>';
+            }
+            tableHtml += '</tbody></table>';
+            standingsContent.innerHTML = tableHtml;
+        } catch (error) { standingsContent.innerHTML = `<p style="color: #ef4444;">Error loading standings.</p>`; }
+    }
+
+    function fetchTodayGames() {
+        if (!homeGamesContainer || !homeErrorDiv) return;
+        homeErrorDiv.textContent = "";
+        const { DateTime } = luxon;
+        const todayStr = DateTime.now().setZone('America/New_York').toISODate();
+        gamesCollectionRef.where('gameDate', '==', todayStr) // Removed orderBy here, will sort in code
+            .onSnapshot(snapshot => {
+                if (snapshot.empty) {
+                    homeGamesContainer.innerHTML = `<p style="padding: 10px;">No games found for today.</p>`;
+                    return;
+                }
+                // Apply the new sorting logic here as well
+                const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
+                renderGames(homeGamesContainer, gamesData, true);
+            }, err => { homeErrorDiv.textContent = "Failed to load real-time data."; });
+    }
+    
+    // --- 7. MAIN CONTROLLER FUNCTION (called by your site) ---
+    window.loadLeagueSpecificData = function(leagueKey) {
+        const leagueInfo = LEAGUE_DATA_CONFIG[leagueKey];
+        if (!leagueInfo) return;
+        if (leagueHeader) leagueHeader.innerText = leagueKey;
+        fetchLeagueSchedule(leagueInfo.leagueId, leagueKey);
+        fetchLeagueStandings(leagueInfo.standingsUrl);
+    }
+
+    // --- 8. INITIALIZE HOME PAGE TABS ---
+    const gamesTabs = document.querySelectorAll('.games-tab');
+    if (gamesTabs.length > 0) {
+        let todayGamesIntervalId = null;
+        gamesTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTabId = tab.dataset.tab;
+                gamesTabs.forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.games-content').forEach(c => c.style.display = 'none');
+                tab.classList.add('active');
+                const targetContentDiv = document.getElementById(`tv-listings-${targetTabId}`);
+                if (targetContentDiv) targetContentDiv.style.display = 'block';
+                if (todayGamesIntervalId) clearInterval(todayGamesIntervalId);
+                if (targetTabId === 'scores') {
+                    // Your fetchYesterdayScores() function can be pasted here
+                } else if (targetTabId === 'today') {
+                    fetchTodayGames();
+                    todayGamesIntervalId = setInterval(fetchTodayGames, 30000);
+                }
+            });
+        });
+        const todayTab = document.querySelector('.games-tab[data-tab="today"]');
+        if (todayTab) todayTab.click();
+    }
+});
+</script>
+
   </body>
 </html>
-
 
