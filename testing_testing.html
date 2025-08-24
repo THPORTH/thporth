@@ -1696,21 +1696,40 @@
 </div>
 
         <!-- League-Specific News Sections (all hidden by default) -->
-        <div id="news-MLB" class="content-section" style="display: none; height: calc(100% - 18px);">
+       <div id="news-MLB" class="content-section" style="display: none; height: calc(100% - 18px);">
   <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <!-- Headlines Section -->
     <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
       <div class="news-section-header">Headlines</div>
       <div style="display: flex; height: calc(100% - 18px);">
+        <!-- This is the container for the vertical tabs -->
         <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-          <!-- Hardcoded tabs for MLB -->
           <div class="headlines-tab active" data-url="https://www.mlb.com/feeds/news/rss.xml">MLB.com</div>
           <div class="headlines-tab" data-url="https://theathletic.com/mlb/feed/">The Athletic</div>
           <div class="headlines-tab" data-url="https://www.baseballamerica.com/rss/">Baseball America</div>
           <div class="headlines-tab" data-url="https://www.espn.com/espn/rss/mlb/news">ESPN</div>
         </div>
+        <!-- This is the container for the news content -->
         <div id="headlines-content-MLB" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-          <!-- Content for the active tab will be loaded here by a modified script -->
+          <!-- The content will be loaded here by JavaScript -->
         </div>
+      </div>
+    </div>
+    <!-- Breaking/Fantasy/Transactions Tabs Section -->
+    <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+      <div class="news-section-header breaking-tabs-header">
+        <span class="news-tab active" data-tab="breaking">Breaking</span>
+        <span class="news-tab" data-tab="fantasy">Fantasy</span>
+        <span class="news-tab" data-tab="transactions">Transactions</span>
+      </div>
+      <div class="news-feed-content" id="breaking-feed" style="display: block;">
+        Loading breaking news...
+      </div>
+      <div class="news-feed-content" id="fantasy-feed" style="display:none;">
+        Loading fantasy news...
+      </div>
+      <div class="news-feed-content" id="transactions-feed" style="display:none;">
+        Loading transactions...
       </div>
     </div>
   </div>
