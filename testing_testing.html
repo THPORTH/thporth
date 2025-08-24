@@ -3428,7 +3428,7 @@ function renderGames(container, gamesData, isGroupedByLeague) {
             const matchStatus = (data["Match Status"] || "").toUpperCase();
             const rawStart = data["Start Time"];
             const isLive = matchStatus.includes("IN PROGRESS");
-            const isFinal = matchStatus.includes("FINISHED") || matchStatus.includes("FINAL");
+            const isFinal = matchStatus.includes("FINISHED") || matchStatus.includes("FINAL") || matchStatus.includes("GAME OVER");
             let currentTimeLabel = "";
 
             if (isLive) {
