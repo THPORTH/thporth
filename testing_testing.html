@@ -1697,18 +1697,24 @@
 
         <!-- League-Specific News Sections (all hidden by default) -->
         <div id="news-MLB" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                </div>
-                <div id="headlines-content-MLB" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
-            </div>
-          </div>
+  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+      <div class="news-section-header">Headlines</div>
+      <div style="display: flex; height: calc(100% - 18px);">
+        <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+          <!-- Hardcoded tabs for MLB -->
+          <div class="headlines-tab active" data-url="https://www.mlb.com/feeds/news/rss.xml">MLB.com</div>
+          <div class="headlines-tab" data-url="https://theathletic.com/mlb/feed/">The Athletic</div>
+          <div class="headlines-tab" data-url="https://www.baseballamerica.com/rss/">Baseball America</div>
+          <div class="headlines-tab" data-url="https://www.espn.com/espn/rss/mlb/news">ESPN</div>
         </div>
+        <div id="headlines-content-MLB" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+          <!-- Content for the active tab will be loaded here by a modified script -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
         <div id="news-NBA" class="content-section" style="display: none; height: calc(100% - 18px);">
           <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
             <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
