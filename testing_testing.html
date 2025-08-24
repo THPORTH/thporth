@@ -674,12 +674,13 @@
     margin: 0 !important;
 }
 
-/* 5) The horizontal tabs container. */
-#headlines-tabs,
-#headlines-tabs-Home,
-#headlines-tabs-MLB,
-#headlines-tabs-NBA,
-#headlines-tabs-NFL {
+	   /*
+  This is the corrected CSS to ensure the proper layout for both the
+  home page's horizontal tabs and the league pages' vertical tabs.
+*/
+
+/* 5) The horizontal tabs container (used for the Home page). */
+#headlines-tabs {
     position: sticky !important;
     top: 18px !important;
     z-index: 28 !important;
@@ -689,6 +690,64 @@
     margin: 0 !important;
     padding: 0 !important;
 }
+
+/* 11) New styles for the tabs themselves (Home page style). */
+#headlines-tabs .headlines-tab {
+    flex: 1 !important;
+    text-align: center !important;
+    font-size: 10px !important;
+    line-height: 18px !important;
+    color: #aaa !important;
+    cursor: pointer !important;
+    background-color: #2a2a2a !important;
+    border-right: 1px solid #1f1f1f !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#headlines-tabs .headlines-tab:last-child {
+    border-right: none !important;
+}
+
+#headlines-tabs .headlines-tab.active {
+    background-color: #3c3c3c !important;
+    color: #fff !important;
+}
+
+/* New styles for the vertical tabs on league pages. */
+.headlines-tabs-column {
+    display: flex !important;
+    flex-direction: column !important; /* Forces vertical stacking */
+    overflow-y: auto !important;
+    background-color: #1f1f1f !important;
+    width: 20% !important;
+    flex-shrink: 0 !important;
+    padding: 0 !important;
+}
+  
+.headlines-tabs-column .headlines-tab {
+    display: block !important;
+    width: 100% !important;
+    padding: 10px 15px !important;
+    text-align: left !important;
+    font-size: 14px !important;
+    background-color: #333 !important;
+    color: white !important;
+    border-bottom: 1px solid #444 !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    margin: 0 !important;
+}
+  
+.headlines-tabs-column .headlines-tab:hover {
+    background-color: #555 !important;
+}
+  
+.headlines-tabs-column .headlines-tab.active {
+    background-color: #151515 !important;
+    font-weight: bold !important;
+}
+
 
 	     /* 5a) ESPN feed-entry styling */
  /* Apply identical styling to ESPN, CBS, Yahoo and FOX feeds */
@@ -830,28 +889,7 @@
     padding: 0 10px !important;
 }
 
-/* 11) New styles for the tabs themselves (Home page style). */
-.headlines-tab {
-    flex: 1 !important;
-    text-align: center !important;
-    font-size: 10px !important;
-    line-height: 18px !important;
-    color: #aaa !important;
-    cursor: pointer !important;
-    background-color: #2a2a2a !important;
-    border-right: 1px solid #1f1f1f !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
 
-.headlines-tab:last-child {
-    border-right: none !important;
-}
-
-.headlines-tab.active {
-    background-color: #3c3c3c !important;
-    color: #fff !important;
-}
 
   /* ────────────────────────────────────────────────────────── */
   /* TV-Listings (Games) Styling               */
