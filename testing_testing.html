@@ -2576,6 +2576,75 @@
           });
         });
 
+		  
+            // 2. Handle the news panel switching (existing logic)
+            document.querySelectorAll(".news .content-section").forEach(
+              s => (s.style.display = "none")
+            );
+            document.querySelectorAll("#social-feed-container .content-section").forEach(s => s.style.display = "none");
+
+            const news = document.getElementById("news-" + section);
+            const social = document.getElementById("social-" + section);
+            if (news) {
+              news.style.display = "block";
+              
+              const newsSubMenu = document.getElementById("newsSubMenu");
+              if (section === "Home") {
+                if (newsSubMenu) newsSubMenu.style.display = "flex";
+                const container = document.querySelector(".news");
+                if (container) {
+                    container.scrollTop = 0;
+                    container.dispatchEvent(new Event("scroll"));
+                }
+              } else {
+                if (newsSubMenu) newsSubMenu.style.display = "none";
+              }
+            }
+            if (social) social.style.display = "block";
+            // --- END: CORRECTED LOGIC ---
+          });
+        });
+
+		  const leagueVerticalTabsContainers = document.querySelectorAll('.headlines-tabs-column');
+
+leagueVerticalTabsContainers.forEach(container => {
+    container.addEventListener('click', (event) => {
+        const clickedTab = event.target.closest('.headlines-tab');
+        if (clickedTab) {
+            // Deactivate all tabs within this specific container
+            container.querySelectorAll('.headlines-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Activate the clicked tab
+            clickedTab.classList.add('active');
+
+            // Here is where you would also call the function to fetch and display the new feed content.
+            const feedUrl = clickedTab.dataset.url;
+            const contentContainer = document.getElementById(`headlines-content-${selectedSection}`);
+            if (contentContainer) {
+                fetchFeed(`#headlines-content-${selectedSection}`, feedUrl);
+            }
+        }
+    });
+});
+
+        const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
+        const newsPanel = document.querySelector(".news");
+        newsPanel.addEventListener("scroll", () => {
+          const newsSubMenu = document.getElementById("newsSubMenu");
+          if (!newsSubMenu) return; 
+
+          const top = newsPanel.getBoundingClientRect().top;
+          const offset = newsSubMenu.offsetHeight + 50;
+          let active = 0;
+          for (let i = 0; i < feeds.length; i++) {
+            const el = document.getElementById(feeds[i]);
+            if (!el) continue;
+            const h4 = el.querySelector("h4");
+            if (!h4) continue;
+            if (h4.getBoundingClientRect().top > top + offset) break;
+            active = i;
+
         const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
         const newsPanel = document.querySelector(".news");
         newsPanel.addEventListener("scroll", () => {
