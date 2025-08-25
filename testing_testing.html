@@ -3493,10 +3493,6 @@ function renderGames(container, gamesData, isGroupedByLeague) {
             const isLive = matchStatus.includes("IN PROGRESS");
             const isFinal = matchStatus.includes("FINISHED") || matchStatus.includes("FINAL") || matchStatus.includes("GAME OVER");
             let currentTimeLabel = "";
-				const matchStatus = (data["Match Status"] || "").toUpperCase();
-				const isLive = matchStatus.includes("IN PROGRESS");
-				const isFinal = matchStatus.includes("FINISHED") || matchStatus.includes("FINAL") || matchStatus.includes("GAME OVER");
-				const isDelayed = matchStatus.includes("DELAYED START");
 
             if (isLive) {
                 let parsedStatus = '';
@@ -3516,16 +3512,14 @@ function renderGames(container, gamesData, isGroupedByLeague) {
                         parsedStatus = "Half";
                     }
                 }
-                    currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : '<span style="color: red;">Live</span>';
-} else if (isFinal) {
-    currentTimeLabel = "F";
-} else if (isDelayed) {
-    currentTimeLabel = "Delayed";
-} else if (rawStart && rawStart.toDate) {
-    currentTimeLabel = luxon.DateTime.fromJSDate(rawStart.toDate()).toFormat('h:mm a');
-} else {
-    currentTimeLabel = "TBD";
-}
+                currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : '<span style="color: red;">Live</span>';
+            } else if (isFinal) {
+                currentTimeLabel = "F";
+            } else if (rawStart && rawStart.toDate) {
+                currentTimeLabel = luxon.DateTime.fromJSDate(rawStart.toDate()).toFormat('h:mm a');
+            } else {
+                currentTimeLabel = "TBD";
+            }
 
             let displayTimeLabel = currentTimeLabel;
             if (!isLive && !isFinal && currentTimeLabel !== "TBD") {
