@@ -1760,7 +1760,7 @@
     <!-- Breaking/Fantasy/Transactions Tabs Section -->
     <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
       <div class="news-section-header breaking-tabs-header">
-        <span class="news-tab active" data-tab="breaking">Breaking</span>
+        <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/eDhHgdkXERXETCWJ.xml">Breaking</span>
         <span class="news-tab" data-tab="fantasy">Fantasy</span>
         <span class="news-tab" data-tab="transactions">Transactions</span>
       </div>
@@ -2978,11 +2978,9 @@ leagueVerticalTabsContainers.forEach(container => {
 </script>
 
 	  <script>
-  // -- FEED URLs: Replace with your real feeds --
-const HEADLINES_FEED = "https://www.espn.com/espn/rss/news";
-const BREAKING_FEED = "https://rss.app/feeds/XcFXtVdyCBGtIC6O.xml";
-const FANTASY_FEED = "https://fantasynews.cbssports.com/rss/headlines/";
-const TRANSACTIONS_FEED = "https://www.espn.com/espn/rss/mlb/news"; // EXAMPLE, replace as needed
+// -- FEED URLs: This is now a more generic approach --
+// -- The URLs will be pulled from the data-url attributes in the HTML --
+const HOME_HEADLINES_FEED = "https://www.espn.com/espn/rss/news";
 
 // -- Generic function to fetch and render a basic RSS feed --
 function fetchRSSFeed(url, containerId) {
@@ -3021,33 +3019,46 @@ function fetchRSSFeed(url, containerId) {
 
 // -- Tabs logic for Breaking/Fantasy/Transactions
 document.addEventListener("DOMContentLoaded", function() {
-  // Load default feeds
-  fetchRSSFeed(HEADLINES_FEED, "headlines-feed");
-  fetchRSSFeed(BREAKING_FEED, "breaking-feed");
-
-  const tabs = document.querySelectorAll(".news-tab");
-  tabs.forEach(tab => {
+  // Load default feeds for the home page.
+  fetchRSSFeed(HOME_HEADLINES_FEED, "espn-feed"); // Note: You'll also need to update the other home page feeds.
+  
+  // This logic now handles all news tabs.
+  const allNewsTabs = document.querySelectorAll(".news-tab, .headlines-tab");
+  allNewsTabs.forEach(tab => {
     tab.addEventListener("click", () => {
-      tabs.forEach(t => t.classList.remove("active"));
+      // Find the tabs in the same group as the clicked one
+      const parentContainer = tab.closest('.breaking-tabs-header, #headlines-tabs');
+      if (parentContainer) {
+        parentContainer.querySelectorAll('.news-tab, .headlines-tab').forEach(t => t.classList.remove('active'));
+      }
+      
       tab.classList.add("active");
-      document.getElementById("breaking-feed").style.display = "none";
-      document.getElementById("fantasy-feed").style.display = "none";
-      document.getElementById("transactions-feed").style.display = "none";
-
-      if (tab.dataset.tab === "breaking") {
-        document.getElementById("breaking-feed").style.display = "block";
-        fetchRSSFeed(BREAKING_FEED, "breaking-feed");
-      }
-      if (tab.dataset.tab === "fantasy") {
-        document.getElementById("fantasy-feed").style.display = "block";
-        fetchRSSFeed(FANTASY_FEED, "fantasy-feed");
-      }
-      if (tab.dataset.tab === "transactions") {
-        document.getElementById("transactions-feed").style.display = "block";
-        fetchRSSFeed(TRANSACTIONS_FEED, "transactions-feed");
+      
+      const feedUrl = tab.dataset.url;
+      const contentId = tab.dataset.tab === 'breaking' ? 'breaking-feed' : 
+                        tab.dataset.tab === 'fantasy' ? 'fantasy-feed' :
+                        tab.dataset.tab === 'transactions' ? 'transactions-feed' :
+                        tab.dataset.source + '-feed';
+                        
+      // Hide all relevant content divs
+      document.querySelectorAll('.news-feed-content').forEach(div => div.style.display = 'none');
+      
+      // Show the content div for the current tab and load the feed
+      const contentDiv = document.getElementById(contentId);
+      if (contentDiv) {
+        contentDiv.style.display = 'block';
+        if (feedUrl) {
+          fetchRSSFeed(feedUrl, contentId);
+        }
       }
     });
   });
+
+  // Manually trigger a click on the default "Breaking" tab for the current page
+  const defaultBreakingTab = document.querySelector('.news-tab[data-tab="breaking"]');
+  if (defaultBreakingTab) {
+    defaultBreakingTab.click();
+  }
 });
 </script>
 
