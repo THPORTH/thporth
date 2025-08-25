@@ -799,7 +799,28 @@
   This is the corrected CSS to apply identical styling to the breaking news feed.
   It uses `!important` to override any conflicting inline or lower-specificity rules.
 */
+ /* --- Style for ALL Breaking News Sections in ANY League --- */
 
+  /* This special selector targets any <div> element whose 'id' attribute 
+    STARTS WITH the text "breaking-content-".
+    The ^ symbol means "starts with".
+  */
+  div[id^="breaking-content-"] a {
+    text-decoration: none; /* Removes the underline */
+    color: #d1d5db;        /* Sets a light gray color */
+  }
+
+  /* Style for links you have already visited */
+  div[id^="breaking-content-"] a:visited {
+    color: #8c8c8c;
+  }
+
+  /* Style for when you hover your mouse over a link */
+  div[id^="breaking-content-"] a:hover {
+    text-decoration: underline;
+    color: #ffffff;
+  }
+	   
 /* Apply identical styling to breaking news feed as the headlines feeds */
 #breaking-feed ul {
     list-style: none !important;
