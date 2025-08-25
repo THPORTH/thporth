@@ -868,10 +868,16 @@
     padding: 0 10px !important;
 }
 
-  /* --- Unified Style for ALL Breaking News Sections (Home & Leagues) --- */
+ /* --- Unified Style for ALL Breaking News Sections (to match Headlines) --- */
 
-  /* This selector targets the <ul> inside BOTH #breaking-feed AND any div
-     whose id starts with "breaking-content-" */
+  /* This adds left/right padding to the main containers so the
+     separator lines don't touch the edges of the box. */
+  #breaking-feed,
+  div[id^="breaking-content-"] {
+    padding: 0 16px; /* 0 for top/bottom, 16px for left/right */
+  }
+
+  /* This removes the default browser styling (bullets, margin) from the list itself. */
   #breaking-feed ul,
   div[id^="breaking-content-"] ul {
     list-style: none;
@@ -879,36 +885,42 @@
     padding: 0;
   }
 
-  /* Style for each list item */
+  /* This styles each individual headline's row. */
   #breaking-feed li,
   div[id^="breaking-content-"] li {
-    margin-bottom: 0.5em;
-    padding: 0;
-    border-bottom: 1px solid #4a4a4a; /* A slightly darker border for dark mode */
+    /* The thin, light gray separator line, perfect for dark mode */
+    border-bottom: 1px solid #4a4a4a; 
+    padding: 14px 0; /* Creates the vertical spacing above and below the text */
   }
 
-  /* Style for the links */
+  /* This removes the border from the very last item in the list for a cleaner look. */
+  #breaking-feed li:last-child,
+  div[id^="breaking-content-"] li:last-child {
+    border-bottom: none;
+  }
+
+  /* This styles the actual link text to match your screenshot. */
   #breaking-feed a,
   div[id^="breaking-content-"] a {
-    color: #d1d5db; /* Light gray color for all links */
-    text-decoration: none;
-    line-height: 1.2;
-    padding: 8px 5px; /* Adds nice spacing */
-    font-size: 14px;
-    display: block; /* Makes the whole area clickable */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 500;        /* A nice medium weight, not too thin, not too bold */
+    color: #FFFFFF;          /* White text */
+    text-decoration: none;   /* No underline */
+    line-height: 1.4;        /* Improves readability */
+    transition: color 0.2s ease; /* Adds a smooth effect on hover */
   }
 
-  /* Style for visited links */
+  /* A muted gray color for links you've already visited. */
   #breaking-feed a:visited,
   div[id^="breaking-content-"] a:visited {
-    color: #8c8c8c;
+    color: #a0a0a0;
   }
-  
-  /* Style for hover */
+
+  /* Slightly dims the text when you hover over it for feedback. */
   #breaking-feed a:hover,
   div[id^="breaking-content-"] a:hover {
-    text-decoration: underline;
-    color: #ffffff;
+    color: #cccccc;
   }
 
   /* ────────────────────────────────────────────────────────── */
