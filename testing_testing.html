@@ -2380,11 +2380,17 @@
       </script>
 
     <!-- News Feeds Script -->
-   <script>
+  <script>
   // Helper function to fetch and render an XML feed
   function fetchFeed(containerSelector, feedUrl) {
     const container = document.querySelector(containerSelector);
     if (!container) return;
+
+    if (!feedUrl) {
+      container.innerHTML = "<p>No URL specified for this tab.</p>";
+      return;
+    }
+
     container.innerHTML = "Loading...";
     fetch(feedUrl)
       .then(res => res.text())
@@ -2426,8 +2432,33 @@
       });
   }
 
+  function loadDefaultNewsFeeds(section) {
+    // Determine which news content container is currently visible
+    const newsSection = document.getElementById(`news-${section}`);
+    if (!newsSection) return;
+
+    // Load the default breaking news feed
+    const breakingTab = newsSection.querySelector('.news-tab[data-tab="breaking"]');
+    if (breakingTab) {
+      const feedUrl = breakingTab.dataset.url;
+      const contentId = breakingTab.dataset.tab + '-feed';
+      fetchFeed(`#${contentId}`, feedUrl);
+      breakingTab.classList.add('active'); // Set the default tab to active
+    }
+
+    // Load the default headlines feed
+    const headlinesTab = newsSection.querySelector('.headlines-tab');
+    if (headlinesTab) {
+      const feedUrl = headlinesTab.dataset.url;
+      let contentId = headlinesTab.dataset.source ? headlinesTab.dataset.source + '-feed' : 'headlines-content-' + section;
+      fetchFeed(`#${contentId}`, feedUrl);
+      headlinesTab.classList.add('active'); // Set the default tab to active
+    }
+  }
+
+
   document.addEventListener("DOMContentLoaded", () => {
-    // --- GRAB ELEMENTS FOR COLUMN SWITCHING (Added here) ---
+    // --- GRAB ELEMENTS FOR COLUMN SWITCHING ---
     const gamesColumn = document.getElementById('games-column');
     const leagueSpecificColumn = document.getElementById('league-specific-column');
     const f1Content = document.getElementById('f1-column-content');
@@ -2463,7 +2494,7 @@
       });
     });
 
-    // --- THIS IS THE CORRECTED CLICK HANDLER ---
+    // --- Main menu click handler ---
     document.querySelectorAll("#menuList li").forEach(item => {
       item.addEventListener("click", e => {
         if (
@@ -2484,36 +2515,22 @@
         item.classList.add("selected");
         const section = item.dataset.section;
 
-        // --- START: CORRECTED LOGIC ---
         if (section === 'Home') {
           gamesColumn.style.display = 'block';
           leagueSpecificColumn.style.display = 'none';
-
-          // Inside games column, ensure correct view
           gamesContent.style.display = 'block';
           f1Content.style.display = 'none';
-
-          // Fix to reload the Home page's default feed
-          const espnTab = document.querySelector('#headlines-tabs .headlines-tab[data-source="espn"]');
-          if (espnTab) {
-            espnTab.click();
-          }
         } else if (section === 'FormulaOne') {
-          gamesColumn.style.display = 'block'; // F1 content is INSIDE this column
+          gamesColumn.style.display = 'block';
           leagueSpecificColumn.style.display = 'none';
-
-          // Toggle visibility within the games column
           gamesContent.style.display = 'none';
           f1Content.style.display = 'flex';
-        } else { // For all other leagues
+        } else {
           gamesColumn.style.display = 'none';
           leagueSpecificColumn.style.display = 'block';
-
-          // Trigger data load for the specific league
           loadLeagueSpecificData(section);
         }
 
-        // 2. Handle the news panel switching (existing logic)
         document.querySelectorAll(".news .content-section").forEach(
           s => (s.style.display = "none")
         );
@@ -2523,68 +2540,57 @@
         const social = document.getElementById("social-" + section);
         if (news) {
           news.style.display = "block";
-
-          const newsSubMenu = document.getElementById("newsSubMenu");
-          if (section === "Home") {
-            if (newsSubMenu) newsSubMenu.style.display = "flex";
-            const container = document.querySelector(".news");
-            if (container) {
-              container.scrollTop = 0;
-              container.dispatchEvent(new Event("scroll"));
-            }
-          } else {
-            if (newsSubMenu) newsSubMenu.style.display = "none";
-          }
+          loadDefaultNewsFeeds(section); // Load default feeds for the newly displayed page
         }
         if (social) social.style.display = "block";
-        // --- END: CORRECTED LOGIC ---
+      });
+    });
+    
+    // --- Unified tab click handler for ALL news tabs ---
+    const newsTabsContainers = document.querySelectorAll('.headlines-tabs-column, #headlines-tabs, .breaking-tabs-header');
+    newsTabsContainers.forEach(container => {
+      container.addEventListener('click', (event) => {
+        const clickedTab = event.target.closest('.headlines-tab, .news-tab');
+        if (!clickedTab) return;
+
+        // Deactivate all tabs within this specific container
+        container.querySelectorAll('.headlines-tab, .news-tab').forEach(tab => {
+          tab.classList.remove('active');
+        });
+        // Activate the clicked tab
+        clickedTab.classList.add('active');
+
+        const feedUrl = clickedTab.dataset.url;
+        const parentSection = clickedTab.closest('.content-section');
+        if (!parentSection) return;
+
+        let contentContainerId;
+        if (clickedTab.classList.contains('news-tab')) {
+            contentContainerId = clickedTab.dataset.tab + '-feed';
+        } else {
+            contentContainerId = clickedTab.dataset.source ? clickedTab.dataset.source + '-feed' : 'headlines-content-' + selectedSection;
+        }
+
+        const contentDiv = document.getElementById(contentContainerId);
+        
+        // Hide all news feeds in the panel first
+        parentSection.querySelectorAll('.news-feed-content').forEach(div => div.style.display = 'none');
+
+        if (contentDiv) {
+            contentDiv.style.display = 'block';
+            if (feedUrl) {
+                fetchFeed(`#${contentContainerId}`, feedUrl);
+            } else {
+                contentDiv.innerHTML = 'No feed URL specified for this tab.';
+            }
+        }
       });
     });
 
-    const newsTabsContainers = document.querySelectorAll('.headlines-tabs-column, #headlines-tabs, .breaking-tabs-header');
-
-    newsTabsContainers.forEach(container => {
-        container.addEventListener('click', (event) => {
-            const clickedTab = event.target.closest('.headlines-tab, .news-tab');
-            if (!clickedTab) return;
-
-            // Deactivate all tabs within this specific container
-            container.querySelectorAll('.headlines-tab, .news-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            // Activate the clicked tab
-            clickedTab.classList.add('active');
-
-            const feedUrl = clickedTab.dataset.url || "";
-            const contentId = clickedTab.dataset.tab ? `${clickedTab.dataset.tab}-feed` : `${clickedTab.dataset.source}-feed` ;
-            const contentDiv = document.getElementById(contentId);
-            
-            // Hide all news feeds in the panel first
-            document.querySelectorAll('.news-feed-content').forEach(div => div.style.display = 'none');
-
-            if (contentDiv) {
-                contentDiv.style.display = 'block';
-                // Only fetch if a URL is available
-                if (feedUrl) {
-                    fetchFeed(`#${contentId}`, feedUrl);
-                } else {
-                    // This handles cases where a feed URL isn't specified (e.g., placeholder divs)
-                    contentDiv.innerHTML = 'No feed URL specified for this tab.';
-                }
-            }
-        });
-    });
-
-    // Manually trigger a click on the default "Breaking" tab for each news section on load
-    document.querySelectorAll('.news-section[id^="news-"]').forEach(newsSection => {
-        const defaultBreakingTab = newsSection.querySelector('.news-tab[data-tab="breaking"]');
-        if (defaultBreakingTab) {
-            defaultBreakingTab.click();
-        }
-    });
-
-    // You can remove the old manual fetch calls here as they are now handled by the click logic
+    // Initial page load: load the default "Home" content
+    loadDefaultNewsFeeds('Home');
   });
+</script>
 </script>
 
 <!-- This script now contains the logic for both "Today" and "Scores" tabs -->
