@@ -2533,6 +2533,11 @@
                 gamesContent.style.display = 'block';
                 f1Content.style.display = 'none';
 
+				 const espnTab = document.querySelector('#headlines-tabs .headlines-tab[data-source="espn"]');
+        if (espnTab) {
+          espnTab.click();
+        }
+
             } else if (section === 'FormulaOne') {
                 gamesColumn.style.display = 'block'; // F1 content is INSIDE this column
                 leagueSpecificColumn.style.display = 'none';
