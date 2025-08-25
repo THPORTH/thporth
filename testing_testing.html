@@ -868,62 +868,60 @@ b<!DOCTYPE html>
     padding: 0 10px !important;
 }
 
-/* --- Unified Style for ALL Breaking News Sections --- */
+/* --- Unified Style for ALL Breaking News Sections (to match Headlines) --- */
 
-  /* This adds left/right padding to the main containers so the
-     separator lines don't touch the edges of the box. */
-  #breaking-feed,
-  div[id^="breaking-content-"] {
-    padding: 0 16px; /* 0 for top/bottom, 16px for left/right */
-  }
+/* This adds left/right padding to the main containers so the
+   separator lines don't touch the edges of the box. */
+#breaking-feed,
+div[id^="breaking-content-"] {
+  padding: 0 16px; /* 0 for top/bottom, 16px for left/right */
+}
 
-  /* This removes the default browser styling (bullets, margin) from the list itself. */
-  #breaking-feed ul,
-  div[id^="breaking-content-"] ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+/* This removes the default browser styling (bullets, margin) from the list itself. */
+#breaking-feed ul,
+div[id^="breaking-content-"] ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 
-  /* This styles each individual headline's row. */
-  #breaking-feed li,
-  div[id^="breaking-content-"] li {
-    border-bottom: 1px solid #C9C8C7; 
-    padding: 10px 0; /* Vertical spacing for each item */
-  }
+/* This styles each individual headline's row. */
+#breaking-feed li,
+div[id^="breaking-content-"] li {
+  /* The thin, light gray separator line, perfect for dark mode */
+  border-bottom: 1px solid #C9C8C7; 
+  padding: 14px 0; /* Creates the vertical spacing above and below the text */
+}
 
-  /* This removes the border from the very last item in the list for a cleaner look. */
-  #breaking-feed li:last-child,
-  div[id^="breaking-content-"] li:last-child {
-    border-bottom: none;
-  }
+/* This removes the border from the very last item in the list for a cleaner look. */
+#breaking-feed li:last-child,
+div[id^="breaking-content-"] li:last-child {
+  border-bottom: none;
+}
 
-  /* This styles the actual link text. */
-  #breaking-feed a,
-  div[id^="breaking-content-"] a {
-    /* MODIFIED: Prioritizes Helvetica and provides fallbacks. */
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 11px;
-    /* MODIFIED: Set to normal weight instead of medium. */
-    font-weight: normal;
-    color: #151515;
-    text-decoration: none;
-    /* MODIFIED: Set line height to 1. */
-    line-height: 1;
-    transition: color 0.2s ease;
-  }
+/* This styles the actual link text. */
+#breaking-feed a,
+div[id^="breaking-content-"] a {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  color: #151515;
+  text-decoration: none;   /* No underline */
+  line-height: 1.4;        /* Improves readability */
+  transition: color 0.2s ease; /* Adds a smooth effect on hover */
+}
 
-  /* A muted gray color for links you've already visited. */
-  #breaking-feed a:visited,
-  div[id^="breaking-content-"] a:visited {
-    color: #757575;
-  }
+/* A muted gray color for links you've already visited. */
+#breaking-feed a:visited,
+div[id^="breaking-content-"] a:visited {
+  color: #757575;
+}
 
-  /* Darkens the text slightly when you hover over it for feedback. */
-  #breaking-feed a:hover,
-  div[id^="breaking-content-"] a:hover {
-    color: #505050;
-  }
+/* Darkens the text slightly when you hover over it for feedback. */
+#breaking-feed a:hover,
+div[id^="breaking-content-"] a:hover {
+  color: #505050;
+}
 
   /* ────────────────────────────────────────────────────────── */
   /* TV-Listings (Games) Styling               */
