@@ -2380,7 +2380,7 @@
       </script>
 
     <!-- News Feeds Script -->
-  <script>
+<script>
   // Helper function to fetch and render an XML feed
   function fetchFeed(containerSelector, feedUrl) {
     const container = document.querySelector(containerSelector);
@@ -2431,29 +2431,31 @@
         container.innerHTML = "<p>Error loading feed.</p>";
       });
   }
-
+  
+  // This function now loads the default feeds for both sections
   function loadDefaultNewsFeeds(section) {
-    // Determine which news content container is currently visible
-    const newsSection = document.getElementById(`news-${section}`);
-    if (!newsSection) return;
+      const newsSection = document.getElementById(`news-${section}`);
+      if (!newsSection) return;
 
-    // Load the default breaking news feed
-    const breakingTab = newsSection.querySelector('.news-tab[data-tab="breaking"]');
-    if (breakingTab) {
-      const feedUrl = breakingTab.dataset.url;
-      const contentId = breakingTab.dataset.tab + '-feed';
-      fetchFeed(`#${contentId}`, feedUrl);
-      breakingTab.classList.add('active'); // Set the default tab to active
-    }
+      // 1. Handle Headlines Section
+      const headlinesSection = newsSection.querySelector('.headlines-section');
+      if (headlinesSection) {
+          // Find the first tab in the Headlines section and click it
+          const defaultHeadlinesTab = headlinesSection.querySelector('.headlines-tab');
+          if (defaultHeadlinesTab) {
+              defaultHeadlinesTab.click();
+          }
+      }
 
-    // Load the default headlines feed
-    const headlinesTab = newsSection.querySelector('.headlines-tab');
-    if (headlinesTab) {
-      const feedUrl = headlinesTab.dataset.url;
-      let contentId = headlinesTab.dataset.source ? headlinesTab.dataset.source + '-feed' : 'headlines-content-' + section;
-      fetchFeed(`#${contentId}`, feedUrl);
-      headlinesTab.classList.add('active'); // Set the default tab to active
-    }
+      // 2. Handle Breaking/Fantasy/Transactions Section
+      const breakingSection = newsSection.querySelector('.breaking-section');
+      if (breakingSection) {
+          // Find the first tab in the Breaking section and click it
+          const defaultBreakingTab = breakingSection.querySelector('.news-tab');
+          if (defaultBreakingTab) {
+              defaultBreakingTab.click();
+          }
+      }
   }
 
 
@@ -2561,20 +2563,22 @@
         clickedTab.classList.add('active');
 
         const feedUrl = clickedTab.dataset.url;
-        const parentSection = clickedTab.closest('.content-section');
-        if (!parentSection) return;
+        
+        // Find the correct content area to display the feed in
+        const contentParentSection = clickedTab.closest('.headlines-section, .breaking-section');
+        if (!contentParentSection) return;
 
         let contentContainerId;
-        if (clickedTab.classList.contains('news-tab')) {
-            contentContainerId = clickedTab.dataset.tab + '-feed';
-        } else {
+        if (contentParentSection.classList.contains('headlines-section')) {
             contentContainerId = clickedTab.dataset.source ? clickedTab.dataset.source + '-feed' : 'headlines-content-' + selectedSection;
+        } else if (contentParentSection.classList.contains('breaking-section')) {
+            contentContainerId = clickedTab.dataset.tab + '-feed';
         }
 
         const contentDiv = document.getElementById(contentContainerId);
         
-        // Hide all news feeds in the panel first
-        parentSection.querySelectorAll('.news-feed-content').forEach(div => div.style.display = 'none');
+        // Hide only the feeds in the correct parent section
+        contentParentSection.querySelectorAll('.news-feed-content').forEach(div => div.style.display = 'none');
 
         if (contentDiv) {
             contentDiv.style.display = 'block';
@@ -2590,7 +2594,6 @@
     // Initial page load: load the default "Home" content
     loadDefaultNewsFeeds('Home');
   });
-</script>
 </script>
 
 <!-- This script now contains the logic for both "Today" and "Scores" tabs -->
