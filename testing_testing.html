@@ -2432,7 +2432,7 @@
       });
   }
 
-  // This function now loads the default feeds for both sections
+  // New function to handle the entire news column for a given section.
   function loadNewsContent(section) {
     const newsSection = document.getElementById(`news-${section}`);
     if (!newsSection) return;
@@ -2446,13 +2446,13 @@
     if (headlinesSection) {
       const defaultHeadlinesTab = headlinesSection.querySelector('.headlines-tab[data-url]');
       if (defaultHeadlinesTab) {
+        defaultHeadlinesTab.classList.add('active');
         const contentId = defaultHeadlinesTab.dataset.source ? defaultHeadlinesTab.dataset.source + '-feed' : 'headlines-content-' + section;
         const contentDiv = document.getElementById(contentId);
         if (contentDiv) {
             contentDiv.style.display = 'block';
             fetchFeed(`#${contentId}`, defaultHeadlinesTab.dataset.url);
         }
-        defaultHeadlinesTab.classList.add('active'); // Set the default tab to active
       }
     }
 
@@ -2467,10 +2467,11 @@
             contentDiv.style.display = 'block';
             fetchFeed(`#${contentId}`, defaultBreakingTab.dataset.url);
         }
-        defaultBreakingTab.classList.add('active'); // Set the default tab to active
+        defaultBreakingTab.classList.add('active');
       }
     }
   }
+
 
   document.addEventListener("DOMContentLoaded", () => {
     // --- GRAB ELEMENTS FOR COLUMN SWITCHING ---
@@ -2607,7 +2608,7 @@
     loadNewsContent('Home');
   });
 </script>
-
+<!-- End of news feeds script -->
 <!-- This script now contains the logic for both "Today" and "Scores" tabs -->
 
 
