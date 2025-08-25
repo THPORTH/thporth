@@ -2431,33 +2431,46 @@
         container.innerHTML = "<p>Error loading feed.</p>";
       });
   }
-  
+
   // This function now loads the default feeds for both sections
-  function loadDefaultNewsFeeds(section) {
-      const newsSection = document.getElementById(`news-${section}`);
-      if (!newsSection) return;
+  function loadNewsContent(section) {
+    const newsSection = document.getElementById(`news-${section}`);
+    if (!newsSection) return;
 
-      // 1. Handle Headlines Section
-      const headlinesSection = newsSection.querySelector('.headlines-section');
-      if (headlinesSection) {
-          // Find the first tab in the Headlines section and click it
-          const defaultHeadlinesTab = headlinesSection.querySelector('.headlines-tab');
-          if (defaultHeadlinesTab) {
-              defaultHeadlinesTab.click();
-          }
-      }
+    // First, clear all active tabs and hide all feed content containers
+    newsSection.querySelectorAll('.headlines-tab, .news-tab').forEach(tab => tab.classList.remove('active'));
+    newsSection.querySelectorAll('.news-feed-content').forEach(content => content.style.display = 'none');
 
-      // 2. Handle Breaking/Fantasy/Transactions Section
-      const breakingSection = newsSection.querySelector('.breaking-section');
-      if (breakingSection) {
-          // Find the first tab in the Breaking section and click it
-          const defaultBreakingTab = breakingSection.querySelector('.news-tab');
-          if (defaultBreakingTab) {
-              defaultBreakingTab.click();
-          }
+    // Handle Headlines Section
+    const headlinesSection = newsSection.querySelector('.headlines-section');
+    if (headlinesSection) {
+      const defaultHeadlinesTab = headlinesSection.querySelector('.headlines-tab[data-url]');
+      if (defaultHeadlinesTab) {
+        const contentId = defaultHeadlinesTab.dataset.source ? defaultHeadlinesTab.dataset.source + '-feed' : 'headlines-content-' + section;
+        const contentDiv = document.getElementById(contentId);
+        if (contentDiv) {
+            contentDiv.style.display = 'block';
+            fetchFeed(`#${contentId}`, defaultHeadlinesTab.dataset.url);
+        }
+        defaultHeadlinesTab.classList.add('active'); // Set the default tab to active
       }
+    }
+
+    // Handle Breaking Section
+    const breakingSection = newsSection.querySelector('.breaking-section');
+    if (breakingSection) {
+      const defaultBreakingTab = breakingSection.querySelector('.news-tab[data-tab="breaking"][data-url]');
+      if (defaultBreakingTab) {
+        const contentId = defaultBreakingTab.dataset.tab + '-feed';
+        const contentDiv = document.getElementById(contentId);
+        if (contentDiv) {
+            contentDiv.style.display = 'block';
+            fetchFeed(`#${contentId}`, defaultBreakingTab.dataset.url);
+        }
+        defaultBreakingTab.classList.add('active'); // Set the default tab to active
+      }
+    }
   }
-
 
   document.addEventListener("DOMContentLoaded", () => {
     // --- GRAB ELEMENTS FOR COLUMN SWITCHING ---
@@ -2542,7 +2555,7 @@
         const social = document.getElementById("social-" + section);
         if (news) {
           news.style.display = "block";
-          loadDefaultNewsFeeds(section); // Load default feeds for the newly displayed page
+          loadNewsContent(section); // Load default feeds for the newly displayed page
         }
         if (social) social.style.display = "block";
       });
@@ -2568,6 +2581,9 @@
         const contentParentSection = clickedTab.closest('.headlines-section, .breaking-section');
         if (!contentParentSection) return;
 
+        // Hide all feeds *only within this specific parent section*
+        contentParentSection.querySelectorAll('.news-feed-content').forEach(div => div.style.display = 'none');
+
         let contentContainerId;
         if (contentParentSection.classList.contains('headlines-section')) {
             contentContainerId = clickedTab.dataset.source ? clickedTab.dataset.source + '-feed' : 'headlines-content-' + selectedSection;
@@ -2576,10 +2592,6 @@
         }
 
         const contentDiv = document.getElementById(contentContainerId);
-        
-        // Hide only the feeds in the correct parent section
-        contentParentSection.querySelectorAll('.news-feed-content').forEach(div => div.style.display = 'none');
-
         if (contentDiv) {
             contentDiv.style.display = 'block';
             if (feedUrl) {
@@ -2590,9 +2602,9 @@
         }
       });
     });
-
+    
     // Initial page load: load the default "Home" content
-    loadDefaultNewsFeeds('Home');
+    loadNewsContent('Home');
   });
 </script>
 
