@@ -2269,127 +2269,124 @@
 
 
 
-    <!-- SINGLE RSS.app script load (only once) -->
-    <script src="https://widget.rss.app/v1/feed.js" async></script>
+<script src="https://widget.rss.app/v1/feed.js" async></script>
 
-    <!-- Lazy Load Social Feeds Script -->
   <script>
-  // Map of league to an array of RSS.app feed IDs (for cycling)
-  const rssFeeds = {
-    Home: [
-      "_dQv2W26Lxax1n3sC",
-      "4kPf5TwmnRhc9JOI",
+ // Map of league to an array of RSS.app feed IDs (for cycling)
+ const rssFeeds = {
+   Home: [
+     "_dQv2W26Lxax1n3sC",
+     "4kPf5TwmnRhc9JOI",
 "DxhOq5IvdSWmuCOQ"
-      // Add more Home feeds here if needed
-    ],
-    MLB: ["ujM61O6ZzDQ7sOrb"],
-    NBA: ["KDHaD7kKFdoZKNKv"],
-    NFL: ["uvYTDMyn9nIYp068"],
-    NHL: ["FkhRHZBH8WxhSWqp"],
-    UFC: ["qzbgRcN4Qbr7VV0a"],
-    Boxing: ["F2n8AUgzsvLsTadA"],
-    NASCARCupSeries: ["AHhwgLGIFW2bn8zL"],
-    Tennis: ["VeaGgNXCdeNdgl5l"],
-    WNBA: ["DDsbnQvTkj4SNtgY"],
-    LIVGolf: ["4lGhahA1b9JU9QZw"],
-    IndyCar: ["oP6JlgisMb451EVK"],
-    NCAAM: ["nSxcJn3Ke9aIPqkw"],
-    NCAAW: ["8V2qb8WK1CMdeBfd"],
-    NCAABaseball: ["6wO4p6CY027kWz5C"],
-    NCAASoftball: ["WhV6lzzXj1FYOxln"],
-    MotoGP: ["tNL3DAMLhpRv30tg"],
-    LPGATour: ["MfbotBtAVnTL3I8j"],
-    UEFAChampionsLeague: ["UMleWQY5zVMDG3RE"],
-    PremierLeague: ["d972MWUX8N4NiXWc"],
-    MLS: ["J2tGf8v6qaD6GjFC"],
-    Bundesliga: ["YPjYmfSS1NyBDka8"],
-    LaLiga: ["8ZkcLZl1mdrw2loE"],
-    SerieA: ["vFegYItzKVnhgmre"],
-    Soccer: ["S2jMmGyBQoDlvZ4D"],
-    FACup: ["Lyr6iaRy8Fq04PKN"],
-    LigaMX: ["jak4RrwNxI4UyoHb"],
-    NWSL: ["wL801782ohBuXGyb"],
-    Ligue1: ["2yFpSRvAMKYuQUZV"],
-    UEFAEuropaLeague: ["p3fm4LjBWgp1WWr1"],
-    UEFAConferenceLeague: ["9ThCZix939tiPtXy"],
-    FormulaOne: ["8CRDFN299eMRIrYT"],
-    NCAAF: ["MgdJ7SfrtcBRmv21"],
-    PGATour: ["MPoz9LBtXzspAFPT"],
-    TrackAndField: ["hcIJ3xkcewSGD4Yq"]
-  };
+     // Add more Home feeds here if needed
+   ],
+   MLB: ["ujM61O6ZzDQ7sOrb"],
+   NBA: ["KDHaD7kKFdoZKNKv"],
+   NFL: ["uvYTDMyn9nIYp068"],
+   NHL: ["FkhRHZBH8WxhSWqp"],
+   UFC: ["qzbgRcN4Qbr7VV0a"],
+   Boxing: ["F2n8AUgzsvLsTadA"],
+   NASCARCupSeries: ["AHhwgLGIFW2bn8zL"],
+   Tennis: ["VeaGgNXCdeNdgl5l"],
+   WNBA: ["DDsbnQvTkj4SNtgY"],
+   LIVGolf: ["4lGhahA1b9JU9QZw"],
+   IndyCar: ["oP6JlgisMb451EVK"],
+   NCAAM: ["nSxcJn3Ke9aIPqkw"],
+   NCAAW: ["8V2qb8WK1CMdeBfd"],
+   NCAABaseball: ["6wO4p6CY027kWz5C"],
+   NCAASoftball: ["WhV6lzzXj1FYOxln"],
+   MotoGP: ["tNL3DAMLhpRv30tg"],
+   LPGATour: ["MfbotBtAVnTL3I8j"],
+   UEFAChampionsLeague: ["UMleWQY5zVMDG3RE"],
+   PremierLeague: ["d972MWUX8N4NiXWc"],
+   MLS: ["J2tGf8v6qaD6GjFC"],
+   Bundesliga: ["YPjYmfSS1NyBDka8"],
+   LaLiga: ["8ZkcLZl1mdrw2loE"],
+   SerieA: ["vFegYItzKVnhgmre"],
+   Soccer: ["S2jMmGyBQoDlvZ4D"],
+   FACup: ["Lyr6iaRy8Fq04PKN"],
+   LigaMX: ["jak4RrwNxI4UyoHb"],
+   NWSL: ["wL801782ohBuXGyb"],
+   Ligue1: ["2yFpSRvAMKYuQUZV"],
+   UEFAEuropaLeague: ["p3fm4LjBWgp1WWr1"],
+   UEFAConferenceLeague: ["9ThCZix939tiPtXy"],
+   FormulaOne: ["8CRDFN299eMRIrYT"],
+   NCAAF: ["MgdJ7SfrtcBRmv21"],
+   PGATour: ["MPoz9LBtXzspAFPT"],
+   TrackAndField: ["hcIJ3xkcewSGD4Yq"]
+ };
 
-  // Track which feed is currently loaded for each section
-  let currentFeedSection = null;
+ // Track which feed is currently loaded for each section
+ let currentFeedSection = null;
 
-  // Get the next feed ID for a section, cycling through available feeds
-  function getNextFeedId(section) {
-    const feeds = rssFeeds[section];
-    if (!feeds || feeds.length === 0) return null;
-    const key = "rssapp_feed_index_" + section;
-    let idx = parseInt(localStorage.getItem(key) || "0", 10);
-    idx = (idx + 1) % feeds.length;
-    localStorage.setItem(key, idx);
-    return feeds[idx];
-  }
+ // Get the next feed ID for a section, cycling through available feeds
+ function getNextFeedId(section) {
+   const feeds = rssFeeds[section];
+   if (!feeds || feeds.length === 0) return null;
+   const key = "rssapp_feed_index_" + section;
+   let idx = parseInt(localStorage.getItem(key) || "0", 10);
+   idx = (idx + 1) % feeds.length;
+   localStorage.setItem(key, idx);
+   return feeds[idx];
+ }
 
-  function loadSocialFeed(section) {
-    const container = document.getElementById("social-feed-container");
-    if (!container) return;
-    if (currentFeedSection === section) return;
-    container.innerHTML = "";
-    const feedId = getNextFeedId(section);
-    if (feedId) {
-      const feedTag = document.createElement("rssapp-feed");
-      feedTag.setAttribute("id", feedId);
-      container.appendChild(feedTag);
+ function loadSocialFeed(section) {
+   const container = document.getElementById("social-feed-container");
+   if (!container) return;
+   if (currentFeedSection === section) return;
+   container.innerHTML = "";
+   const feedId = getNextFeedId(section);
+   if (feedId) {
+     const feedTag = document.createElement("rssapp-feed");
+     feedTag.setAttribute("id", feedId);
+     container.appendChild(feedTag);
 
-      // Remove any previous RSS.app script
-      const oldScript = container.querySelector('script[data-rssapp]');
-      if (oldScript) oldScript.remove();
+     // Remove any previous RSS.app script
+     const oldScript = container.querySelector('script[data-rssapp]');
+     if (oldScript) oldScript.remove();
 
-      // Add the RSS.app script dynamically
-      const script = document.createElement("script");
-      script.src = "https://widget.rss.app/v1/feed.js";
-      script.async = true;
-      script.setAttribute('data-rssapp', 'true');
-      container.appendChild(script);
-    } else {
-      container.innerHTML =
-        "<div style='padding: 10px; font-size: 12px;'>No social feed available for this section.</div>";
-    }
-    currentFeedSection = section;
-  }
+     // Add the RSS.app script dynamically
+     const script = document.createElement("script");
+     script.src = "https://widget.rss.app/v1/feed.js";
+     script.async = true;
+     script.setAttribute('data-rssapp', 'true');
+     container.appendChild(script);
+   } else {
+     container.innerHTML =
+       "<div style='padding: 10px; font-size: 12px;'>No social feed available for this section.</div>";
+   }
+   currentFeedSection = section;
+ }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    // Load default feed (Home) on page load
-    loadSocialFeed("Home");
+ document.addEventListener("DOMContentLoaded", () => {
+   // Load default feed (Home) on page load
+   loadSocialFeed("Home");
 
-    // Bind lazy loading to menu item clicks
-    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
-      item.addEventListener("click", () => {
-        const section = item.dataset.section;
-        currentFeedSection = null; // Reset so a new feed loads
-        loadSocialFeed(section);
-      });
-    });
-  });
+   // Bind lazy loading to menu item clicks
+   document.querySelectorAll("#menuList li[data-section]").forEach(item => {
+     item.addEventListener("click", () => {
+       const section = item.dataset.section;
+       currentFeedSection = null; // Reset so a new feed loads
+       loadSocialFeed(section);
+     });
+   });
+ });
 </script>
 
       <script>
         function showDiscussionSection(section) {
-  // Hide all discussion content sections
-  document.querySelectorAll("#discussion-panel .content-section").forEach(el => {
-    el.style.display = "none";
-  });
-  // Show the discussion section for the given menu item
-  const target = document.getElementById("discussion-" + section);
-  if (target) {
-    target.style.display = "block";
-  }
+ // Hide all discussion content sections
+ document.querySelectorAll("#discussion-panel .content-section").forEach(el => {
+   el.style.display = "none";
+ });
+ // Show the discussion section for the given menu item
+ const target = document.getElementById("discussion-" + section);
+ if (target) {
+   target.style.display = "block";
+ }
 }
       </script>
 
-    <!-- News Feeds Script -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         // --- GRAB ELEMENTS FOR COLUMN SWITCHING (Added here) ---
@@ -2548,9 +2545,9 @@
                 f1Content.style.display = 'none';
 
 				 const espnTab = document.querySelector('#headlines-tabs .headlines-tab[data-source="espn"]');
-        if (espnTab) {
-          espnTab.click();
-        }
+     if (espnTab) {
+       espnTab.click();
+     }
 
             } else if (section === 'FormulaOne') {
                 gamesColumn.style.display = 'block'; // F1 content is INSIDE this column
@@ -2573,69 +2570,102 @@
             );
             document.querySelectorAll("#social-feed-container .content-section").forEach(s => s.style.display = "none");
 
-   const news = document.getElementById("news-" + section);
-    const social = document.getElementById("social-" + section);
-    if (news) {
-        news.style.display = "block";
+    const news = document.getElementById("news-" + section);
+   const social = document.getElementById("social-" + section);
+   if (news) {
+       news.style.display = "block";
 
-        const newsSubMenu = document.getElementById("newsSubMenu");
-        if (newsSubMenu) {
-            newsSubMenu.style.display = section === "Home" ? "flex" : "none";
-        }
+       const newsSubMenu = document.getElementById("newsSubMenu");
+       if (newsSubMenu) {
+           newsSubMenu.style.display = section === "Home" ? "flex" : "none";
+       }
 
-        const container = document.querySelector(".news");
-        if (container) {
-            container.scrollTop = 0;
-            container.dispatchEvent(new Event("scroll"));
-        }
+       const container = document.querySelector(".news");
+       if (container) {
+           container.scrollTop = 0;
+           container.dispatchEvent(new Event("scroll"));
+       }
 
-        // Call the consolidated function to load default feeds for the current section
-        loadHeadlinesAndBreakingFeeds(section);
-    }
-    if (social) social.style.display = "block";
+       // Call the consolidated function to load default feeds for the current section
+       loadHeadlinesAndBreakingFeeds(section);
+   }
+   if (social) social.style.display = "block";
 });
 });
 
 // A new, separate function to handle loading default feeds for both sections
 function loadHeadlinesAndBreakingFeeds(section) {
-  const newsSection = document.getElementById(`news-${section}`);
-  if (!newsSection) return;
+ const newsSection = document.getElementById(`news-${section}`);
+ if (!newsSection) return;
 
-  // Find the default headlines tab and click it to load the feed and set active state
-  const defaultHeadlinesTab = newsSection.querySelector('.headlines-tab[data-url]');
-  if (defaultHeadlinesTab) {
-    defaultHeadlinesTab.click();
-  }
-  
-  // Find the default breaking tab and click it to load the feed and set active state
-  const defaultBreakingTab = newsSection.querySelector('.news-tab[data-tab="breaking"][data-url]');
-  if (defaultBreakingTab) {
-    defaultBreakingTab.click();
-  }
+ // Find the default headlines tab and click it to load the feed and set active state
+ const defaultHeadlinesTab = newsSection.querySelector('.headlines-tab[data-url]');
+ if (defaultHeadlinesTab) {
+   defaultHeadlinesTab.click();
+ }
+ 
+ // Find the default breaking tab and click it to load the feed and set active state
+ const defaultBreakingTab = newsSection.querySelector('.news-tab[data-tab="breaking"][data-url]');
+ if (defaultBreakingTab) {
+   defaultBreakingTab.click();
+ }
 }
-		  const leagueVerticalTabsContainers = document.querySelectorAll('.headlines-tabs-column');
+		 const leagueVerticalTabsContainers = document.querySelectorAll('.headlines-tabs-column');
 
-    leagueVerticalTabsContainers.forEach(container => {
-        container.addEventListener('click', (event) => {
-            const clickedTab = event.target.closest('.headlines-tab');
-            if (clickedTab) {
-                // Deactivate all tabs within this specific container
-                container.querySelectorAll('.headlines-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-                // Activate the clicked tab
-                clickedTab.classList.add('active');
+   leagueVerticalTabsContainers.forEach(container => {
+       container.addEventListener('click', (event) => {
+           const clickedTab = event.target.closest('.headlines-tab');
+           if (clickedTab) {
+               // Deactivate all tabs within this specific container
+               container.querySelectorAll('.headlines-tab').forEach(tab => {
+                   tab.classList.remove('active');
+               });
+               // Activate the clicked tab
+               clickedTab.classList.add('active');
 
-                // Here is where you would also call the function to fetch and display the new feed content.
-                const feedUrl = clickedTab.dataset.url;
-                const contentContainer = document.getElementById(`headlines-content-${selectedSection}`);
-                if (contentContainer) {
-                    fetchFeed(`#headlines-content-${selectedSection}`, feedUrl);
-                }
-            }
-        });
-    });
+               // Here is where you would also call the function to fetch and display the new feed content.
+               const feedUrl = clickedTab.dataset.url;
+               const contentContainer = document.getElementById(`headlines-content-${selectedSection}`);
+               if (contentContainer) {
+                   fetchFeed(`#headlines-content-${selectedSection}`, feedUrl);
+               }
+           }
+       });
+   });
 
+   // --- CORRECTED LOGIC FOR HORIZONTAL NEWS TABS (Breaking, etc.) ---
+   // This new handler correctly processes clicks on tabs with a `data-url`,
+   // making it work for league-specific pages like MLB.
+   document.querySelectorAll(".news").forEach(newsContainer => {
+       newsContainer.addEventListener('click', (event) => {
+           const clickedTab = event.target.closest('.news-tab[data-url]');
+           if (!clickedTab) return;
+
+           const newsSection = clickedTab.closest('.content-section');
+           if (!newsSection) return;
+
+           // Deactivate sibling tabs within the same tab bar
+           clickedTab.parentElement.querySelectorAll('.news-tab').forEach(tab => tab.classList.remove('active'));
+           clickedTab.classList.add('active');
+
+           // Hide all sibling content panes in this section
+           newsSection.querySelectorAll('.news-content-pane').forEach(pane => pane.style.display = 'none');
+
+           const tabType = clickedTab.dataset.tab;
+           const feedUrl = clickedTab.dataset.url;
+           
+           // Construct the ID of the target content pane (e.g., "breaking-content-MLB")
+           const sectionId = newsSection.id.replace('news-', '');
+           const contentPane = newsSection.querySelector(`#${tabType}-content-${sectionId}`);
+           
+           if (contentPane) {
+               contentPane.style.display = 'block';
+               // Use the fetchFeed function from this script's scope to load the XML
+               fetchFeed(`#${contentPane.id}`, feedUrl);
+           }
+       });
+   });
+   
         const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
         const newsPanel = document.querySelector(".news");
         newsPanel.addEventListener("scroll", () => {
@@ -2712,11 +2742,7 @@ function loadHeadlinesAndBreakingFeeds(section) {
     });
     </script>
 
-<!-- This script now contains the logic for both "Today" and "Scores" tabs -->
-
-
-
- <script>
+<script>
   document.addEventListener("DOMContentLoaded", () => {
     // ── A) Grab all four tab elements and define their order ──
     const tabs    = Array.from(document.querySelectorAll(".headlines-tab"));
@@ -2783,7 +2809,7 @@ function loadHeadlinesAndBreakingFeeds(section) {
 </script>
 	 
 
-	    <script>
+	  <script>
   /**
    * Turn a raw headline into a normalized array of words.
    * - Lowercase
@@ -2884,8 +2910,7 @@ function loadHeadlinesAndBreakingFeeds(section) {
   });
 </script>
 
-	    <!-- put this right before the closing </body> tag -->
-<script>
+	  <script>
   document.addEventListener("DOMContentLoaded", () => {
     const breakingContainer = document.getElementById("breaking-feed");
     if (!breakingContainer) return;
@@ -3004,81 +3029,6 @@ function loadHeadlinesAndBreakingFeeds(section) {
   }
 </script>
 
-	  <script>
-  // -- FEED URLs: Replace with your real feeds --
-const HEADLINES_FEED = "https://www.espn.com/espn/rss/news";
-const BREAKING_FEED = "https://rss.app/feeds/XcFXtVdyCBGtIC6O.xml";
-const FANTASY_FEED = "https://fantasynews.cbssports.com/rss/headlines/";
-const TRANSACTIONS_FEED = "https://www.espn.com/espn/rss/mlb/news"; // EXAMPLE, replace as needed
-
-// -- Generic function to fetch and render a basic RSS feed --
-function fetchRSSFeed(url, containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  container.innerHTML = "Loading...";
-  fetch(url)
-    .then(res => res.text())
-    .then(str => {
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(str, "application/xml");
-      const items = Array.from(xml.querySelectorAll("item"));
-      if (!items.length) {
-        container.innerHTML = "<p>No stories found.</p>";
-        return;
-      }
-      const ul = document.createElement("ul");
-      ul.style.margin = "0";
-      ul.style.padding = "0";
-      ul.style.listStyle = "none";
-      items.forEach(item => {
-        const li = document.createElement("li");
-        li.style.padding = "6px 0";
-        const title = item.querySelector("title")?.textContent || "";
-        const link = item.querySelector("link")?.textContent || "#";
-        li.innerHTML = `<a href="${link}" target="_blank" style="color:#212121;text-decoration:none;">${title}</a>`;
-        ul.appendChild(li);
-      });
-      container.innerHTML = "";
-      container.appendChild(ul);
-    })
-    .catch(() => {
-      container.innerHTML = "<p>Error loading feed.</p>";
-    });
-}
-
-// -- Tabs logic for Breaking/Fantasy/Transactions
-document.addEventListener("DOMContentLoaded", function() {
-  // Load default feeds
-  fetchRSSFeed(HEADLINES_FEED, "headlines-feed");
-  fetchRSSFeed(BREAKING_FEED, "breaking-feed");
-
-  const tabs = document.querySelectorAll(".news-tab");
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      tabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      document.getElementById("breaking-feed").style.display = "none";
-      document.getElementById("fantasy-feed").style.display = "none";
-      document.getElementById("transactions-feed").style.display = "none";
-
-      if (tab.dataset.tab === "breaking") {
-        document.getElementById("breaking-feed").style.display = "block";
-        fetchRSSFeed(BREAKING_FEED, "breaking-feed");
-      }
-      if (tab.dataset.tab === "fantasy") {
-        document.getElementById("fantasy-feed").style.display = "block";
-        fetchRSSFeed(FANTASY_FEED, "fantasy-feed");
-      }
-      if (tab.dataset.tab === "transactions") {
-        document.getElementById("transactions-feed").style.display = "block";
-        fetchRSSFeed(TRANSACTIONS_FEED, "transactions-feed");
-      }
-    });
-  });
-});
-</script>
-
-	  
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const menuBtn = document.getElementById('menu-toggle');
@@ -3120,7 +3070,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 </script>
 
-<!-- FINAL, ISOLATED SCRIPT FOR COLUMN & F1 TAB SWITCHING -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     
@@ -3249,10 +3198,10 @@ async function loadDriverStandings() {
                 const tr = document.createElement('tr');
                 tr.style.borderTop = '1px solid #374151';
                 tr.innerHTML = `
-                    <td style="padding: 6px 4px;">${row[0]}</td>
-                    <td style="padding: 6px 4px;">${row[1]}</td>
-                    <td style="padding: 6px 4px;">${row[3]}</td>
-                    <td style="padding: 6px 4px; text-align: right; font-weight: bold;">${row[2]}</td>
+                        <td style="padding: 6px 4px;">${row[0]}</td>
+                        <td style="padding: 6px 4px;">${row[1]}</td>
+                        <td style="padding: 6px 4px;">${row[3]}</td>
+                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">${row[2]}</td>
                 `;
                 tbody.appendChild(tr);
             }
@@ -3286,9 +3235,9 @@ async function loadConstructorStandings() {
                 const tr = document.createElement('tr');
                 tr.style.borderTop = '1px solid #374151';
                 tr.innerHTML = `
-                    <td style="padding: 6px 4px;">${row[0]}</td>
-                    <td style="padding: 6px 4px;">${row[1]}</td>
-                    <td style="padding: 6px 4px; text-align: right; font-weight: bold;">${row[2]}</td>
+                        <td style="padding: 6px 4px;">${row[0]}</td>
+                        <td style="padding: 6px 4px;">${row[1]}</td>
+                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">${row[2]}</td>
                 `;
                 tbody.appendChild(tr);
             }
@@ -3401,14 +3350,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     : event.start.toFormat('h:mm a');
 
                 html += `
-                    <div style="display: flex; justify-content: space-between; align-items: top; margin-bottom: 0.75rem;">
-                        <div style="flex: 0 0 70px; color: #e0e0e0;">${timeDisplay}</div>
-                        <div style="flex: 1 1 auto;">
-                            <p style="margin: 0; padding: 0; font-weight: 500;">${event.eventHead}</p>
-                            <p style="margin: 0; padding: 0; color: #9ca3af;">${event.eventSub}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: top; margin-bottom: 0.75rem;">
+                            <div style="flex: 0 0 70px; color: #e0e0e0;">${timeDisplay}</div>
+                            <div style="flex: 1 1 auto;">
+                                <p style="margin: 0; padding: 0; font-weight: 500;">${event.eventHead}</p>
+                                <p style="margin: 0; padding: 0; color: #9ca3af;">${event.eventSub}</p>
+                            </div>
+                            <div style="flex: 0 0 60px; text-align: right; color: #e0e0e0;">${event.channel}</div>
                         </div>
-                        <div style="flex: 0 0 60px; text-align: right; color: #e0e0e0;">${event.channel}</div>
-                    </div>
                 `;
             });
         }
@@ -3427,8 +3376,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(updateSchedule, 60000); 
 });
 </script>
-	  
-<!-- ✅✅✅ THIS IS THE NEW SCRIPT YOU NEED TO EDIT ✅✅✅ -->
+	 
 <script>
 // --- FINAL UNIFIED SCRIPT for ALL Game, Schedule, and Standings Logic ---
 // This version sorts final games to the bottom of each list.
@@ -3592,8 +3540,8 @@ function renderGames(container, gamesData, isGroupedByLeague) {
             let displayHomeScore = homeScore ?? '';
             
             if (!isLive && !isFinal) {
-              displayAwayScore = '';
-              displayHomeScore = '';
+               displayAwayScore = '';
+               displayHomeScore = '';
             }
 
             const row1 = table.insertRow();
@@ -3720,7 +3668,7 @@ function renderGames(container, gamesData, isGroupedByLeague) {
         if (todayTab) todayTab.click();
     }
 });
-</script>
+</script>   
  
   </body>
 </html>
