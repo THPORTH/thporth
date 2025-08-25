@@ -795,59 +795,6 @@
   color: lightgray;
 }
 
-	  /*
-  This is the corrected CSS to apply identical styling to the breaking news feed.
-  It uses `!important` to override any conflicting inline or lower-specificity rules.
-*/
- /* --- Style for ALL Breaking News Sections in ANY League --- */
-
-  /* This special selector targets any <div> element whose 'id' attribute 
-    STARTS WITH the text "breaking-content-".
-    The ^ symbol means "starts with".
-  */
-  div[id^="breaking-content-"] a {
-    text-decoration: none; /* Removes the underline */
-    color: #d1d5db;        /* Sets a light gray color */
-  }
-
-  /* Style for links you have already visited */
-  div[id^="breaking-content-"] a:visited {
-    color: #8c8c8c;
-  }
-
-  /* Style for when you hover your mouse over a link */
-  div[id^="breaking-content-"] a:hover {
-    text-decoration: underline;
-    color: #ffffff;
-  }
-	   
-/* Apply identical styling to breaking news feed as the headlines feeds */
-#breaking-feed ul {
-    list-style: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-#breaking-feed ul li {
-    margin-bottom: 0.5em !important;
-    padding: 0 !important; /* Ensure no padding on the li itself */
-	font-size: 12px;
-	border-bottom: 1px solid #C9C8C7;
-}
-
-#breaking-feed ul li a {
-    color: black !important;
-    text-decoration: none !important;
-    line-height: 1 !important;
-    word-break: break-word !important;
-    padding: 5px 10px !important; /* Add padding here for space around the link text */
-	font-size: 12px;
-}
-
-#breaking-feed ul li a:visited {
-    color: lightgray !important;
-	font-size: 12px;
-}
 
 
 /* 6) The news feed content area. This needs to be padding-free. */
@@ -921,7 +868,50 @@
     padding: 0 10px !important;
 }
 
+<style>
+  /* --- Unified Style for ALL Breaking News Sections (Home & Leagues) --- */
 
+  /* This selector targets the <ul> inside BOTH #breaking-feed AND any div
+     whose id starts with "breaking-content-" */
+  #breaking-feed ul,
+  div[id^="breaking-content-"] ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Style for each list item */
+  #breaking-feed li,
+  div[id^="breaking-content-"] li {
+    margin-bottom: 0.5em;
+    padding: 0;
+    border-bottom: 1px solid #4a4a4a; /* A slightly darker border for dark mode */
+  }
+
+  /* Style for the links */
+  #breaking-feed a,
+  div[id^="breaking-content-"] a {
+    color: #d1d5db; /* Light gray color for all links */
+    text-decoration: none;
+    line-height: 1.2;
+    padding: 8px 5px; /* Adds nice spacing */
+    font-size: 14px;
+    display: block; /* Makes the whole area clickable */
+  }
+
+  /* Style for visited links */
+  #breaking-feed a:visited,
+  div[id^="breaking-content-"] a:visited {
+    color: #8c8c8c;
+  }
+  
+  /* Style for hover */
+  #breaking-feed a:hover,
+  div[id^="breaking-content-"] a:hover {
+    text-decoration: underline;
+    color: #ffffff;
+  }
+</style>
 
   /* ────────────────────────────────────────────────────────── */
   /* TV-Listings (Games) Styling               */
