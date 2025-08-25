@@ -2598,59 +2598,20 @@
 
 // A new, separate function to handle loading default feeds for both sections
 function loadHeadlinesAndBreakingFeeds(section) {
-    const newsSection = document.getElementById(`news-${section}`);
-    if (!newsSection) return;
+  const newsSection = document.getElementById(`news-${section}`);
+  if (!newsSection) return;
 
-    // First, clear all 'active' tabs in this section
-    newsSection.querySelectorAll('.headlines-tab, .news-tab').forEach(tab => tab.classList.remove('active'));
-    
-    // --- Load the default Headlines tab and its content ---
-    const headlinesSection = newsSection.querySelector('.headlines-section');
-    if (headlinesSection) {
-        // Find the first tab in the headlines section and get its URL
-        const defaultHeadlinesTab = headlinesSection.querySelector('.headlines-tab[data-url]');
-        if (defaultHeadlinesTab) {
-            const feedUrl = defaultHeadlinesTab.dataset.url;
-            const contentId = defaultHeadlinesTab.dataset.source ? defaultHeadlinesTab.dataset.source + '-feed' : 'headlines-content-' + section;
-            
-            // Show the correct content container and load the feed
-            newsSection.querySelectorAll('.headlines-section .news-feed-content').forEach(div => div.style.display = 'none');
-            const contentDiv = document.getElementById(contentId);
-            if (contentDiv) {
-                contentDiv.style.display = 'block';
-                if (feedUrl) {
-                    fetchFeed(`#${contentId}`, feedUrl);
-                } else {
-                    contentDiv.innerHTML = 'No URL specified for this tab.';
-                }
-            }
-            defaultHeadlinesTab.classList.add('active'); // Set the default tab as active
-        }
-    }
-    
-    // --- Load the default Breaking tab and its content ---
-    const breakingSection = newsSection.querySelector('.breaking-section');
-    if (breakingSection) {
-        // Find the default breaking tab and get its URL
-        const defaultBreakingTab = breakingSection.querySelector('.news-tab[data-tab="breaking"][data-url]');
-        if (defaultBreakingTab) {
-            const feedUrl = defaultBreakingTab.dataset.url;
-            const contentId = defaultBreakingTab.dataset.tab + '-feed';
-            
-            // Show the correct content container and load the feed
-            newsSection.querySelectorAll('.breaking-section .news-feed-content').forEach(div => div.style.display = 'none');
-            const contentDiv = document.getElementById(contentId);
-            if (contentDiv) {
-                contentDiv.style.display = 'block';
-                if (feedUrl) {
-                    fetchFeed(`#${contentId}`, feedUrl);
-                } else {
-                    contentDiv.innerHTML = 'No URL specified for this tab.';
-                }
-            }
-            defaultBreakingTab.classList.add('active'); // Set the default tab as active
-        }
-    }
+  // Find the default headlines tab and click it to load the feed and set active state
+  const defaultHeadlinesTab = newsSection.querySelector('.headlines-tab[data-url]');
+  if (defaultHeadlinesTab) {
+    defaultHeadlinesTab.click();
+  }
+  
+  // Find the default breaking tab and click it to load the feed and set active state
+  const defaultBreakingTab = newsSection.querySelector('.news-tab[data-tab="breaking"][data-url]');
+  if (defaultBreakingTab) {
+    defaultBreakingTab.click();
+  }
 }
 		  const leagueVerticalTabsContainers = document.querySelectorAll('.headlines-tabs-column');
 
