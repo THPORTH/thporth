@@ -2559,27 +2559,85 @@
             );
             document.querySelectorAll("#social-feed-container .content-section").forEach(s => s.style.display = "none");
 
-            const news = document.getElementById("news-" + section);
-            const social = document.getElementById("social-" + section);
-            if (news) {
-              news.style.display = "block";
-              
-              const newsSubMenu = document.getElementById("newsSubMenu");
-              if (section === "Home") {
-                if (newsSubMenu) newsSubMenu.style.display = "flex";
-                const container = document.querySelector(".news");
-                if (container) {
-                    container.scrollTop = 0;
-                    container.dispatchEvent(new Event("scroll"));
+   const news = document.getElementById("news-" + section);
+    const social = document.getElementById("social-" + section);
+    if (news) {
+        news.style.display = "block";
+
+        const newsSubMenu = document.getElementById("newsSubMenu");
+        if (newsSubMenu) {
+            newsSubMenu.style.display = section === "Home" ? "flex" : "none";
+        }
+
+        const container = document.querySelector(".news");
+        if (container) {
+            container.scrollTop = 0;
+            container.dispatchEvent(new Event("scroll"));
+        }
+
+        // Call the consolidated function to load default feeds for the current section
+        loadHeadlinesAndBreakingFeeds(section);
+    }
+    if (social) social.style.display = "block";
+});
+});
+
+// A new, separate function to handle loading default feeds for both sections
+function loadHeadlinesAndBreakingFeeds(section) {
+    const newsSection = document.getElementById(`news-${section}`);
+    if (!newsSection) return;
+
+    // First, clear all 'active' tabs in this section
+    newsSection.querySelectorAll('.headlines-tab, .news-tab').forEach(tab => tab.classList.remove('active'));
+    
+    // --- Load the default Headlines tab and its content ---
+    const headlinesSection = newsSection.querySelector('.headlines-section');
+    if (headlinesSection) {
+        // Find the first tab in the headlines section and get its URL
+        const defaultHeadlinesTab = headlinesSection.querySelector('.headlines-tab[data-url]');
+        if (defaultHeadlinesTab) {
+            const feedUrl = defaultHeadlinesTab.dataset.url;
+            const contentId = defaultHeadlinesTab.dataset.source ? defaultHeadlinesTab.dataset.source + '-feed' : 'headlines-content-' + section;
+            
+            // Show the correct content container and load the feed
+            newsSection.querySelectorAll('.headlines-section .news-feed-content').forEach(div => div.style.display = 'none');
+            const contentDiv = document.getElementById(contentId);
+            if (contentDiv) {
+                contentDiv.style.display = 'block';
+                if (feedUrl) {
+                    fetchFeed(`#${contentId}`, feedUrl);
+                } else {
+                    contentDiv.innerHTML = 'No URL specified for this tab.';
                 }
-              } else {
-                if (newsSubMenu) newsSubMenu.style.display = "none";
-              }
             }
-            if (social) social.style.display = "block";
-            // --- END: CORRECTED LOGIC ---
-          });
-        });
+            defaultHeadlinesTab.classList.add('active'); // Set the default tab as active
+        }
+    }
+    
+    // --- Load the default Breaking tab and its content ---
+    const breakingSection = newsSection.querySelector('.breaking-section');
+    if (breakingSection) {
+        // Find the default breaking tab and get its URL
+        const defaultBreakingTab = breakingSection.querySelector('.news-tab[data-tab="breaking"][data-url]');
+        if (defaultBreakingTab) {
+            const feedUrl = defaultBreakingTab.dataset.url;
+            const contentId = defaultBreakingTab.dataset.tab + '-feed';
+            
+            // Show the correct content container and load the feed
+            newsSection.querySelectorAll('.breaking-section .news-feed-content').forEach(div => div.style.display = 'none');
+            const contentDiv = document.getElementById(contentId);
+            if (contentDiv) {
+                contentDiv.style.display = 'block';
+                if (feedUrl) {
+                    fetchFeed(`#${contentId}`, feedUrl);
+                } else {
+                    contentDiv.innerHTML = 'No URL specified for this tab.';
+                }
+            }
+            defaultBreakingTab.classList.add('active'); // Set the default tab as active
+        }
+    }
+}
 		  const leagueVerticalTabsContainers = document.querySelectorAll('.headlines-tabs-column');
 
     leagueVerticalTabsContainers.forEach(container => {
