@@ -748,8 +748,15 @@
     font-weight: bold !important;
 }
 
-	   .news-feed-content ul li a {
-    text-decoration: none;
+/* Rule to make the default color of the links black */
+.news-feed-content ul li a {
+    color: black;
+    text-decoration: none; /* Keeps the links from being underlined */
+}
+
+/* Rule for when a link has been visited (clicked) */
+.news-feed-content ul li a:visited {
+    color: lightgray;
 }
 
 
