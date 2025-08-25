@@ -2380,310 +2380,212 @@
       </script>
 
     <!-- News Feeds Script -->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // --- GRAB ELEMENTS FOR COLUMN SWITCHING (Added here) ---
-        const gamesColumn = document.getElementById('games-column');
-        const leagueSpecificColumn = document.getElementById('league-specific-column');
-        const f1Content = document.getElementById('f1-column-content');
-        const gamesContent = document.getElementById('tv-listings-container');
-
-        // Helper function to fetch and render an XML feed
-        function fetchFeed(containerSelector, feedUrl) {
-          const container = document.querySelector(containerSelector);
-          if (!container) return;
-          fetch(feedUrl)
-            .then(res => res.text())
-            .then(str => {
-              const parser = new DOMParser();
-              const xml = parser.parseFromString(str, "application/xml");
-              const items = Array.from(xml.querySelectorAll("item"));
-              if (items.length > 0) {
-                const ul = document.createElement("ul");
-                ul.style.margin = "0";
-                ul.style.padding = "0";
-                ul.style.listStyle = "none";
-                items.forEach(item => {
-                  const title = item.querySelector("title")?.textContent || "No title";
-                  const link = item.querySelector("link")?.textContent || "#";
-                  const li = document.createElement("li");
-                  li.style.marginBottom = "0.5em";
-                  const a = document.createElement("a");
-                  a.href = link;
-                  a.target = "_blank";
-                  a.textContent = title;
-                  li.appendChild(a);
-                  ul.appendChild(li);
-                });
-                container.innerHTML = "";
-                container.appendChild(ul);
-                ul.querySelectorAll("a").forEach(link => {
-                  link.addEventListener("click", () => {
-                    link.classList.add("clicked");
-                  });
-                });
-              } else {
-                container.innerHTML = "<p>No items found.</p>";
-              }
-            })
-            .catch(error => {
-              console.error("Error loading feed:", error);
-              container.innerHTML = "<p>Error loading feed.</p>";
+   <script>
+  // Helper function to fetch and render an XML feed
+  function fetchFeed(containerSelector, feedUrl) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+    container.innerHTML = "Loading...";
+    fetch(feedUrl)
+      .then(res => res.text())
+      .then(str => {
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(str, "application/xml");
+        const items = Array.from(xml.querySelectorAll("item"));
+        if (items.length > 0) {
+          const ul = document.createElement("ul");
+          ul.style.margin = "0";
+          ul.style.padding = "0";
+          ul.style.listStyle = "none";
+          items.forEach(item => {
+            const title = item.querySelector("title")?.textContent || "No title";
+            const link = item.querySelector("link")?.textContent || "#";
+            const li = document.createElement("li");
+            li.style.marginBottom = "0.5em";
+            const a = document.createElement("a");
+            a.href = link;
+            a.target = "_blank";
+            a.textContent = title;
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+          container.innerHTML = "";
+          container.appendChild(ul);
+          ul.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+              link.classList.add("clicked");
             });
+          });
+        } else {
+          container.innerHTML = "<p>No items found.</p>";
         }
+      })
+      .catch(error => {
+        console.error("Error loading feed:", error);
+        container.innerHTML = "<p>Error loading feed.</p>";
+      });
+  }
 
-        // Feed maps and fetching logic (unchanged)
-        const feedMap = {
-          espn: "https://www.espn.com/espn/rss/news",
-          cbs: "https://rss.app/feeds/qQ90C7XC0oUECOLP.xml",
-          yahoo: "https://rss.app/feeds/OvSpAK6PF8gmF37d.xml",
-          fox: "https://rss.app/feeds/gqwmnxZNc8bSqdto.xml"
-        };
-        Object.entries(feedMap).forEach(([source, url]) => {
-          fetchFeed(`#${source}-feed`, url);
+  document.addEventListener("DOMContentLoaded", () => {
+    // --- GRAB ELEMENTS FOR COLUMN SWITCHING (Added here) ---
+    const gamesColumn = document.getElementById('games-column');
+    const leagueSpecificColumn = document.getElementById('league-specific-column');
+    const f1Content = document.getElementById('f1-column-content');
+    const gamesContent = document.getElementById('tv-listings-container');
+
+    // Existing menu functionality
+    let selectedSection = "Home";
+    document.querySelectorAll(".menu-filter").forEach(filter => {
+      filter.addEventListener("click", () => {
+        document.getElementById("menuSearch").value = "";
+        ["123", "az", "group"].forEach(type => {
+          document.querySelectorAll("#menuList-" + type + " li").forEach(li => {
+            li.style.display = "";
+          });
         });
-        fetchFeed("#feed-_somo8H8eOG8npoO2 .feed-content", "https://rss.app/feeds/_somo8H8eOG8npoO2.xml");
-        fetchFeed("#feed-_wbelLijqAwfJLCJd .feed-content", "https://rss.app/feeds/_wbelLijqAwfJLCJd.xml");
-        fetchFeed("#feed-_lAj37RJzPmNOxjz4 .feed-content", "https://rss.app/feeds/_lAj37RJzPmNOxjz4.xml");
-        fetchFeed("#feed-_pBOHW7eyjbGkaiZq .feed-content", "https://rss.app/feeds/_pBOHW7eyjbGkaiZq.xml");
-        fetchFeed("#feed-PremierLeague .feed-content", "https://rss.app/feeds/_un3EHST14mfp29GT.xml");
-        fetchFeed("#feed-UEFAChampionsLeague .feed-content", "https://rss.app/feeds/hJ27BTRwkcUlwvsf.xml");
-        fetchFeed("#feed-SerieA .feed-content", "https://rss.app/feeds/_IEjWrVaKRW3QNEkB.xml");
-        fetchFeed("#feed-Bundesliga .feed-content", "https://rss.app/feeds/_OFOWQNsn38MFTtLv.xml");
-        fetchFeed("#feed-LaLiga .feed-content", "https://rss.app/feeds/_zvRqo1UuuoLB5czl.xml");
-        fetchFeed("#feed-_Upexy7Yp5vjsRWf8 .feed-content", "https://rss.app/feeds/_Upexy7Yp5vjsRWf8.xml");
-        fetchFeed("#feed-UFC .feed-content", "https://rss.app/feeds/_YGmr1TjOD0yXmfU1.xml");
-        fetchFeed("#feed-Boxing .feed-content", "https://rss.app/feeds/_7DfbEtxpn8RPNIMf.xml");
-        fetchFeed("#feed-NASCARCupSeries .feed-content", "https://rss.app/feeds/_D7Q3jbrHjR3bGj8O.xml");
-        fetchFeed("#feed-Tennis .feed-content", "https://rss.app/feeds/_tGSXi2957CegL2kC.xml");
-        fetchFeed("#feed-WNBA .feed-content", "https://rss.app/feeds/_JsIgbwln4EnDHpSE.xml");
-        fetchFeed("#feed-LIVGolf .feed-content", "https://rss.app/feeds/_s7tH2abPc7ZQXhLp.xml");
-        fetchFeed("#feed-IndyCar .feed-content", "https://rss.app/feeds/_TqIJuTCX0SmFe0lM.xml");
-        fetchFeed("#feed-NCAAM .feed-content", "https://rss.app/feeds/_va6EQaZAxOx6z8xR.xml");
-        fetchFeed("#feed-NCAAW .feed-content", "https://rss.app/feeds/_2P4NcD95YPwU8T51.xml");
-        fetchFeed("#feed-NCAABaseball .feed-content", "https://rss.app/feeds/_q2SYr186Ed7j8jud.xml");
-        fetchFeed("#feed-NCAASoftball .feed-content", "https://rss.app/feeds/_y4zf68Y0lK5bkT47.xml");
-        fetchFeed("#feed-MotoGP .feed-content", "https://rss.app/feeds/_4Bpke8POCqxzxfKq.xml");
-        fetchFeed("#feed-LPGATour .feed-content", "https://rss.app/feeds/_a4W47htGlhRlO2ju.xml");
-        fetchFeed("#feed-NCAAF .feed-content", "https://rss.app/feeds/_e8BTSPZYg61J9CYu.xml");
-        fetchFeed("#feed-PGATour .feed-content", "https://rss.app/feeds/_QQsPX3f8GnzYvAXX.xml");
-        fetchFeed("#feed-FACup .feed-content", "https://rss.app/feeds/Wlg6SgkaP1M71ZJK.xml");
-        fetchFeed("#feed-LigaMX .feed-content", "https://rss.app/feeds/_JgpA2OqGGC8IrApe.xml");
-        fetchFeed("#feed-NWSL .feed-content", "https://rss.app/feeds/_1kbC9b791rPZgjg6.xml");
-        fetchFeed("#feed-FormulaOne .feed-content", "https://rss.app/feeds/_32mCoV3PIKhpjo2K.xml");
-        fetchFeed("#feed-Ligue1 .feed-content", "https://rss.app/feeds/_9nS7hLmB3aUlWcjH.xml");
-        fetchFeed("#feed-UEFAEuropaLeague .feed-content", "https://rss.app/feeds/_Op8jopGsYny0gt0e.xml");
-        fetchFeed("#feed-UEFAConferenceLeague .feed-content", "https://rss.app/feeds/_BjsIqdRuSa1z3U9p.xml");
-        fetchFeed("#feed-TrackAndField .feed-content", "https://rss.app/feeds/_rZcwsn3Z2MR5N2Zq.xml");
-        fetchFeed("#feed-Soccer .feed-content", "https://rss.app/feeds/_Vqk4SoQYrKBPOvx6.xml");
-
-       // Existing menu functionality
-let selectedSection = "Home";
-document.querySelectorAll(".menu-filter").forEach(filter => {
-  filter.addEventListener("click", () => {
-    document.getElementById("menuSearch").value = "";
-    ["123", "az", "group"].forEach(type => {
-      document.querySelectorAll("#menuList-" + type + " li").forEach(li => {
-        li.style.display = "";
+        document.querySelectorAll(".menu-filter").forEach(f =>
+          f.classList.remove("active")
+        );
+        filter.classList.add("active");
+        const type = filter.dataset.filter;
+        document.getElementById("menuList-123").style.display =
+          type === "123" ? "block" : "none";
+        document.getElementById("menuList-az").style.display =
+          type === "az" ? "block" : "none";
+        document.getElementById("menuList-group").style.display =
+          type === "group" ? "block" : "none";
+        const newList = document.getElementById("menuList-" + type);
+        if (newList) {
+          newList.querySelectorAll("li[data-section]").forEach(li => {
+            li.classList.toggle("selected", li.dataset.section === selectedSection);
+          });
+        }
       });
     });
-    document.querySelectorAll(".menu-filter").forEach(f =>
-      f.classList.remove("active")
-    );
-    filter.classList.add("active");
-    const type = filter.dataset.filter;
-    document.getElementById("menuList-123").style.display =
-      type === "123" ? "block" : "none";
-    document.getElementById("menuList-az").style.display =
-      type === "az" ? "block" : "none";
-    document.getElementById("menuList-group").style.display =
-      type === "group" ? "block" : "none";
-    const newList = document.getElementById("menuList-" + type);
-    if (newList) {
-      newList.querySelectorAll("li[data-section]").forEach(li => {
-        li.classList.toggle("selected", li.dataset.section === selectedSection);
+
+    // --- THIS IS THE CORRECTED CLICK HANDLER ---
+    document.querySelectorAll("#menuList li").forEach(item => {
+      item.addEventListener("click", e => {
+        if (
+          item.classList.contains("spacer-line") ||
+          item.classList.contains("soccer-more-toggle") ||
+          item.querySelector("strong")
+        ) {
+          e.stopPropagation();
+          return;
+        }
+        e.stopPropagation();
+        if (item.dataset.section) {
+          selectedSection = item.dataset.section;
+        }
+        document
+          .querySelectorAll("#menuList li[data-section]")
+          .forEach(li => li.classList.remove("selected"));
+        item.classList.add("selected");
+        const section = item.dataset.section;
+
+        // --- START: CORRECTED LOGIC ---
+        if (section === 'Home') {
+          gamesColumn.style.display = 'block';
+          leagueSpecificColumn.style.display = 'none';
+
+          // Inside games column, ensure correct view
+          gamesContent.style.display = 'block';
+          f1Content.style.display = 'none';
+
+          // Fix to reload the Home page's default feed
+          const espnTab = document.querySelector('#headlines-tabs .headlines-tab[data-source="espn"]');
+          if (espnTab) {
+            espnTab.click();
+          }
+        } else if (section === 'FormulaOne') {
+          gamesColumn.style.display = 'block'; // F1 content is INSIDE this column
+          leagueSpecificColumn.style.display = 'none';
+
+          // Toggle visibility within the games column
+          gamesContent.style.display = 'none';
+          f1Content.style.display = 'flex';
+        } else { // For all other leagues
+          gamesColumn.style.display = 'none';
+          leagueSpecificColumn.style.display = 'block';
+
+          // Trigger data load for the specific league
+          loadLeagueSpecificData(section);
+        }
+
+        // 2. Handle the news panel switching (existing logic)
+        document.querySelectorAll(".news .content-section").forEach(
+          s => (s.style.display = "none")
+        );
+        document.querySelectorAll("#social-feed-container .content-section").forEach(s => s.style.display = "none");
+
+        const news = document.getElementById("news-" + section);
+        const social = document.getElementById("social-" + section);
+        if (news) {
+          news.style.display = "block";
+
+          const newsSubMenu = document.getElementById("newsSubMenu");
+          if (section === "Home") {
+            if (newsSubMenu) newsSubMenu.style.display = "flex";
+            const container = document.querySelector(".news");
+            if (container) {
+              container.scrollTop = 0;
+              container.dispatchEvent(new Event("scroll"));
+            }
+          } else {
+            if (newsSubMenu) newsSubMenu.style.display = "none";
+          }
+        }
+        if (social) social.style.display = "block";
+        // --- END: CORRECTED LOGIC ---
       });
-    }
-  });
-});
+    });
 
-// --- THIS IS THE CORRECTED CLICK HANDLER ---
-document.querySelectorAll("#menuList li").forEach(item => {
-  item.addEventListener("click", e => {
-    if (
-      item.classList.contains("spacer-line") ||
-      item.classList.contains("soccer-more-toggle") ||
-      item.querySelector("strong")
-    ) {
-      e.stopPropagation();
-      return;
-    }
-    e.stopPropagation();
-    if (item.dataset.section) {
-      selectedSection = item.dataset.section;
-    }
-    document
-      .querySelectorAll("#menuList li[data-section]")
-      .forEach(li => li.classList.remove("selected"));
-    item.classList.add("selected");
-    const section = item.dataset.section;
+    const newsTabsContainers = document.querySelectorAll('.headlines-tabs-column, #headlines-tabs, .breaking-tabs-header');
 
-    // --- START: CORRECTED LOGIC ---
-    if (section === 'Home') {
-        gamesColumn.style.display = 'block';
-        leagueSpecificColumn.style.display = 'none';
+    newsTabsContainers.forEach(container => {
+        container.addEventListener('click', (event) => {
+            const clickedTab = event.target.closest('.headlines-tab, .news-tab');
+            if (!clickedTab) return;
 
-        // Inside games column, ensure correct view
-        gamesContent.style.display = 'block';
-        f1Content.style.display = 'none';
-
-        // Fix to reload the Home page's default feed
-        const espnTab = document.querySelector('#headlines-tabs .headlines-tab[data-source="espn"]');
-        if (espnTab) {
-          espnTab.click();
-        }
-    } else if (section === 'FormulaOne') {
-        gamesColumn.style.display = 'block'; // F1 content is INSIDE this column
-        leagueSpecificColumn.style.display = 'none';
-
-        // Toggle visibility within the games column
-        gamesContent.style.display = 'none';
-        f1Content.style.display = 'flex';
-    } else { // For all other leagues
-        gamesColumn.style.display = 'none';
-        leagueSpecificColumn.style.display = 'block';
-
-        // Trigger data load for the specific league
-        loadLeagueSpecificData(section);
-    }
-
-    // 2. Handle the news panel switching (existing logic)
-    document.querySelectorAll(".news .content-section").forEach(
-      s => (s.style.display = "none")
-    );
-    document.querySelectorAll("#social-feed-container .content-section").forEach(s => s.style.display = "none");
-
-    const news = document.getElementById("news-" + section);
-    const social = document.getElementById("social-" + section);
-    if (news) {
-      news.style.display = "block";
-
-      const newsSubMenu = document.getElementById("newsSubMenu");
-      if (section === "Home") {
-        if (newsSubMenu) newsSubMenu.style.display = "flex";
-        const container = document.querySelector(".news");
-        if (container) {
-            container.scrollTop = 0;
-            container.dispatchEvent(new Event("scroll"));
-        }
-      } else {
-        if (newsSubMenu) newsSubMenu.style.display = "none";
-      }
-    }
-    if (social) social.style.display = "block";
-    // --- END: CORRECTED LOGIC ---
-  });
-});
-// BEGIN NEW CODE
-const leagueVerticalTabsContainers = document.querySelectorAll('.headlines-tabs-column');
-
-leagueVerticalTabsContainers.forEach(container => {
-    container.addEventListener('click', (event) => {
-        const clickedTab = event.target.closest('.headlines-tab');
-        if (clickedTab) {
             // Deactivate all tabs within this specific container
-            container.querySelectorAll('.headlines-tab').forEach(tab => {
+            container.querySelectorAll('.headlines-tab, .news-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             // Activate the clicked tab
             clickedTab.classList.add('active');
 
-            // Here is where you would also call the function to fetch and display the new feed content.
-            const feedUrl = clickedTab.dataset.url;
-            const contentContainer = document.getElementById(`headlines-content-${selectedSection}`);
-            if (contentContainer) {
-                fetchFeed(`#headlines-content-${selectedSection}`, feedUrl);
+            const feedUrl = clickedTab.dataset.url || "";
+            const contentId = clickedTab.dataset.tab ? `${clickedTab.dataset.tab}-feed` : `${clickedTab.dataset.source}-feed` ;
+            const contentDiv = document.getElementById(contentId);
+            
+            // Hide all news feeds in the panel first
+            document.querySelectorAll('.news-feed-content').forEach(div => div.style.display = 'none');
+
+            if (contentDiv) {
+                contentDiv.style.display = 'block';
+                // Only fetch if a URL is available
+                if (feedUrl) {
+                    fetchFeed(`#${contentId}`, feedUrl);
+                } else {
+                    // This handles cases where a feed URL isn't specified (e.g., placeholder divs)
+                    contentDiv.innerHTML = 'No feed URL specified for this tab.';
+                }
             }
+        });
+    });
+
+    // Manually trigger a click on the default "Breaking" tab for each news section on load
+    document.querySelectorAll('.news-section[id^="news-"]').forEach(newsSection => {
+        const defaultBreakingTab = newsSection.querySelector('.news-tab[data-tab="breaking"]');
+        if (defaultBreakingTab) {
+            defaultBreakingTab.click();
         }
     });
-});
-// END NEW CODE
 
-        const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
-        const newsPanel = document.querySelector(".news");
-        newsPanel.addEventListener("scroll", () => {
-          const newsSubMenu = document.getElementById("newsSubMenu");
-          if (!newsSubMenu) return; 
-
-          const top = newsPanel.getBoundingClientRect().top;
-          const offset = newsSubMenu.offsetHeight + 50;
-          let active = 0;
-          for (let i = 0; i < feeds.length; i++) {
-            const el = document.getElementById(feeds[i]);
-            if (!el) continue;
-            const h4 = el.querySelector("h4");
-            if (!h4) continue;
-            if (h4.getBoundingClientRect().top > top + offset) break;
-            active = i;
-          }
-          const feedName = feeds[active].replace("feed-", "").toLowerCase();
-          document.querySelectorAll(".news-menu-item").forEach(item => {
-            item.classList.toggle(
-              "active",
-              item.dataset.feed.toLowerCase() === feedName
-            );
-          });
-        });
-
-        document.getElementById("menuSearch").addEventListener("keyup", function () {
-          const query = this.value.toLowerCase();
-          const activeFilterElem = document.querySelector(".menu-filter.active");
-          if (!activeFilterElem) return;
-          const activeFilter = activeFilterElem.dataset.filter;
-          const activeList = document.getElementById("menuList-" + activeFilter);
-          if (activeList) {
-            activeList.querySelectorAll("li").forEach(li => {
-              li.style.display = li.textContent.toLowerCase().includes(query)
-                ? ""
-                : "none";
-            });
-          }
-        });
-
-        window.toggleSoccerMore = function () {
-          const section = document.getElementById("soccer-more");
-          const toggle = document.querySelector(".soccer-more-toggle");
-          const expanded = section.style.display === "block";
-          section.style.display = expanded ? "none" : "block";
-          toggle.textContent = expanded ? "More…" : "Less…";
-        };
-
-        document.querySelectorAll(".rss-feed a").forEach(link => {
-          link.setAttribute("target", "_blank");
-          link.addEventListener("click", () => {
-            link.classList.add("clicked");
-          });
-        });
-      });
-
-     function showSecondSocialSection(section) {
-      document.querySelectorAll("#second-social-panel .content-section").forEach(el => {
-        el.style.display = "none";
-      });
-      const target = document.getElementById("social2-" + section);
-      if (target) {
-        target.style.display = "block";
-      }
-    }
-
-    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
-      item.addEventListener("click", () => {
-        const section = item.dataset.section;
-        showSecondSocialSection(section);
-        showDiscussionSection(section);
-      });
-    });
-    </script>
+    // You can remove the old manual fetch calls here as they are now handled by the click logic
+  });
+</script>
 
 <!-- This script now contains the logic for both "Today" and "Scores" tabs -->
 
