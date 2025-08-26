@@ -3714,7 +3714,10 @@ function renderGames(container, gamesData, isGroupedByLeague) {
             const homeScore = data["Home Score"], awayScore = data["Away Score"];
             const matchStatus = (data["Match Status"] || "").toUpperCase();
             const rawStart = data["Start Time"];
-            const isLive = matchStatus.includes("IN PROGRESS");
+            
+            // MODIFIED: This line now checks for "IN PROGRESS" OR "LIVE"
+            const isLive = matchStatus.includes("IN PROGRESS") || matchStatus.includes("LIVE");
+            
             const isFinal = matchStatus.includes("FINISHED") || matchStatus.includes("FINAL") || matchStatus.includes("GAME OVER");
             let currentTimeLabel = "";
 
@@ -3735,6 +3738,9 @@ function renderGames(container, gamesData, isGroupedByLeague) {
                     } else if (status.toUpperCase() === "HALF_TIME") {
                         parsedStatus = "Half";
                     }
+                // MODIFIED: Added logic to handle Tennis statuses like "FIRST_SET"
+                } else if (data.Sport === "Tennis") { 
+                    parsedStatus = data.Status || "Live";
                 }
                 currentTimeLabel = parsedStatus ? `<span style="color: red;">${parsedStatus}</span>` : '<span style="color: red;">Live</span>';
             } else if (isFinal) {
@@ -3751,7 +3757,6 @@ function renderGames(container, gamesData, isGroupedByLeague) {
                 else lastDisplayedTimeLabel = currentTimeLabel;
             }
             
-            // ** This is the section to modify **
             let displayAwayScore = awayScore ?? '';
             let displayHomeScore = homeScore ?? '';
             
