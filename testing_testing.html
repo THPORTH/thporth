@@ -2502,6 +2502,11 @@ div[id^="breaking-content-"] a:hover {
                     leagueSpecificColumn.style.display = 'none';
                     gamesContent.style.display = 'block';
                     f1Content.style.display = 'none';
+
+				const espnTab = document.querySelector('#headlines-tabs .headlines-tab[data-source="espn"]');
+   		 		if (espnTab) {
+        			espnTab.click();
+    			}
                 } else if (section === 'FormulaOne') {
                     gamesColumn.style.display = 'block';
                     leagueSpecificColumn.style.display = 'none';
