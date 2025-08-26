@@ -3854,6 +3854,49 @@ function renderGames(container, gamesData, isGroupedByLeague) {
                 renderGames(homeGamesContainer, gamesData, true);
             }, err => { homeErrorDiv.textContent = "Failed to load real-time data."; });
     }
+
+	// Paste this new function here
+function fetchYesterdayScores() {
+    const scoresContainer = document.getElementById('dynamicScoresContent');
+    const scoresLoading = document.getElementById('scoresLoading');
+    const scoresError = document.getElementById('scoresErrorMessage');
+    const scoresErrorText = document.getElementById('scoresErrorText');
+
+    if (!scoresContainer || !scoresLoading || !scoresError) return;
+
+    scoresLoading.style.display = 'flex';
+    scoresError.style.display = 'none';
+    scoresContainer.innerHTML = '';
+
+    // 1. Get yesterday's date string using Luxon
+    const { DateTime } = luxon;
+    const yesterdayStr = DateTime.now().setZone('America/New_York').minus({ days: 1 }).toISODate();
+
+    // 2. Reference the 'dailyScores' collection in Firestore
+    const db = firebase.firestore();
+    const scoresDocRef = db.collection('dailyScores').doc(yesterdayStr);
+
+    // 3. Fetch the single document containing all of yesterday's scores
+    scoresDocRef.get().then(doc => {
+        scoresLoading.style.display = 'none';
+        if (doc.exists) {
+            const gamesData = doc.data().games; 
+            if (gamesData && gamesData.length > 0) {
+                // Reuse your existing renderGames function to display the scores
+                renderGames(scoresContainer, gamesData, true);
+            } else {
+                scoresContainer.innerHTML = '<p style="padding: 10px;">No scores found for yesterday.</p>';
+            }
+        } else {
+            scoresContainer.innerHTML = `<p style="padding: 10px;">Yesterday's final scores are not yet available. Please check back later.</p>`;
+        }
+    }).catch(error => {
+        scoresLoading.style.display = 'none';
+        scoresError.style.display = 'block';
+        if(scoresErrorText) scoresErrorText.textContent = "An error occurred while loading scores.";
+        console.error("Error fetching yesterday's scores:", error);
+    });
+}
     
     // --- 7. MAIN CONTROLLER FUNCTION (called by your site) ---
     window.loadLeagueSpecificData = function(leagueKey) {
@@ -3878,7 +3921,7 @@ function renderGames(container, gamesData, isGroupedByLeague) {
                 if (targetContentDiv) targetContentDiv.style.display = 'block';
                 if (todayGamesIntervalId) clearInterval(todayGamesIntervalId);
                 if (targetTabId === 'scores') {
-                    // Your fetchYesterdayScores() function can be pasted here
+                    fetchYesterdayScores();
                 } else if (targetTabId === 'today') {
                     fetchTodayGames();
                     todayGamesIntervalId = setInterval(fetchTodayGames, 30000);
