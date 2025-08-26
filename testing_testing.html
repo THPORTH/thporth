@@ -3897,6 +3897,37 @@ function fetchYesterdayScores() {
         console.error("Error fetching yesterday's scores:", error);
     });
 }
+	function fetchLiveGames() {
+    const liveContainer = document.getElementById('liveGamesContent');
+    if (!liveContainer) return () => {}; // Return a no-op function if container not found
+
+    liveContainer.innerHTML = '<p style="padding: 10px;">Looking for live games...</p>';
+
+    const db = firebase.firestore();
+    const gamesRef = db.collection(`artifacts/${FIREBASE_PROJECT_ID}/public/data/sportsGames`);
+    const nowInEastern = luxon.DateTime.now().setZone('America/New_York');
+    const todayStr = nowInEastern.toISODate();
+
+    // This query specifically looks for games that are happening today AND have a live status.
+    // It returns the 'unsubscribe' function from onSnapshot to be called when the user switches tabs.
+    return gamesRef
+        .where('gameDate', '==', todayStr)
+        .where('Match Status', 'in', ['LIVE', 'IN PROGRESS'])
+        .onSnapshot(snapshot => {
+            if (snapshot.empty) {
+                liveContainer.innerHTML = '<p style="padding: 10px;">There are no live games at the moment.</p>';
+                return;
+            }
+
+            const gamesData = snapshot.docs.map(doc => doc.data());
+            // We reuse your existing renderGames function to display the results
+            renderGames(liveContainer, gamesData, true);
+
+        }, error => {
+            console.error("Error fetching live games:", error);
+            liveContainer.innerHTML = '<p style="padding: 10px; color: #ef4444;">Error loading live games.</p>';
+        });
+}
     
     // --- 7. MAIN CONTROLLER FUNCTION (called by your site) ---
     window.loadLeagueSpecificData = function(leagueKey) {
@@ -3907,30 +3938,39 @@ function fetchYesterdayScores() {
         fetchLeagueStandings(leagueInfo.standingsUrl);
     }
 
-    // --- 8. INITIALIZE HOME PAGE TABS ---
-    const gamesTabs = document.querySelectorAll('.games-tab');
-    if (gamesTabs.length > 0) {
-        let todayGamesIntervalId = null;
-        gamesTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const targetTabId = tab.dataset.tab;
-                gamesTabs.forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.games-content').forEach(c => c.style.display = 'none');
-                tab.classList.add('active');
-                const targetContentDiv = document.getElementById(`tv-listings-${targetTabId}`);
-                if (targetContentDiv) targetContentDiv.style.display = 'block';
-                if (todayGamesIntervalId) clearInterval(todayGamesIntervalId);
-                if (targetTabId === 'scores') {
-                    fetchYesterdayScores();
-                } else if (targetTabId === 'today') {
-                    fetchTodayGames();
-                    todayGamesIntervalId = setInterval(fetchTodayGames, 30000);
-                }
-            });
+   // --- 8. INITIALIZE HOME PAGE TABS ---
+const gamesTabs = document.querySelectorAll('.games-tab');
+if (gamesTabs.length > 0) {
+    let todayGamesIntervalId = null;
+    let liveGamesUnsubscribe = null; // Variable to hold the listener's unsubscribe function
+
+    gamesTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const targetTabId = tab.dataset.tab;
+            gamesTabs.forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.games-content').forEach(c => c.style.display = 'none');
+            tab.classList.add('active');
+            const targetContentDiv = document.getElementById(`tv-listings-${targetTabId}`);
+            if (targetContentDiv) targetContentDiv.style.display = 'block';
+
+            // Clear any previous listeners or intervals before starting a new one
+            if (todayGamesIntervalId) clearInterval(todayGamesIntervalId);
+            if (liveGamesUnsubscribe) liveGamesUnsubscribe(); // Detach the old live listener
+
+            if (targetTabId === 'scores') {
+                fetchYesterdayScores();
+            } else if (targetTabId === 'today') {
+                fetchTodayGames();
+                todayGamesIntervalId = setInterval(fetchTodayGames, 30000);
+            } else if (targetTabId === 'live') {
+                // The fetchLiveGames function now returns the unsubscribe method, which we store
+                liveGamesUnsubscribe = fetchLiveGames();
+            }
         });
-        const todayTab = document.querySelector('.games-tab[data-tab="today"]');
-        if (todayTab) todayTab.click();
-    }
+    });
+    const todayTab = document.querySelector('.games-tab[data-tab="today"]');
+    if (todayTab) todayTab.click();
+}
 });
 </script>   
  
