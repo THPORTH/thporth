@@ -3878,6 +3878,46 @@ if (gamesTabs.length > 0) {
 }
 });
 </script>   
+
+	  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const menuBtn = document.getElementById('menu-toggle');
+    const gamesBtn = document.getElementById('games-toggle');
+    const menuCol = document.querySelector('.column.main-menu');
+    const gamesCol = document.querySelector('.column.tv-listings');
+
+    if (menuBtn) {
+      menuBtn.addEventListener('click', () => {
+        if (menuCol) menuCol.classList.toggle('open');
+      });
+    }
+
+    if (gamesBtn) {
+      gamesBtn.addEventListener('click', () => {
+        if (gamesCol) gamesCol.classList.toggle('open');
+      });
+    }
+
+    // News panel switching
+    document.querySelectorAll("#menuList li[data-section]").forEach(item => {
+      item.addEventListener("click", function () {
+        const section = item.dataset.section || "Home";
+        document.querySelectorAll(".column.news .content-section").forEach(s => {
+          s.style.display = "none";
+        });
+        const news = document.getElementById("news-" + section);
+        if (news) {
+          news.style.display = "block";
+        } else {
+          const homeNews = document.getElementById("news-Home");
+          if (homeNews) homeNews.style.display = "block";
+        }
+      });
+    });
+
+    // The line that called setupTabSwitching() has been removed.
+  });
+</script>
  
   </body>
 </html>
