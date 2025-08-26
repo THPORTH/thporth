@@ -1765,492 +1765,801 @@ div[id^="breaking-content-"] a:hover {
   </div>
 </div>
 
-        <!-- League-Specific News Sections (all hidden by default) -->
-       <div id="news-MLB" class="content-section" style="display: none; height: calc(100% - 18px);">
-  <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-    <!-- Headlines Section -->
-    <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-      <div class="news-section-header">Headlines</div>
-      <div style="display: flex; height: calc(100% - 18px);">
-        <!-- This is the container for the vertical tabs -->
-        <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-          <div class="headlines-tab active" data-url="https://rss.app/feeds/SBOH0Loz05FALZrr.xml">MLB.com</div>
-		  <div class="headlines-tab" data-url="https://www.espn.com/espn/rss/mlb/news">ESPN</div>
-          <div class="headlines-tab" data-url="https://theathletic.com/mlb/feed/">The Athletic</div>
-          <div class="headlines-tab" data-url="https://rss.app/feeds/LVRMpOeA9vyT8JOC.xml">FanGraphs</div>
-			<div class="headlines-tab" data-url="https://rss.app/feeds/RcKd20ITPLp5Y4AR.xml">FOX</div>
-			
-          
+      <div id="news-MLB" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+       
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
+               
+                <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="https://rss.app/feeds/SBOH0Loz05FALZrr.xml">MLB.com</div>
+                    <div class="headlines-tab" data-url="https://www.espn.com/espn/rss/mlb/news">ESPN</div>
+                    <div class="headlines-tab" data-url="https://theathletic.com/mlb/feed/">The Athletic</div>
+                    <div class="headlines-tab" data-url="https://rss.app/feeds/LVRMpOeA9vyT8JOC.xml">FanGraphs</div>
+                    <div class="headlines-tab" data-url="https://rss.app/feeds/RcKd20ITPLp5Y4AR.xml">FOX</div>
+                </div>
+               
+                <div id="headlines-content-MLB" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                   
+                </div>
+            </div>
         </div>
-        <!-- This is the container for the news content -->
-        <div id="headlines-content-MLB" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-          <!-- The content will be loaded here by JavaScript -->
+       
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/AYtjYuHSzf8VXPWV.xml">Breaking</span>
+                <span class="news-tab" data-tab="fantasy" data-url="YOUR_MLB_FANTASY_FEED_URL">Fantasy</span>
+                <span class="news-tab" data-tab="transactions" data-url="YOUR_MLB_TRANSACTIONS_FEED_URL">Transactions</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-MLB" style="display: block;">
+            </div>
+            <div class="news-content-pane" id="fantasy-content-MLB" style="display:none;">
+            </div>
+            <div class="news-content-pane" id="transactions-content-MLB" style="display:none;">
+            </div>
         </div>
-      </div>
     </div>
-    <!-- Breaking/Fantasy/Transactions Tabs Section -->
- <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-  <div class="news-section-header breaking-tabs-header">
-    
-    <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/AYtjYuHSzf8VXPWV.xml">Breaking</span>
-    <span class="news-tab" data-tab="fantasy" data-url="YOUR_MLB_FANTASY_FEED_URL">Fantasy</span>
-    <span class="news-tab" data-tab="transactions" data-url="YOUR_MLB_TRANSACTIONS_FEED_URL">Transactions</span>
-    
-  </div>
-  
-  <div class="news-content-pane" id="breaking-content-MLB" style="display: block;">
-    </div>
-  <div class="news-content-pane" id="fantasy-content-MLB" style="display:none;">
-    </div>
-  <div class="news-content-pane" id="transactions-content-MLB" style="display:none;">
-    </div>
-  
 </div>
-  </div>
-</div>
-        <div id="news-NBA" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+
+<div id="news-NBA" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-NBA" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-NBA" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-NBA" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-NFL" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_NBA_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-NBA" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-NFL" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-NFL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-NFL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-NFL" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-NHL" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_NFL_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-NFL" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-NHL" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-NHL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-NHL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-NHL" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-MLS" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-MLS" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                </div>
-                <div id="headlines-content-MLS" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_NHL_BREAKING_FEED_URL">Breaking</span>
             </div>
-          </div>
+            <div class="news-content-pane" id="breaking-content-NHL" style="display: block;"></div>
         </div>
-        <div id="news-PremierLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-PremierLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                </div>
-                <div id="headlines-content-PremierLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="news-UEFAChampionsLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-UEFAChampionsLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                </div>
-                <div id="headlines-content-UEFAChampionsLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="news-SerieA" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-SerieA" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                </div>
-                <div id="headlines-content-SerieA" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="news-Bundesliga" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-Bundesliga" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                </div>
-                <div id="headlines-content-Bundesliga" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="news-LaLiga" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-LaLiga" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                </div>
-                <div id="headlines-content-LaLiga" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="news-Soccer" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+    </div>
+</div>
+
+<div id="news-Soccer" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-Soccer" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-Soccer" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-Soccer" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-FACup" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_Soccer_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-Soccer" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-UEFAChampionsLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-UEFAChampionsLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
+                </div>
+                <div id="headlines-content-UEFAChampionsLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
+            </div>
+        </div>
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_UEFAChampionsLeague_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-UEFAChampionsLeague" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-PremierLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-PremierLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
+                </div>
+                <div id="headlines-content-PremierLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
+            </div>
+        </div>
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_PremierLeague_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-PremierLeague" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-MLS" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-MLS" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
+                </div>
+                <div id="headlines-content-MLS" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
+            </div>
+        </div>
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_MLS_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-MLS" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-LaLiga" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-LaLiga" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
+                </div>
+                <div id="headlines-content-LaLiga" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
+            </div>
+        </div>
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_LaLiga_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-LaLiga" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-SerieA" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-SerieA" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
+                </div>
+                <div id="headlines-content-SerieA" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
+            </div>
+        </div>
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_SerieA_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-SerieA" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-Bundesliga" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
+                <div id="headlines-tabs-Bundesliga" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
+                </div>
+                <div id="headlines-content-Bundesliga" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
+            </div>
+        </div>
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_Bundesliga_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-Bundesliga" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-FACup" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-FACup" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-FACup" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-FACup" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-LigaMX" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_FACup_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-FACup" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-LigaMX" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-LigaMX" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-LigaMX" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-LigaMX" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-NWSL" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_LigaMX_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-LigaMX" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-NWSL" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-NWSL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-NWSL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-NWSL" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-Ligue1" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_NWSL_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-NWSL" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-Ligue1" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-Ligue1" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-Ligue1" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-Ligue1" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-UEFAEuropaLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_Ligue1_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-Ligue1" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-UEFAEuropaLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-UEFAEuropaLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-UEFAEuropaLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-UEFAEuropaLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-UEFAConferenceLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_UEFAEuropaLeague_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-UEFAEuropaLeague" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-UEFAConferenceLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-UEFAConferenceLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-UEFAConferenceLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-UEFAConferenceLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-FormulaOne" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_UEFAConferenceLeague_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-UEFAConferenceLeague" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-FormulaOne" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-FormulaOne" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-FormulaOne" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-FormulaOne" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-NCAAF" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_FormulaOne_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-FormulaOne" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-NCAAF" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-NCAAF" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-NCAAF" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-NCAAF" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-PGATour" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_NCAAF_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-NCAAF" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-PGATour" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-PGATour" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-PGATour" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-PGATour" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-UFC" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_PGATour_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-PGATour" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-UFC" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-UFC" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-UFC" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-UFC" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-Boxing" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_UFC_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-UFC" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-Boxing" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-Boxing" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-Boxing" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-Boxing" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-NASCARCupSeries" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_Boxing_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-Boxing" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-NASCARCupSeries" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-NASCARCupSeries" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-NASCARCupSeries" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-NASCARCupSeries" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-Tennis" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_NASCARCupSeries_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-NASCARCupSeries" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-Tennis" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-Tennis" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-Tennis" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-Tennis" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-WNBA" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_Tennis_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-Tennis" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-WNBA" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-WNBA" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-WNBA" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-WNBA" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-LIVGolf" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_WNBA_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-WNBA" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-LIVGolf" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-LIVGolf" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-LIVGolf" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-LIVGolf" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-IndyCar" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_LIVGolf_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-LIVGolf" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-IndyCar" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-IndyCar" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-IndyCar" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-IndyCar" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-NCAAM" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_IndyCar_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-IndyCar" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-NCAAM" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-NCAAM" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-NCAAM" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-NCAAM" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-NCAAW" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_NCAAM_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-NCAAM" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-NCAAW" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-NCAAW" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-NCAAW" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-NCAAW" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-UFL" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-UFL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                </div>
-                <div id="headlines-content-UFL" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_NCAAW_BREAKING_FEED_URL">Breaking</span>
             </div>
-          </div>
+            <div class="news-content-pane" id="breaking-content-NCAAW" style="display: block;"></div>
         </div>
-        <div id="news-NCAABaseball" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+    </div>
+</div>
+
+<div id="news-NCAABaseball" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-NCAABaseball" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-NCAABaseball" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-NCAABaseball" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-NCAASoftball" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_NCAABaseball_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-NCAABaseball" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-NCAASoftball" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-NCAASoftball" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-NCAASoftball" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-NCAASoftball" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-MotoGP" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_NCAASoftball_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-NCAASoftball" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-MotoGP" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-MotoGP" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-MotoGP" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-MotoGP" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-LPGATour" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_MotoGP_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-MotoGP" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-LPGATour" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-LPGATour" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-LPGATour" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-LPGATour" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-        <div id="news-TrackAndField" class="content-section" style="display: none; height: calc(100% - 18px);">
-          <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-            <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-              <div class="news-section-header">Headlines</div>
-              <div style="display: flex; height: calc(100% - 18px);">
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_LPGATour_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-LPGATour" style="display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="news-TrackAndField" class="content-section" style="display: none; height: calc(100% - 18px);">
+    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
                 <div id="headlines-tabs-TrackAndField" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
+                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
                 </div>
-                <div id="headlines-content-TrackAndField" class="news-feed-content" style="width: 80%; overflow-y: auto;">
-                </div>
-              </div>
+                <div id="headlines-content-TrackAndField" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
             </div>
-          </div>
         </div>
-      </div>
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="YOUR_TrackAndField_BREAKING_FEED_URL">Breaking</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-TrackAndField" style="display: block;"></div>
+        </div>
+    </div>
+</div>
 
       <!-- DIVIDER BETWEEN NEWS PANEL AND SOCIAL PANEL -->
       <div class="divider"></div>
