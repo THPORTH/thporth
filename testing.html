@@ -1009,6 +1009,30 @@ div[id^="breaking-content-"] a:hover {
 	   .winner {
   font-weight: bold;
 }
+	   /* --- FIX for League-Specific Column Horizontal Overflow --- */
+
+/* Target the table cells ONLY inside the league-specific column */
+#league-specific-column .game-table td {
+    /* Reduce horizontal padding from 10px to 4px to save space */
+    padding-left: 4px;
+    padding-right: 4px;
+    /* Reduce font size slightly for a better fit */
+    font-size: 11px;
+}
+
+/* Target the first column (Time/Status) inside the league-specific column */
+#league-specific-column .game-table td:first-child {
+    /* Reduce the width from 90px to a much smaller 60px */
+    width: 60px;
+    min-width: 60px;
+}
+
+/* Target the last column (Score) inside the league-specific column */
+#league-specific-column .game-table td:last-child {
+    /* Reduce the width from 40px to 30px */
+    width: 30px;
+    min-width: 30px;
+}
 
 
   /* ────────────────────────────────────────────────────────── */
