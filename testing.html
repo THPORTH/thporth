@@ -3617,7 +3617,10 @@ function renderGames(container, gamesData, isGroupedByLeague) {
             const home = getTeamDisplayName(data["Home Team"] || "");
             const away = getTeamDisplayName(data["Away Team"] || "");
             const homeScore = data["Home Score"], awayScore = data["Away Score"];
-            const matchStatus = (data.matchStatus || "").toUpperCase();
+            
+            // CORRECTED: This now looks for "Match Status" with a space again
+            const matchStatus = (data["Match Status"] || "").toUpperCase();
+            
             const rawStart = data["Start Time"];
             
             const isLive = matchStatus.includes("IN PROGRESS") || matchStatus.includes("LIVE");
@@ -3669,7 +3672,7 @@ function renderGames(container, gamesData, isGroupedByLeague) {
             row2.className = "game-row game-separator";
             row2.innerHTML = `<td class="team-cell">${home}</td><td style="text-align: right;">${displayHomeScore}</td>`;
 
-            // MODIFIED: Add a status class to each game's rows for filtering
+            // This part adds the classes needed for your new filter to work
             let gameStatusClass = 'scheduled-game';
             if (isLive) gameStatusClass = 'live-game';
             if (isFinal) gameStatusClass = 'final-game';
