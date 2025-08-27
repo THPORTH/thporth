@@ -1600,44 +1600,35 @@ div[id^="breaking-content-"] a:hover {
       <strong>Games</strong>
     </div>
 
-   <div id="games-tabs" style="display: flex; height: 18px; background-color: #2a2a2a;">
+<div id="games-tabs" style="display: flex; height: 18px; background-color: #2a2a2a;">
     <div class="games-tab" data-tab="scores">SCORES</div>
     <div class="games-tab active" data-tab="today">TODAY</div>
-    <div id="live-filter-toggle" class="games-tab">LIVE</div> 
+    <div class="games-tab" data-tab="live">LIVE</div>
 </div>
-    <!-- SCORES TAB -->
-    <div id="tv-listings-scores" class="games-content" style="display: block;">
-      <div id="scoresWrapper">
-        <!-- Loading Indicator for Scores -->
+<div id="tv-listings-scores" class="games-content" style="display: block;">
+    <div id="scoresWrapper">
         <div id="scoresLoading" class="loading-indicator hidden">
-          <svg class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <p class="loading-text">Loading yesterday's scores...</p>
+            <svg class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="loading-text">Loading yesterday's scores...</p>
         </div>
-
-        <!-- Error Message for Scores -->
         <div id="scoresErrorMessage" class="error-message hidden" role="alert">
-          <strong>Error!</strong>
-          <span id="scoresErrorText"></span>
+            <strong>Error!</strong>
+            <span id="scoresErrorText"></span>
         </div>
-
-        <!-- Score content injected here -->
         <div id="dynamicScoresContent"></div>
-      </div>
     </div>
-
-    <!-- TODAY TAB - Content from testing_testing-3.html goes here -->
-    <div id="tv-listings-today" class="games-content" style="display: none;">
-      <div id="games"></div>
-      <div id="error" class="error"></div>
-    </div>
-
-    <!-- LIVE TAB (placeholder) -->
-    <div id="tv-listings-live" class="games-content" style="display: none;"></div>
-  </div>
-
+</div>
+<div id="tv-listings-today" class="games-content" style="display: none;">
+    <div id="games"></div>
+    <div id="error" class="error"></div>
+</div>
+<div id="tv-listings-live" class="games-content" style="display: none;">
+    <div id="liveGamesContent"></div>
+</div>
+	  
   <!-- START: F1 CONTENT BLOCK (Inside the same column, toggled with games) -->
   <div id="f1-column-content" style="display: none; height: 100%; flex-direction: column; background-color: #1f1f1f; color: #e5e7eb;">
       
@@ -3587,36 +3578,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- 5. CORE RENDERING FUNCTION (Used by BOTH Home and League pages) ---
 function fetchTodayGames() {
-    const todayContainer = document.getElementById('games');
-    const liveContainer = document.getElementById('liveGamesContent'); // The container for the LIVE tab
     const errorDiv = document.getElementById('error');
-
-    if (!todayContainer || !liveContainer) return () => {};
-    
-    errorDiv.textContent = "";
+    if (errorDiv) errorDiv.textContent = "";
 
     const db = firebase.firestore();
     const gamesCollectionRef = db.collection(`artifacts/${FIREBASE_PROJECT_ID}/public/data/sportsGames`);
     const { DateTime } = luxon;
     const todayStr = DateTime.now().setZone('America/New_York').toISODate();
 
-    // The onSnapshot listener will now update both tabs simultaneously
+    // The onSnapshot listener will now update each tab independently and safely
     return gamesCollectionRef.where('gameDate', '==', todayStr)
         .onSnapshot(snapshot => {
+            const todayContainer = document.getElementById('games');
+            const liveContainer = document.getElementById('liveGamesContent');
+
             if (snapshot.empty) {
-                todayContainer.innerHTML = `<p style="padding: 10px;">No games found for today.</p>`;
-                liveContainer.innerHTML = `<p style="padding: 10px;">There are no live games at the moment.</p>`;
+                if (todayContainer) todayContainer.innerHTML = `<p style="padding: 10px;">No games found for today.</p>`;
+                if (liveContainer) liveContainer.innerHTML = `<p style="padding: 10px;">There are no live games at the moment.</p>`;
                 return;
             }
             const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
             
-            // Render the full list of games into BOTH containers
-            renderGames(todayContainer, gamesData, true);
-            renderGames(liveContainer, gamesData, true);
+            // Safely render the full list of games into each container if it exists
+            if (todayContainer) {
+                renderGames(todayContainer, gamesData, true);
+            }
+            if (liveContainer) {
+                renderGames(liveContainer, gamesData, true);
+            }
 
         }, err => { 
             console.error("Error fetching today's games: ", err);
-            errorDiv.textContent = "Failed to load real-time data.";
+            if (errorDiv) errorDiv.textContent = "Failed to load real-time data.";
          });
 }
 
