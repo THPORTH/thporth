@@ -3752,79 +3752,83 @@ document.addEventListener('DOMContentLoaded', function () {
         fetchLeagueStandings(leagueInfo.standingsUrl);
     };
 
-    // --- 7. TABS AND FILTER INITIALIZATION ---
-    const gamesTabsContainer = document.getElementById('games-tabs');
-    if (gamesTabsContainer) {
-        const todayTab = gamesTabsContainer.querySelector('.games-tab[data-tab="today"]');
-        const scoresTab = gamesTabsContainer.querySelector('.games-tab[data-tab="scores"]');
-        const liveFilter = document.getElementById('live-filter-toggle');
+  // --- 7. TABS AND FILTER INITIALIZATION ---
+const gamesTabsContainer = document.getElementById('games-tabs');
+if (gamesTabsContainer) {
+    const todayTab = gamesTabsContainer.querySelector('.games-tab[data-tab="today"]');
+    const scoresTab = gamesTabsContainer.querySelector('.games-tab[data-tab="scores"]');
+    const liveFilter = document.getElementById('live-filter-toggle');
+    
+    let activeListenerUnsubscribe = null;
+
+    const applyLiveFilter = () => {
+        const isFilterActive = liveFilter.classList.contains('active');
+        const todayContent = document.getElementById('games');
+        if (!todayContent) return;
+        const allGameRows = todayContent.querySelectorAll('.game-row');
+        const leagueSections = todayContent.querySelectorAll('.league-section');
+
+        allGameRows.forEach(row => {
+            let showRow = true;
+            if (isFilterActive && !row.classList.contains('live-game')) {
+                showRow = false;
+            }
+            // THIS IS THE CORRECTED LINE:
+            row.style.display = showRow ? '' : 'none';
+        });
+
+        leagueSections.forEach(section => {
+            const visibleRows = section.querySelectorAll('.game-row:not([style*="display: none"])');
+            section.style.display = visibleRows.length > 0 ? 'block' : 'none';
+        });
+    };
+
+    scoresTab.addEventListener('click', () => {
+        if (activeListenerUnsubscribe) {
+            activeListenerUnsubscribe();
+            activeListenerUnsubscribe = null;
+        }
         
-        let activeListenerUnsubscribe = null;
+        todayTab.classList.remove('active');
+        liveFilter.classList.remove('active');
+        scoresTab.classList.add('active');
 
-        const applyLiveFilter = () => {
-            const isFilterActive = liveFilter.classList.contains('active');
-            const todayContent = document.getElementById('games');
-            if (!todayContent) return;
-            const allGameRows = todayContent.querySelectorAll('.game-row');
-            const leagueSections = todayContent.querySelectorAll('.league-section');
+        document.getElementById('tv-listings-scores').style.display = 'block';
+        document.getElementById('tv-listings-today').style.display = 'none';
 
-            allGameRows.forEach(row => {
-                let showRow = true;
-                if (isFilterActive && !row.classList.contains('live-game')) {
-                    showRow = false;
-                }
-                row.style.display = showRow ? '' : 'table-row';
-            });
+        fetchYesterdayScores();
+    });
 
-            leagueSections.forEach(section => {
-                const visibleRows = section.querySelectorAll('.game-row:not([style*="display: none"])');
-                section.style.display = visibleRows.length > 0 ? 'block' : 'none';
-            });
-        };
+    todayTab.addEventListener('click', () => {
+        if (activeListenerUnsubscribe) {
+            activeListenerUnsubscribe();
+            activeListenerUnsubscribe = null;
+        }
 
-        scoresTab.addEventListener('click', () => {
-            if (activeListenerUnsubscribe) {
-                activeListenerUnsubscribe();
-                activeListenerUnsubscribe = null;
-            }
-            
-            todayTab.classList.remove('active');
-            liveFilter.classList.remove('active');
-            scoresTab.classList.add('active');
+        scoresTab.classList.remove('active');
+        liveFilter.classList.remove('active');
+        todayTab.classList.add('active');
+        
+        document.getElementById('tv-listings-today').style.display = 'block';
+        document.getElementById('tv-listings-scores').style.display = 'none';
+        
+        activeListenerUnsubscribe = fetchTodayGames(applyLiveFilter);
+    });
 
-            document.getElementById('tv-listings-scores').style.display = 'block';
-            document.getElementById('tv-listings-today').style.display = 'none';
-
-            fetchYesterdayScores();
-        });
-
-        todayTab.addEventListener('click', () => {
-            if (activeListenerUnsubscribe) {
-                activeListenerUnsubscribe();
-                activeListenerUnsubscribe = null;
-            }
-
-            scoresTab.classList.remove('active');
-            liveFilter.classList.remove('active');
-            todayTab.classList.add('active');
-            
-            document.getElementById('tv-listings-today').style.display = 'block';
-            document.getElementById('tv-listings-scores').style.display = 'none';
-            
-            activeListenerUnsubscribe = fetchTodayGames(applyLiveFilter);
-        });
-
-        liveFilter.addEventListener('click', () => {
-            if (!todayTab.classList.contains('active')) {
-                todayTab.click();
-            }
+    liveFilter.addEventListener('click', () => {
+        if (!todayTab.classList.contains('active')) {
+            todayTab.click();
+            // A small delay to allow the tab content to render before filtering
+            setTimeout(applyLiveFilter, 50); 
+        } else {
             liveFilter.classList.toggle('active');
             applyLiveFilter();
-        });
+        }
+    });
 
-        // Initial load
-        if (todayTab) todayTab.click();
-    }
+    // Initial load
+    if (todayTab) todayTab.click();
+}
 });
 </script>
  
