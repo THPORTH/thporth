@@ -3687,6 +3687,51 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!isFinalA && isFinalB) return -1;
         return a["Start Time"].toMillis() - b["Start Time"].toMillis();
     }
+
+	 function fetchLeagueSchedule(leagueId, leagueName) {
+        scheduleContent.innerHTML = '<p style="color: #9ca3af;">Loading schedule...</p>';
+        const { DateTime } = luxon;
+        const todayStr = DateTime.now().setZone('America/New_York').toISODate();
+        gamesCollectionRef.where('League', '==', leagueId).where('gameDate', '==', todayStr)
+            .onSnapshot(snapshot => {
+                if (snapshot.empty) {
+                    scheduleContent.innerHTML = `<p>No ${leagueName} games found for today.</p>`;
+                    return;
+                }
+                const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
+                renderGames(scheduleContent, gamesData, false);
+            }, err => { scheduleContent.innerHTML = '<p style="color: #ef4444;">Error loading schedule.</p>'; });
+    }
+
+    // REPLACE THE OLD FUNCTION WITH THIS ONE
+    async function fetchLeagueStandings(url) {
+        standingsContent.innerHTML = '<p style="color: #9ca3af;">Loading standings...</p>';
+        try {
+            if (!url || !url.startsWith('http')) {
+                standingsContent.innerHTML = '<p>Standings not available.</p>';
+                return;
+            }
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const csvText = await response.text();
+            const rows = csvText.split(/\r?\n/).map(row => row.split(','));
+            if (rows.length < 2) {
+                standingsContent.innerHTML = '<p>No standings data available.</p>';
+                return;
+            }
+            let tableHtml = '<table style="width: 100%; border-collapse: collapse; font-size: 11px;"><thead><tr>';
+            rows[0].forEach(header => tableHtml += `<th style="padding: 4px; text-align: left; border-bottom: 1px solid #4a4a4a;">${header.trim().replace(/^"|"$/g, '')}</th>`);
+            tableHtml += '</tr></thead><tbody>';
+            for (let i = 1; i < rows.length; i++) {
+                if (rows[i].length < 2) continue;
+                tableHtml += `<tr style="border-top: 1px solid #374151;">`;
+                rows[i].forEach(cell => tableHtml += `<td style="padding: 4px;">${cell.trim().replace(/^"|"$/g, '')}</td>`);
+                tableHtml += '</tr>';
+            }
+            tableHtml += '</tbody></table>';
+            standingsContent.innerHTML = tableHtml;
+        } catch (error) { standingsContent.innerHTML = `<p style="color: #ef4444;">Error loading standings.</p>`; }
+    }
     
     function fetchTodayGames(callback) {
         const todayContainer = document.getElementById('games');
