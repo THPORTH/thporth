@@ -3674,23 +3674,6 @@ function fetchTodayGames() {
         } catch (error) { standingsContent.innerHTML = `<p style="color: #ef4444;">Error loading standings.</p>`; }
     }
 
-    function fetchTodayGames() {
-        if (!homeGamesContainer || !homeErrorDiv) return;
-        homeErrorDiv.textContent = "";
-        const { DateTime } = luxon;
-        const todayStr = DateTime.now().setZone('America/New_York').toISODate();
-        gamesCollectionRef.where('gameDate', '==', todayStr) // Removed orderBy here, will sort in code
-            .onSnapshot(snapshot => {
-                if (snapshot.empty) {
-                    homeGamesContainer.innerHTML = `<p style="padding: 10px;">No games found for today.</p>`;
-                    return;
-                }
-                // Apply the new sorting logic here as well
-                const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
-                renderGames(homeGamesContainer, gamesData, true);
-            }, err => { homeErrorDiv.textContent = "Failed to load real-time data."; });
-    }
-
 	// Paste this new function here
 function fetchYesterdayScores() {
     const scoresContainer = document.getElementById('dynamicScoresContent');
