@@ -1779,7 +1779,7 @@ div[id^="breaking-content-"] a:hover {
                 <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
                     <div class="headlines-tab active" data-url="https://rss.app/feeds/SBOH0Loz05FALZrr.xml">MLB.com</div>
                     <div class="headlines-tab" data-url="https://www.espn.com/espn/rss/mlb/news">ESPN</div>
-                    <div class="headlines-tab" data-url="https://theathletic.com/mlb/feed/">The Athletic</div>
+                    <div class="headlines-tab" data-url="https://feeder.co/widget/334fe3ebbc">The Athletic</div>
                     <div class="headlines-tab" data-url="https://rss.app/feeds/LVRMpOeA9vyT8JOC.xml">FanGraphs</div>
                     <div class="headlines-tab" data-url="https://rss.app/feeds/RcKd20ITPLp5Y4AR.xml">FOX</div>
                 </div>
@@ -2861,17 +2861,44 @@ div[id^="breaking-content-"] a:hover {
 
         // --- UNIFIED CLICK HANDLER FOR ALL NEWS TABS ---
         
-        // Vertical Headlines Tabs (League-Specific)
-        document.querySelectorAll('.headlines-tabs-column').forEach(container => {
-            container.addEventListener('click', (event) => {
-                const clickedTab = event.target.closest('.headlines-tab[data-url]');
-                if (clickedTab) {
-                    container.querySelectorAll('.headlines-tab').forEach(tab => tab.classList.remove('active'));
-                    clickedTab.classList.add('active');
-                    fetchFeed(`#headlines-content-${selectedSection}`, clickedTab.dataset.url);
+       // Vertical Headlines Tabs (League-Specific)
+document.querySelectorAll('.headlines-tabs-column').forEach(container => {
+    container.addEventListener('click', (event) => {
+        const clickedTab = event.target.closest('.headlines-tab[data-url]');
+        if (clickedTab) {
+            container.querySelectorAll('.headlines-tab').forEach(tab => tab.classList.remove('active'));
+            clickedTab.classList.add('active');
+            
+            const feedUrl = clickedTab.dataset.url;
+            const targetContentId = `headlines-content-${selectedSection}`;
+            const targetContent = document.getElementById(targetContentId);
+            
+            if (!targetContent) return;
+            
+            // Check if this is a Feeder widget URL
+            if (feedUrl && feedUrl.includes('feeder.co')) {
+                // Clear existing content and create Feeder widget
+                targetContent.innerHTML = '';
+                const feederWidget = document.createElement('feeder-widget');
+                feederWidget.setAttribute('data-widget-id', '334fe3ebbc'); // Your widget ID
+                feederWidget.style.width = '100%';
+                feederWidget.style.height = '100%';
+                targetContent.appendChild(feederWidget);
+                
+                // Ensure Feeder script is loaded
+                if (!document.querySelector('script[src*="widgets.feeder.co"]')) {
+                    const script = document.createElement('script');
+                    script.src = 'https://widgets.feeder.co/widget.js';
+                    script.async = true;
+                    document.head.appendChild(script);
                 }
-            });
-        });
+            } else {
+                // Load RSS feed using existing logic
+                fetchFeed(`#${targetContentId}`, feedUrl);
+            }
+        }
+    });
+});
 
         // Horizontal News Tabs (Breaking, etc.) - HANDLES BOTH HOME & LEAGUE PAGES
         document.querySelectorAll(".news").forEach(newsContainer => {
