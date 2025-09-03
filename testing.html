@@ -1779,7 +1779,7 @@ div[id^="breaking-content-"] a:hover {
                 <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
                     <div class="headlines-tab active" data-url="https://rss.app/feeds/SBOH0Loz05FALZrr.xml">MLB.com</div>
                     <div class="headlines-tab" data-url="https://www.espn.com/espn/rss/mlb/news">ESPN</div>
-                    <div class="headlines-tab" data-widget-id="334fe3ebbcD">The Athletic</div>
+                    <div class="headlines-tab" data-url="https://theathletic.com/mlb/feed/">The Athletic</div>
                     <div class="headlines-tab" data-url="https://rss.app/feeds/LVRMpOeA9vyT8JOC.xml">FanGraphs</div>
                     <div class="headlines-tab" data-url="https://rss.app/feeds/RcKd20ITPLp5Y4AR.xml">FOX</div>
                 </div>
@@ -2724,520 +2724,308 @@ div[id^="breaking-content-"] a:hover {
       </script>
 
    <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // --- GRAB ELEMENTS FOR COLUMN SWITCHING ---
-    const gamesColumn = document.getElementById('games-column');
-    const leagueSpecificColumn = document.getElementById('league-specific-column');
-    const f1Content = document.getElementById('f1-column-content');
-    const gamesContent = document.getElementById('tv-listings-container');
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- GRAB ELEMENTS FOR COLUMN SWITCHING ---
+        const gamesColumn = document.getElementById('games-column');
+        const leagueSpecificColumn = document.getElementById('league-specific-column');
+        const f1Content = document.getElementById('f1-column-content');
+        const gamesContent = document.getElementById('tv-listings-container');
 
-    // Flag to ensure the widget script is only loaded once
-    let feederScriptLoaded = false;
+        // --- NEW: FALLBACK URLs FOR THE HOME PAGE ---
+        const HOME_PAGE_FEEDS = {
+            breaking: "https://rss.app/feeds/XcFXtVdyCBGtIC6O.xml",
+            fantasy: "https://fantasynews.cbssports.com/rss/headlines/",
+            transactions: "https://www.espn.com/espn/rss/mlb/news"
+        };
 
-    // --- NEW: FALLBACK WIDGET IDs FOR THE HOME PAGE ---
-    // Note: These IDs must be replaced with your actual Feeder.co widget IDs.
-    const HOME_PAGE_WIDGETS = {
-        breaking: "YOUR_BREAKING_WIDGET_ID",
-        fantasy: "YOUR_FANTASY_WIDGET_ID",
-        transactions: "YOUR_TRANSACTIONS_WIDGET_ID"
-    };
-
-    // Helper function to fetch and render an XML feed (for Social column only)
-    function fetchFeed(containerSelector, feedUrl) {
-        const container = document.querySelector(containerSelector);
-        if (!container) return;
-        container.innerHTML = '<p style="padding: 10px; color: #9ca3af;">Loading feed...</p>';
-        fetch(feedUrl)
-            .then(res => res.text())
-            .then(str => {
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(str, "application/xml");
-                const items = Array.from(xml.querySelectorAll("item"));
-                if (items.length > 0) {
-                    const ul = document.createElement("ul");
-                    ul.style.margin = "0";
-                    ul.style.padding = "0";
-                    ul.style.listStyle = "none";
-                    items.forEach(item => {
-                        const title = item.querySelector("title")?.textContent || "No title";
-                        const link = item.querySelector("link")?.textContent || "#";
-                        const li = document.createElement("li");
-                        li.style.marginBottom = "0.5em";
-                        const a = document.createElement("a");
-                        a.href = link;
-                        a.target = "_blank";
-                        a.textContent = title;
-                        li.appendChild(a);
-                        ul.appendChild(li);
-                    });
-                    container.innerHTML = "";
-                    container.appendChild(ul);
-                    ul.querySelectorAll("a").forEach(link => {
-                        link.addEventListener("click", () => {
-                            link.classList.add("clicked");
+        // Helper function to fetch and render an XML feed
+        function fetchFeed(containerSelector, feedUrl) {
+            const container = document.querySelector(containerSelector);
+            if (!container) return;
+            // Display loading message
+            container.innerHTML = '<p style="padding: 10px; color: #9ca3af;">Loading feed...</p>';
+            fetch(feedUrl)
+                .then(res => res.text())
+                .then(str => {
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(str, "application/xml");
+                    const items = Array.from(xml.querySelectorAll("item"));
+                    if (items.length > 0) {
+                        const ul = document.createElement("ul");
+                        ul.style.margin = "0";
+                        ul.style.padding = "0";
+                        ul.style.listStyle = "none";
+                        items.forEach(item => {
+                            const title = item.querySelector("title")?.textContent || "No title";
+                            const link = item.querySelector("link")?.textContent || "#";
+                            const li = document.createElement("li");
+                            li.style.marginBottom = "0.5em";
+                            const a = document.createElement("a");
+                            a.href = link;
+                            a.target = "_blank";
+                            a.textContent = title;
+                            li.appendChild(a);
+                            ul.appendChild(li);
                         });
-                    });
-                } else {
-                    container.innerHTML = "<p style='padding: 10px;'>No items found in feed.</p>";
-                }
-            })
-            .catch(error => {
-                console.error("Error loading feed:", error);
-                container.innerHTML = "<p style='padding: 10px; color: #ef4444;'>Error loading feed.</p>";
-            });
-    }
-    
-    // Function to load the Feeder.co widget
-    function loadWidget(containerSelector, widgetId) {
-        const container = document.querySelector(containerSelector);
-        if (!container) return;
-        container.innerHTML = `<feeder-widget data-widget-id="${widgetId}" style="width: 100%; height: 100%;"></feeder-widget>`;
-        
-        // Only load the script if it hasn't been loaded already
-        if (!feederScriptLoaded) {
-            const script = document.createElement('script');
-            script.src = "https://widgets.feeder.co/widget.js";
-            document.body.appendChild(script);
-            feederScriptLoaded = true;
+                        container.innerHTML = "";
+                        container.appendChild(ul);
+                        ul.querySelectorAll("a").forEach(link => {
+                            link.addEventListener("click", () => {
+                                link.classList.add("clicked");
+                            });
+                        });
+                    } else {
+                        container.innerHTML = "<p style='padding: 10px;'>No items found in feed.</p>";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error loading feed:", error);
+                    container.innerHTML = "<p style='padding: 10px; color: #ef4444;'>Error loading feed.</p>";
+                });
         }
-    }
 
-    // --- Main Menu and Page Switching Logic ---
-    let selectedSection = "Home";
-    document.querySelectorAll("#menuList li").forEach(item => {
-        item.addEventListener("click", e => {
-            if (item.classList.contains("spacer-line") || item.classList.contains("soccer-more-toggle") || item.querySelector("strong")) {
+        // --- Initial Feed Loads for Home Page (Headlines) ---
+        const feedMap = {
+            espn: "https://www.espn.com/espn/rss/news",
+            cbs: "https://rss.app/feeds/qQ90C7XC0oUECOLP.xml",
+            yahoo: "https://rss.app/feeds/OvSpAK6PF8gmF37d.xml",
+            fox: "https://rss.app/feeds/gqwmnxZNc8bSqdto.xml"
+        };
+        Object.entries(feedMap).forEach(([source, url]) => {
+            fetchFeed(`#${source}-feed`, url);
+        });
+        
+        // --- Main Menu and Page Switching Logic ---
+        let selectedSection = "Home";
+        document.querySelectorAll("#menuList li").forEach(item => {
+            item.addEventListener("click", e => {
+                if (item.classList.contains("spacer-line") || item.classList.contains("soccer-more-toggle") || item.querySelector("strong")) {
+                    e.stopPropagation();
+                    return;
+                }
                 e.stopPropagation();
-                return;
-            }
-            e.stopPropagation();
-            if (item.dataset.section) {
-                selectedSection = item.dataset.section;
-            }
-            document.querySelectorAll("#menuList li[data-section]").forEach(li => li.classList.remove("selected"));
-            item.classList.add("selected");
-            const section = item.dataset.section;
-
-            if (section === 'Home') {
-                gamesColumn.style.display = 'block';
-                leagueSpecificColumn.style.display = 'none';
-                gamesContent.style.display = 'block';
-                f1Content.style.display = 'none';
-            } else if (section === 'FormulaOne') {
-                gamesColumn.style.display = 'block';
-                leagueSpecificColumn.style.display = 'none';
-                gamesContent.style.display = 'none';
-                f1Content.style.display = 'flex';
-            } else {
-                gamesColumn.style.display = 'none';
-                leagueSpecificColumn.style.display = 'block';
-                // Note: loadLeagueSpecificData is not defined in the provided code,
-                // so this function call may cause an error.
-                // Assuming this is a placeholder for your existing logic.
-                loadLeagueSpecificData(section);
-            }
-
-            document.querySelectorAll(".news .content-section, #social-feed-container .content-section").forEach(s => s.style.display = "none");
-
-            const news = document.getElementById("news-" + section);
-            const social = document.getElementById("social-" + section);
-            if (news) {
-                news.style.display = "block";
-                const newsSubMenu = document.getElementById("newsSubMenu");
-                if (newsSubMenu) newsSubMenu.style.display = section === "Home" ? "flex" : "none";
-                const container = document.querySelector(".news");
-                if (container) container.scrollTop = 0;
-                loadHeadlinesAndBreakingFeeds(section);
-            }
-            if (social) social.style.display = "block";
-        });
-    });
-
-    function loadHeadlinesAndBreakingFeeds(section) {
-        const newsSection = document.getElementById(`news-${section}`);
-        if (!newsSection) return;
-
-        // Find and click the default active tab
-        const defaultHeadlinesTab = newsSection.querySelector('.headlines-tab.active');
-        if (defaultHeadlinesTab) defaultHeadlinesTab.click();
-        
-        const defaultBreakingTab = newsSection.querySelector('.news-tab.active');
-        if (defaultBreakingTab) defaultBreakingTab.click();
-    }
-
-    // --- UNIFIED CLICK HANDLER FOR ALL NEWS TABS ---
-    
-    // Vertical Headlines Tabs (League-Specific)
-    document.querySelectorAll('.headlines-tabs-column').forEach(container => {
-        container.addEventListener('click', (event) => {
-            const clickedTab = event.target.closest('.headlines-tab');
-            if (!clickedTab) return;
-            
-            // Remove active class from all tabs in this container
-            container.querySelectorAll('.headlines-tab').forEach(tab => tab.classList.remove('active'));
-            // Add active class to the clicked tab
-            clickedTab.classList.add('active');
-
-            const widgetId = clickedTab.dataset.widgetId;
-
-            // Load a widget feed for all league pages
-            if (widgetId) {
-                loadWidget(`#headlines-content-${selectedSection}`, widgetId);
-            }
-        });
-    });
-
-    // Horizontal News Tabs (Breaking, etc.) - HANDLES BOTH HOME & LEAGUE PAGES
-    document.querySelectorAll(".news").forEach(newsContainer => {
-        newsContainer.addEventListener('click', (event) => {
-            const clickedTab = event.target.closest('.news-tab');
-            if (!clickedTab) return;
-
-            const tabType = clickedTab.dataset.tab;
-            const widgetId = clickedTab.dataset.widgetId;
-            const dynamicUrl = clickedTab.dataset.url; // Kept for Social feeds
-
-            clickedTab.parentElement.querySelectorAll('.news-tab').forEach(tab => tab.classList.remove('active'));
-            clickedTab.classList.add('active');
-
-            if (widgetId) {
-                // Logic for Home page with widgets
-                const newsSection = clickedTab.closest('.content-section');
-                if (!newsSection) return;
-                newsSection.querySelectorAll('.news-content-pane').forEach(pane => pane.style.display = 'none');
-                const contentPane = newsSection.querySelector(`#${tabType}-feed`);
-                if (contentPane) {
-                    contentPane.style.display = 'block';
-                    loadWidget(`#${contentPane.id}`, widgetId);
+                if (item.dataset.section) {
+                    selectedSection = item.dataset.section;
                 }
-            } else if (dynamicUrl) {
-                // Logic for Social Feeds (or any other non-widget feed)
-                const newsSection = clickedTab.closest('.content-section');
-                if (!newsSection) return;
-                newsSection.querySelectorAll('.news-content-pane').forEach(pane => pane.style.display = 'none');
-                const sectionId = newsSection.id.replace('news-', '');
-                const contentPane = newsSection.querySelector(`#${tabType}-content-${sectionId}`);
-                if (contentPane) {
-                    contentPane.style.display = 'block';
-                    fetchFeed(`#${contentPane.id}`, dynamicUrl);
+                document.querySelectorAll("#menuList li[data-section]").forEach(li => li.classList.remove("selected"));
+                item.classList.add("selected");
+                const section = item.dataset.section;
+
+                if (section === 'Home') {
+                    gamesColumn.style.display = 'block';
+                    leagueSpecificColumn.style.display = 'none';
+                    gamesContent.style.display = 'block';
+                    f1Content.style.display = 'none';
+
+				const espnTab = document.querySelector('#headlines-tabs .headlines-tab[data-source="espn"]');
+   		 		if (espnTab) {
+        			espnTab.click();
+    			}
+                } else if (section === 'FormulaOne') {
+                    gamesColumn.style.display = 'block';
+                    leagueSpecificColumn.style.display = 'none';
+                    gamesContent.style.display = 'none';
+                    f1Content.style.display = 'flex';
+                } else {
+                    gamesColumn.style.display = 'none';
+                    leagueSpecificColumn.style.display = 'block';
+                    loadLeagueSpecificData(section);
                 }
-            }
-        });
-    });
 
-    // Other original listeners (scroll, search, etc.)
-    const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
-    const newsPanel = document.querySelector(".news");
-    newsPanel.addEventListener("scroll", () => {
-        const newsSubMenu = document.getElementById("newsSubMenu");
-        if (!newsSubMenu) return;
-        const top = newsPanel.getBoundingClientRect().top;
-        const offset = newsSubMenu.offsetHeight + 50;
-        let active = 0;
-        for (let i = 0; i < feeds.length; i++) {
-            const el = document.getElementById(feeds[i]);
-            if (!el) continue;
-            const h4 = el.querySelector("h4");
-            if (!h4) continue;
-            if (h4.getBoundingClientRect().top > top + offset) break;
-            active = i;
-        }
-        const feedName = feeds[active].replace("feed-", "").toLowerCase();
-        document.querySelectorAll(".news-menu-item").forEach(item => {
-            item.classList.toggle("active", item.dataset.feed.toLowerCase() === feedName);
-        });
-    });
+                document.querySelectorAll(".news .content-section, #social-feed-container .content-section").forEach(s => s.style.display = "none");
 
-    document.getElementById("menuSearch").addEventListener("keyup", function () {
-        const query = this.value.toLowerCase();
-        const activeFilterElem = document.querySelector(".menu-filter.active");
-        if (!activeFilterElem) return;
-        const activeFilter = activeFilterElem.dataset.filter;
-        const activeList = document.getElementById("menuList-" + activeFilter);
-        if (activeList) {
-            activeList.querySelectorAll("li").forEach(li => {
-                li.style.display = li.textContent.toLowerCase().includes(query) ? "" : "none";
+                const news = document.getElementById("news-" + section);
+                const social = document.getElementById("social-" + section);
+                if (news) {
+                    news.style.display = "block";
+                    const newsSubMenu = document.getElementById("newsSubMenu");
+                    if (newsSubMenu) newsSubMenu.style.display = section === "Home" ? "flex" : "none";
+                    const container = document.querySelector(".news");
+                    if (container) container.scrollTop = 0;
+                    loadHeadlinesAndBreakingFeeds(section);
+                }
+                if (social) social.style.display = "block";
             });
+        });
+
+        function loadHeadlinesAndBreakingFeeds(section) {
+            const newsSection = document.getElementById(`news-${section}`);
+            if (!newsSection) return;
+
+            const defaultHeadlinesTab = newsSection.querySelector('.headlines-tab[data-url]');
+            if (defaultHeadlinesTab) defaultHeadlinesTab.click();
+            
+            const defaultBreakingTab = newsSection.querySelector('.news-tab[data-tab="breaking"]');
+            if (defaultBreakingTab) defaultBreakingTab.click();
+        }
+
+        // --- UNIFIED CLICK HANDLER FOR ALL NEWS TABS ---
+        
+        // Vertical Headlines Tabs (League-Specific)
+        document.querySelectorAll('.headlines-tabs-column').forEach(container => {
+            container.addEventListener('click', (event) => {
+                const clickedTab = event.target.closest('.headlines-tab[data-url]');
+                if (clickedTab) {
+                    container.querySelectorAll('.headlines-tab').forEach(tab => tab.classList.remove('active'));
+                    clickedTab.classList.add('active');
+                    fetchFeed(`#headlines-content-${selectedSection}`, clickedTab.dataset.url);
+                }
+            });
+        });
+
+        // Horizontal News Tabs (Breaking, etc.) - HANDLES BOTH HOME & LEAGUE PAGES
+        document.querySelectorAll(".news").forEach(newsContainer => {
+            newsContainer.addEventListener('click', (event) => {
+                const clickedTab = event.target.closest('.news-tab');
+                if (!clickedTab) return;
+
+                const tabType = clickedTab.dataset.tab;
+                const dynamicUrl = clickedTab.dataset.url;
+
+                clickedTab.parentElement.querySelectorAll('.news-tab').forEach(tab => tab.classList.remove('active'));
+                clickedTab.classList.add('active');
+
+                if (dynamicUrl) {
+                    // Logic for League Pages
+                    const newsSection = clickedTab.closest('.content-section');
+                    if (!newsSection) return;
+                    newsSection.querySelectorAll('.news-content-pane').forEach(pane => pane.style.display = 'none');
+                    const sectionId = newsSection.id.replace('news-', '');
+                    const contentPane = newsSection.querySelector(`#${tabType}-content-${sectionId}`);
+                    if (contentPane) {
+                        contentPane.style.display = 'block';
+                        fetchFeed(`#${contentPane.id}`, dynamicUrl);
+                    }
+                } else {
+                    // Fallback Logic for Home Page
+                    document.querySelectorAll('#news-Home .news-content-pane').forEach(pane => pane.style.display = 'none');
+                    const targetPaneId = `${tabType}-feed`;
+                    const targetPane = document.getElementById(targetPaneId);
+                    const fallbackUrl = HOME_PAGE_FEEDS[tabType];
+                    if (targetPane && fallbackUrl) {
+                        targetPane.style.display = 'block';
+                        fetchFeed(`#${targetPaneId}`, fallbackUrl);
+                    }
+                }
+            });
+        });
+
+        // Other original listeners (scroll, search, etc.)
+        const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
+        const newsPanel = document.querySelector(".news");
+        newsPanel.addEventListener("scroll", () => {
+            const newsSubMenu = document.getElementById("newsSubMenu");
+            if (!newsSubMenu) return;
+            const top = newsPanel.getBoundingClientRect().top;
+            const offset = newsSubMenu.offsetHeight + 50;
+            let active = 0;
+            for (let i = 0; i < feeds.length; i++) {
+                const el = document.getElementById(feeds[i]);
+                if (!el) continue;
+                const h4 = el.querySelector("h4");
+                if (!h4) continue;
+                if (h4.getBoundingClientRect().top > top + offset) break;
+                active = i;
+            }
+            const feedName = feeds[active].replace("feed-", "").toLowerCase();
+            document.querySelectorAll(".news-menu-item").forEach(item => {
+                item.classList.toggle("active", item.dataset.feed.toLowerCase() === feedName);
+            });
+        });
+
+        document.getElementById("menuSearch").addEventListener("keyup", function () {
+            const query = this.value.toLowerCase();
+            const activeFilterElem = document.querySelector(".menu-filter.active");
+            if (!activeFilterElem) return;
+            const activeFilter = activeFilterElem.dataset.filter;
+            const activeList = document.getElementById("menuList-" + activeFilter);
+            if (activeList) {
+                activeList.querySelectorAll("li").forEach(li => {
+                    li.style.display = li.textContent.toLowerCase().includes(query) ? "" : "none";
+                });
+            }
+        });
+
+        window.toggleSoccerMore = function () {
+            const section = document.getElementById("soccer-more");
+            const toggle = document.querySelector(".soccer-more-toggle");
+            const expanded = section.style.display === "block";
+            section.style.display = expanded ? "none" : "block";
+            toggle.textContent = expanded ? "More…" : "Less…";
+        };
+
+        // --- Initial Load on Page Start ---
+        const homeBreakingTab = document.querySelector('#news-Home .news-tab[data-tab="breaking"]');
+        if (homeBreakingTab) {
+            homeBreakingTab.click();
         }
     });
-
-    window.toggleSoccerMore = function () {
-        const section = document.getElementById("soccer-more");
-        const toggle = document.querySelector(".soccer-more-toggle");
-        const expanded = section.style.display === "block";
-        section.style.display = expanded ? "none" : "block";
-        toggle.textContent = expanded ? "More…" : "Less…";
-    };
-
-    // --- Initial Load on Page Start ---
-    const homeBreakingTab = document.querySelector('#news-Home .news-tab.active');
-    if (homeBreakingTab) {
-        const widgetId = homeBreakingTab.dataset.widgetId;
-        const url = homeBreakingTab.dataset.url;
-        if (widgetId) {
-            const contentPane = document.querySelector(`#${homeBreakingTab.dataset.tab}-feed`);
-            if (contentPane) {
-                loadWidget(`#${contentPane.id}`, widgetId);
-            }
-        } else if (url) {
-            const newsSection = homeBreakingTab.closest('.content-section');
-            const sectionId = newsSection.id.replace('news-', '');
-            const contentPane = newsSection.querySelector(`#${homeBreakingTab.dataset.tab}-content-${sectionId}`);
-            if (contentPane) {
-                fetchFeed(`#${contentPane.id}`, url);
-            }
-        }
-    }
-});
-
 </script>
 
 <script>
-	document.addEventListener("DOMContentLoaded", () => {
-    // --- GRAB ELEMENTS FOR COLUMN SWITCHING ---
-    const gamesColumn = document.getElementById('games-column');
-    const leagueSpecificColumn = document.getElementById('league-specific-column');
-    const f1Content = document.getElementById('f1-column-content');
-    const gamesContent = document.getElementById('tv-listings-container');
+  document.addEventListener("DOMContentLoaded", () => {
+    // ── A) Grab all four tab elements and define their order ──
+    const tabs    = Array.from(document.querySelectorAll(".headlines-tab"));
+    const sources = ["espn", "cbs", "yahoo", "fox"];
 
-    // --- NEW: FALLBACK URLs FOR THE HOME PAGE ---
-    const HOME_PAGE_FEEDS = {
-        breaking: "https://rss.app/feeds/XcFXtVdyCBGtIC6O.xml",
-        fantasy: "https://fantasynews.cbssports.com/rss/headlines/",
-        transactions: "https://www.espn.com/espn/rss/mlb/news"
-    };
+    // ── B) Keep track of which feeds already have a scroll listener ──
+    const scrollListeners = {};
 
-    // Helper function to fetch and render an XML feed
-    function fetchFeed(containerSelector, feedUrl) {
-        const container = document.querySelector(containerSelector);
-        if (!container) return;
-        // Display loading message
-        container.innerHTML = '<p style="padding: 10px; color: #9ca3af;">Loading feed...</p>';
-        fetch(feedUrl)
-            .then(res => res.text())
-            .then(str => {
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(str, "application/xml");
-                const items = Array.from(xml.querySelectorAll("item"));
-                if (items.length > 0) {
-                    const ul = document.createElement("ul");
-                    ul.style.margin = "0";
-                    ul.style.padding = "0";
-                    ul.style.listStyle = "none";
-                    items.forEach(item => {
-                        const title = item.querySelector("title")?.textContent || "No title";
-                        const link = item.querySelector("link")?.textContent || "#";
-                        const li = document.createElement("li");
-                        li.style.marginBottom = "0.5em";
-                        const a = document.createElement("a");
-                        a.href = link;
-                        a.target = "_blank";
-                        a.textContent = title;
-                        li.appendChild(a);
-                        ul.appendChild(li);
-                    });
-                    container.innerHTML = "";
-                    container.appendChild(ul);
-                    ul.querySelectorAll("a").forEach(link => {
-                        link.addEventListener("click", () => {
-                            link.classList.add("clicked");
-                        });
-                    });
-                } else {
-                    container.innerHTML = "<p style='padding: 10px;'>No items found in feed.</p>";
-                }
-            })
-            .catch(error => {
-                console.error("Error loading feed:", error);
-                container.innerHTML = "<p style='padding: 10px; color: #ef4444;'>Error loading feed.</p>";
-            });
-    }
-    
-    // NEW: Function to load the Feeder.co widget
-    function loadWidget(widgetId) {
-        const contentContainer = document.getElementById('headlines-content-MLB');
-        if (!contentContainer) return;
-        contentContainer.innerHTML = `<feeder-widget data-widget-id="${widgetId}" style="width: 100%; height: 100%;"></feeder-widget>`;
-        const script = document.createElement('script');
-        script.src = "https://widgets.feeder.co/widget.js";
-        contentContainer.appendChild(script);
-    }
+    // ── C) Function to attach a "scroll to bottom" watcher on a feed ──
+    function attachScrollWatcher(src) {
+      const feedEl = document.getElementById(src + "-feed");
+      // If there's no such element or we've already wired it, do nothing
+      if (!feedEl || scrollListeners[src]) return;
 
-    // --- Main Menu and Page Switching Logic ---
-    let selectedSection = "Home";
-    document.querySelectorAll("#menuList li").forEach(item => {
-        item.addEventListener("click", e => {
-            if (item.classList.contains("spacer-line") || item.classList.contains("soccer-more-toggle") || item.querySelector("strong")) {
-                e.stopPropagation();
-                return;
-            }
-            e.stopPropagation();
-            if (item.dataset.section) {
-                selectedSection = item.dataset.section;
-            }
-            document.querySelectorAll("#menuList li[data-section]").forEach(li => li.classList.remove("selected"));
-            item.classList.add("selected");
-            const section = item.dataset.section;
-
-            if (section === 'Home') {
-                gamesColumn.style.display = 'block';
-                leagueSpecificColumn.style.display = 'none';
-                gamesContent.style.display = 'block';
-                f1Content.style.display = 'none';
-
-                const espnTab = document.querySelector('#headlines-tabs .headlines-tab[data-source="espn"]');
-                if (espnTab) {
-                    espnTab.click();
-                }
-            } else if (section === 'FormulaOne') {
-                gamesColumn.style.display = 'block';
-                leagueSpecificColumn.style.display = 'none';
-                gamesContent.style.display = 'none';
-                f1Content.style.display = 'flex';
-            } else {
-                gamesColumn.style.display = 'none';
-                leagueSpecificColumn.style.display = 'block';
-                loadLeagueSpecificData(section);
-            }
-
-            document.querySelectorAll(".news .content-section, #social-feed-container .content-section").forEach(s => s.style.display = "none");
-
-            const news = document.getElementById("news-" + section);
-            const social = document.getElementById("social-" + section);
-            if (news) {
-                news.style.display = "block";
-                const newsSubMenu = document.getElementById("newsSubMenu");
-                if (newsSubMenu) newsSubMenu.style.display = section === "Home" ? "flex" : "none";
-                const container = document.querySelector(".news");
-                if (container) container.scrollTop = 0;
-                loadHeadlinesAndBreakingFeeds(section);
-            }
-            if (social) social.style.display = "block";
-        });
-    });
-
-    function loadHeadlinesAndBreakingFeeds(section) {
-        const newsSection = document.getElementById(`news-${section}`);
-        if (!newsSection) return;
-
-        const defaultHeadlinesTab = newsSection.querySelector('.headlines-tab.active[data-url], .headlines-tab.active[data-widget-id]');
-        if (defaultHeadlinesTab) defaultHeadlinesTab.click();
-        
-        const defaultBreakingTab = newsSection.querySelector('.news-tab[data-tab="breaking"]');
-        if (defaultBreakingTab) defaultBreakingTab.click();
-    }
-
-    // --- UNIFIED CLICK HANDLER FOR ALL NEWS TABS ---
-    
-    // Vertical Headlines Tabs (League-Specific)
-    document.querySelectorAll('.headlines-tabs-column').forEach(container => {
-        container.addEventListener('click', (event) => {
-            const clickedTab = event.target.closest('.headlines-tab');
-            if (!clickedTab) return;
-            
-            // Remove active class from all tabs in this container
-            container.querySelectorAll('.headlines-tab').forEach(tab => tab.classList.remove('active'));
-            // Add active class to the clicked tab
-            clickedTab.classList.add('active');
-
-            const rssUrl = clickedTab.dataset.url;
-            const widgetId = clickedTab.dataset.widgetId;
-
-            if (widgetId) {
-                loadWidget(widgetId);
-            } else if (rssUrl) {
-                fetchFeed(`#headlines-content-${selectedSection}`, rssUrl);
-            }
-        });
-    });
-
-    // Horizontal News Tabs (Breaking, etc.) - HANDLES BOTH HOME & LEAGUE PAGES
-    document.querySelectorAll(".news").forEach(newsContainer => {
-        newsContainer.addEventListener('click', (event) => {
-            const clickedTab = event.target.closest('.news-tab');
-            if (!clickedTab) return;
-
-            const tabType = clickedTab.dataset.tab;
-            const dynamicUrl = clickedTab.dataset.url;
-
-            clickedTab.parentElement.querySelectorAll('.news-tab').forEach(tab => tab.classList.remove('active'));
-            clickedTab.classList.add('active');
-
-            if (dynamicUrl) {
-                // Logic for League Pages
-                const newsSection = clickedTab.closest('.content-section');
-                if (!newsSection) return;
-                newsSection.querySelectorAll('.news-content-pane').forEach(pane => pane.style.display = 'none');
-                const sectionId = newsSection.id.replace('news-', '');
-                const contentPane = newsSection.querySelector(`#${tabType}-content-${sectionId}`);
-                if (contentPane) {
-                    contentPane.style.display = 'block';
-                    fetchFeed(`#${contentPane.id}`, dynamicUrl);
-                }
-            } else {
-                // Fallback Logic for Home Page
-                document.querySelectorAll('#news-Home .news-content-pane').forEach(pane => pane.style.display = 'none');
-                const targetPaneId = `${tabType}-feed`;
-                const targetPane = document.getElementById(targetPaneId);
-                const fallbackUrl = HOME_PAGE_FEEDS[tabType];
-                if (targetPane && fallbackUrl) {
-                    targetPane.style.display = 'block';
-                    fetchFeed(`#${targetPaneId}`, fallbackUrl);
-                }
-            }
-        });
-    });
-
-    // Other original listeners (scroll, search, etc.)
-    const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
-    const newsPanel = document.querySelector(".news");
-    newsPanel.addEventListener("scroll", () => {
-        const newsSubMenu = document.getElementById("newsSubMenu");
-        if (!newsSubMenu) return;
-        const top = newsPanel.getBoundingClientRect().top;
-        const offset = newsSubMenu.offsetHeight + 50;
-        let active = 0;
-        for (let i = 0; i < feeds.length; i++) {
-            const el = document.getElementById(feeds[i]);
-            if (!el) continue;
-            const h4 = el.querySelector("h4");
-            if (!h4) continue;
-            if (h4.getBoundingClientRect().top > top + offset) break;
-            active = i;
+      const onScroll = () => {
+        // When scrolled to (or within 1px of) bottom, auto‐advance:
+        if (feedEl.scrollHeight - feedEl.scrollTop - feedEl.clientHeight <= 1) {
+          const idx     = sources.indexOf(src);
+          const nextIdx = idx + 1;
+          if (nextIdx < sources.length) {
+            const nextTab = document.querySelector(
+              `.headlines-tab[data-source="${sources[nextIdx]}"]`
+            );
+            if (nextTab) nextTab.click();
+          }
         }
-        const feedName = feeds[active].replace("feed-", "").toLowerCase();
-        document.querySelectorAll(".news-menu-item").forEach(item => {
-            item.classList.toggle("active", item.dataset.feed.toLowerCase() === feedName);
-        });
-    });
+      };
 
-    document.getElementById("menuSearch").addEventListener("keyup", function () {
-        const query = this.value.toLowerCase();
-        const activeFilterElem = document.querySelector(".menu-filter.active");
-        if (!activeFilterElem) return;
-        const activeFilter = activeFilterElem.dataset.filter;
-        const activeList = document.getElementById("menuList-" + activeFilter);
-        if (activeList) {
-            activeList.querySelectorAll("li").forEach(li => {
-                li.style.display = li.textContent.toLowerCase().includes(query) ? "" : "none";
-            });
-        }
-    });
-
-    window.toggleSoccerMore = function () {
-        const section = document.getElementById("soccer-more");
-        const toggle = document.querySelector(".soccer-more-toggle");
-        const expanded = section.style.display === "block";
-        section.style.display = expanded ? "none" : "block";
-        toggle.textContent = expanded ? "More…" : "Less…";
-    };
-
-    // --- Initial Load on Page Start ---
-    const homeBreakingTab = document.querySelector('#news-Home .news-tab[data-tab="breaking"]');
-    if (homeBreakingTab) {
-        homeBreakingTab.click();
+      feedEl.addEventListener("scroll", onScroll);
+      scrollListeners[src] = onScroll;
     }
-});
+
+    // ── D) Function to activate (highlight) exactly one tab + feed ──
+    function activateSource(src) {
+      // 1) Toggle "active" class on tabs
+      tabs.forEach(t => t.classList.toggle(
+        "active",
+        t.getAttribute("data-source") === src
+      ));
+
+      // 2) Hide all four feed‐divs, then show only the chosen one
+      sources.forEach(s => {
+        const div = document.getElementById(s + "-feed");
+        if (div) {
+          div.style.display = (s === src) ? "block" : "none";
+        }
+      });
+
+      // 3) After switching, (re‐)attach the scroll watcher to the newly visible feed
+      attachScrollWatcher(src);
+    }
+
+    // ── E) Add click listeners to each .headlines-tab ──
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        const src = tab.getAttribute("data-source"); // "espn" / "cbs" / etc.
+        activateSource(src);
+      });
+    });
+
+    // ── F) On initial load, activate ESPN by default ──
+    activateSource("espn");
+  });
 </script>
 	 
 
@@ -4113,8 +3901,9 @@ if (gamesTabsContainer) {
 }
 });
 </script>
- 
+ <script src="https://widgets.feeder.co/widget.js"></script>
   </body>
 </html>
 
     
+
