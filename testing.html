@@ -2878,31 +2878,29 @@ document.querySelectorAll('.headlines-tabs-column').forEach(container => {
             // Clear existing content
             targetContent.innerHTML = '';
             
-          if (feedType === 'feeder') {
-    // Handle Feeder widget
-    const widgetId = clickedTab.dataset.widgetId;
-    if (widgetId) {
-        // Create the element first
-        const feederWidget = document.createElement('feeder-widget');
+            if (feedType === 'feeder') {
+                // Handle Feeder widget
+                const widgetId = clickedTab.dataset.widgetId;
+                if (widgetId) {
+                    // Create the element first
+                    const feederWidget = document.createElement('feeder-widget');
 
-        // Set attributes BEFORE appending to DOM
-        feederWidget.setAttribute('data-widget-id', widgetId);
-        feederWidget.style.width = '100%';
-        feederWidget.style.height = '100%';
+                    // Set attributes BEFORE appending to DOM
+                    feederWidget.setAttribute('data-widget-id', widgetId);
+                    feederWidget.style.width = '100%';
+                    feederWidget.style.height = '100%';
 
-        // Append to target container
-        targetContent.appendChild(feederWidget);
+                    // Append to target container
+                    targetContent.appendChild(feederWidget);
 
-        // Ensure Feeder script is loaded
-        if (!document.querySelector('script[src*="widgets.feeder.co"]')) {
-            const script = document.createElement('script');
-            script.src = 'https://widgets.feeder.co/widget.js';
-            script.async = true;
-            document.head.appendChild(script);
-        }
-    }
-}
-
+                    // Ensure Feeder script is loaded
+                    if (!document.querySelector('script[src*="widgets.feeder.co"]')) {
+                        const script = document.createElement('script');
+                        script.src = 'https://widgets.feeder.co/widget.js';
+                        script.async = true;
+                        document.head.appendChild(script);
+                    }
+                }
             } else if (feedType === 'rss') {
                 // Handle RSS feed
                 const feedUrl = clickedTab.dataset.url;
@@ -2912,6 +2910,14 @@ document.querySelectorAll('.headlines-tabs-column').forEach(container => {
             }
         }
     });
+    
+    // Set initial active tab content on page load
+    const activeTab = container.querySelector('.headlines-tab.active');
+    if (activeTab) {
+        activeTab.click(); // This will trigger the click handler and load the content
+    }
+});
+
     
     // Set initial active tab content on page load
     const activeTab = container.querySelector('.headlines-tab.active');
