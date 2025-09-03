@@ -2883,9 +2883,13 @@ document.querySelectorAll('.headlines-tabs-column').forEach(container => {
                 const widgetId = clickedTab.dataset.widgetId;
                 if (widgetId) {
                     const feederWidget = document.createElement('feeder-widget');
+                    
+                    // Set properties BEFORE adding to DOM
                     feederWidget.dataset.widgetId = widgetId;
                     feederWidget.style.width = '100%';
                     feederWidget.style.height = '100%';
+                    
+                    // Now add to DOM
                     targetContent.appendChild(feederWidget);
                     
                     // Ensure Feeder script is loaded
