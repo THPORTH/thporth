@@ -1776,13 +1776,13 @@ div[id^="breaking-content-"] a:hover {
             <div class="news-section-header">Headlines</div>
             <div style="display: flex; height: calc(100% - 18px);">
                
-                <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                    <div class="headlines-tab active" data-url="https://rss.app/feeds/SBOH0Loz05FALZrr.xml">MLB.com</div>
-                    <div class="headlines-tab" data-url="https://www.espn.com/espn/rss/mlb/news">ESPN</div>
-                    <div class="headlines-tab" data-url="https://feeder.co/widget/334fe3ebbc">The Athletic</div>
-                    <div class="headlines-tab" data-url="https://rss.app/feeds/LVRMpOeA9vyT8JOC.xml">FanGraphs</div>
-                    <div class="headlines-tab" data-url="https://rss.app/feeds/RcKd20ITPLp5Y4AR.xml">FOX</div>
-                </div>
+               <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+    <div class="headlines-tab active" data-widget-id="SBOH0Loz05FALZrr">MLB.com</div>
+    <div class="headlines-tab" data-widget-id="ESPN_MLB_WIDGET_ID">ESPN</div>
+    <div class="headlines-tab" data-widget-id="334fe3ebbc">The Athletic</div>
+    <div class="headlines-tab" data-widget-id="FANGRAPHS_WIDGET_ID">FanGraphs</div>
+    <div class="headlines-tab" data-widget-id="FOX_MLB_WIDGET_ID">FOX</div>
+</div>
                
                 <div id="headlines-content-MLB" class="news-feed-content" style="width: 80%; overflow-y: auto;">
                    
@@ -2861,59 +2861,38 @@ div[id^="breaking-content-"] a:hover {
 
         // --- UNIFIED CLICK HANDLER FOR ALL NEWS TABS ---
         
-     // Vertical Headlines Tabs (League-Specific)
+   // Vertical Headlines Tabs (League-Specific) - Feeder Widgets Only
 document.querySelectorAll('.headlines-tabs-column').forEach(container => {
     container.addEventListener('click', (event) => {
-        const clickedTab = event.target.closest('.headlines-tab[data-url]');
+        const clickedTab = event.target.closest('.headlines-tab[data-widget-id]');
         if (clickedTab) {
             container.querySelectorAll('.headlines-tab').forEach(tab => tab.classList.remove('active'));
             clickedTab.classList.add('active');
             
-            const feedUrl = clickedTab.dataset.url;
+            const widgetId = clickedTab.dataset.widgetId;
             const targetContentId = `headlines-content-${selectedSection}`;
             const targetContent = document.getElementById(targetContentId);
             
-            if (!targetContent) return;
+            if (!targetContent || !widgetId) return;
             
-            // Check if this is a Feeder widget URL
-            if (feedUrl && feedUrl.includes('feeder.co')) {
-                // Clear existing content
-                targetContent.innerHTML = '';
-                
-                // Ensure Feeder script is loaded FIRST
-                if (!document.querySelector('script[src*="widgets.feeder.co"]')) {
-                    const script = document.createElement('script');
-                    script.src = 'https://widgets.feeder.co/widget.js';
-                    script.async = false; // Make it synchronous
-                    document.head.appendChild(script);
-                    
-                    // Wait for script to load, then create widget
-                    script.onload = () => {
-                        createFeederWidget(targetContent, '334fe3ebbc');
-                    };
-                } else {
-                    // Script already loaded, create widget immediately
-                    createFeederWidget(targetContent, '334fe3ebbc');
-                }
-            } else {
-                // Load RSS feed using existing logic
-                fetchFeed(`#${targetContentId}`, feedUrl);
+            // Clear existing content and create Feeder widget
+            targetContent.innerHTML = '';
+            const feederWidget = document.createElement('feeder-widget');
+            feederWidget.dataset.widgetId = widgetId;
+            feederWidget.style.width = '100%';
+            feederWidget.style.height = '100%';
+            targetContent.appendChild(feederWidget);
+            
+            // Ensure Feeder script is loaded
+            if (!document.querySelector('script[src*="widgets.feeder.co"]')) {
+                const script = document.createElement('script');
+                script.src = 'https://widgets.feeder.co/widget.js';
+                script.async = true;
+                document.head.appendChild(script);
             }
         }
     });
 });
-
-function createFeederWidget(container, widgetId) {
-    const feederWidget = document.createElement('feeder-widget');
-    
-    // Set all properties BEFORE adding to DOM
-    feederWidget.dataset.widgetId = widgetId;
-    feederWidget.style.width = '100%';
-    feederWidget.style.height = '100%';
-    
-    // Now add to DOM
-    container.appendChild(feederWidget);
-}
 
         // Horizontal News Tabs (Breaking, etc.) - HANDLES BOTH HOME & LEAGUE PAGES
         document.querySelectorAll(".news").forEach(newsContainer => {
