@@ -2905,9 +2905,13 @@ document.querySelectorAll('.headlines-tabs-column').forEach(container => {
 
 function createFeederWidget(container, widgetId) {
     const feederWidget = document.createElement('feeder-widget');
-    feederWidget.setAttribute('data-widget-id', widgetId);
+    
+    // Set all properties BEFORE adding to DOM
+    feederWidget.dataset.widgetId = widgetId;
     feederWidget.style.width = '100%';
     feederWidget.style.height = '100%';
+    
+    // Now add to DOM
     container.appendChild(feederWidget);
 }
 
