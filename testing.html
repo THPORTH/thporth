@@ -2724,12 +2724,15 @@ div[id^="breaking-content-"] a:hover {
       </script>
 
    <script>
-   document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", () => {
     // --- GRAB ELEMENTS FOR COLUMN SWITCHING ---
     const gamesColumn = document.getElementById('games-column');
     const leagueSpecificColumn = document.getElementById('league-specific-column');
     const f1Content = document.getElementById('f1-column-content');
     const gamesContent = document.getElementById('tv-listings-container');
+
+    // Flag to ensure the widget script is only loaded once
+    let feederScriptLoaded = false;
 
     // --- NEW: FALLBACK WIDGET IDs FOR THE HOME PAGE ---
     // Note: These IDs must be replaced with your actual Feeder.co widget IDs.
@@ -2789,9 +2792,14 @@ div[id^="breaking-content-"] a:hover {
         const container = document.querySelector(containerSelector);
         if (!container) return;
         container.innerHTML = `<feeder-widget data-widget-id="${widgetId}" style="width: 100%; height: 100%;"></feeder-widget>`;
-        const script = document.createElement('script');
-        script.src = "https://widgets.feeder.co/widget.js";
-        container.appendChild(script);
+        
+        // Only load the script if it hasn't been loaded already
+        if (!feederScriptLoaded) {
+            const script = document.createElement('script');
+            script.src = "https://widgets.feeder.co/widget.js";
+            document.body.appendChild(script);
+            feederScriptLoaded = true;
+        }
     }
 
     // --- Main Menu and Page Switching Logic ---
@@ -2823,6 +2831,9 @@ div[id^="breaking-content-"] a:hover {
             } else {
                 gamesColumn.style.display = 'none';
                 leagueSpecificColumn.style.display = 'block';
+                // Note: loadLeagueSpecificData is not defined in the provided code,
+                // so this function call may cause an error.
+                // Assuming this is a placeholder for your existing logic.
                 loadLeagueSpecificData(section);
             }
 
@@ -2961,7 +2972,6 @@ div[id^="breaking-content-"] a:hover {
     // --- Initial Load on Page Start ---
     const homeBreakingTab = document.querySelector('#news-Home .news-tab.active');
     if (homeBreakingTab) {
-        // Correctly handle the initial load for tabs with or without widgets
         const widgetId = homeBreakingTab.dataset.widgetId;
         const url = homeBreakingTab.dataset.url;
         if (widgetId) {
@@ -2979,6 +2989,7 @@ div[id^="breaking-content-"] a:hover {
         }
     }
 });
+
 </script>
 
 <script>
@@ -4102,7 +4113,7 @@ if (gamesTabsContainer) {
 }
 });
 </script>
- <script src="https://widgets.feeder.co/widget.js"></script>
+ 
   </body>
 </html>
 
