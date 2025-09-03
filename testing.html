@@ -2861,7 +2861,7 @@ div[id^="breaking-content-"] a:hover {
 
         // --- UNIFIED CLICK HANDLER FOR ALL NEWS TABS ---
         
-       // Vertical Headlines Tabs (League-Specific)
+     // Vertical Headlines Tabs (League-Specific)
 document.querySelectorAll('.headlines-tabs-column').forEach(container => {
     container.addEventListener('click', (event) => {
         const clickedTab = event.target.closest('.headlines-tab[data-url]');
@@ -2877,20 +2877,23 @@ document.querySelectorAll('.headlines-tabs-column').forEach(container => {
             
             // Check if this is a Feeder widget URL
             if (feedUrl && feedUrl.includes('feeder.co')) {
-                // Clear existing content and create Feeder widget
+                // Clear existing content
                 targetContent.innerHTML = '';
-                const feederWidget = document.createElement('feeder-widget');
-                feederWidget.setAttribute('data-widget-id', '334fe3ebbc'); // Your widget ID
-                feederWidget.style.width = '100%';
-                feederWidget.style.height = '100%';
-                targetContent.appendChild(feederWidget);
                 
-                // Ensure Feeder script is loaded
+                // Ensure Feeder script is loaded FIRST
                 if (!document.querySelector('script[src*="widgets.feeder.co"]')) {
                     const script = document.createElement('script');
                     script.src = 'https://widgets.feeder.co/widget.js';
-                    script.async = true;
+                    script.async = false; // Make it synchronous
                     document.head.appendChild(script);
+                    
+                    // Wait for script to load, then create widget
+                    script.onload = () => {
+                        createFeederWidget(targetContent, '334fe3ebbc');
+                    };
+                } else {
+                    // Script already loaded, create widget immediately
+                    createFeederWidget(targetContent, '334fe3ebbc');
                 }
             } else {
                 // Load RSS feed using existing logic
@@ -2899,6 +2902,14 @@ document.querySelectorAll('.headlines-tabs-column').forEach(container => {
         }
     });
 });
+
+function createFeederWidget(container, widgetId) {
+    const feederWidget = document.createElement('feeder-widget');
+    feederWidget.setAttribute('data-widget-id', widgetId);
+    feederWidget.style.width = '100%';
+    feederWidget.style.height = '100%';
+    container.appendChild(feederWidget);
+}
 
         // Horizontal News Tabs (Breaking, etc.) - HANDLES BOTH HOME & LEAGUE PAGES
         document.querySelectorAll(".news").forEach(newsContainer => {
