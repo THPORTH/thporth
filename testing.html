@@ -1769,18 +1769,38 @@ div[id^="breaking-content-"] a:hover {
   </div>
 </div>
 
-    <div id="news-MLB" class="content-section" style="display: none; height: calc(100% - 18px);">
+      <div id="news-MLB" class="content-section" style="display: none; height: calc(100% - 18px);">
     <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-        
+       
         <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-            <!-- Horizontal tabs are now in the header -->
-            <div class="news-section-header" style="display: flex; flex-direction: row; justify-content: flex-start; gap: 10px;">
-                <div class="news-tab active" data-url="https://rss.app/feeds/SBOH0Loz05FALZrr.xml">Headlines</div>
-                <div class="news-tab" data-url="https://rss.app/feeds/YJjVVRof201ZO9zO.xml">Transactions</div>
+            <div class="news-section-header">Headlines</div>
+            <div style="display: flex; height: calc(100% - 18px);">
+               
+                <div id="headlines-tabs-MLB" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
+                    <div class="headlines-tab active" data-url="https://rss.app/feeds/SBOH0Loz05FALZrr.xml">MLB.com</div>
+                    <div class="headlines-tab" data-url="https://www.espn.com/espn/rss/mlb/news">ESPN</div>
+                    <div class="headlines-tab" data-url="https://theathletic.com/mlb/feed/">The Athletic</div>
+                    <div class="headlines-tab" data-url="https://rss.app/feeds/LVRMpOeA9vyT8JOC.xml">FanGraphs</div>
+                    <div class="headlines-tab" data-url="https://rss.app/feeds/RcKd20ITPLp5Y4AR.xml">FOX</div>
+                </div>
+               
+                <div id="headlines-content-MLB" class="news-feed-content" style="width: 80%; overflow-y: auto;">
+                   
+                </div>
             </div>
-            
-            <div id="headlines-content-MLB" class="news-feed-content" style="height: calc(100% - 40px); overflow-y: auto;">
-                <!-- The content area now fills the remaining space -->
+        </div>
+       
+        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
+            <div class="news-section-header breaking-tabs-header">
+                <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/AYtjYuHSzf8VXPWV.xml">Breaking</span>
+                <span class="news-tab" data-tab="fantasy" data-url="YOUR_MLB_FANTASY_FEED_URL">Fantasy</span>
+                <span class="news-tab" data-tab="transactions" data-url="YOUR_MLB_TRANSACTIONS_FEED_URL">Transactions</span>
+            </div>
+            <div class="news-content-pane" id="breaking-content-MLB" style="display: block;">
+            </div>
+            <div class="news-content-pane" id="fantasy-content-MLB" style="display:none;">
+            </div>
+            <div class="news-content-pane" id="transactions-content-MLB" style="display:none;">
             </div>
         </div>
     </div>
@@ -3885,3 +3905,4 @@ if (gamesTabsContainer) {
 </html>
 
     
+
