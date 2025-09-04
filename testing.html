@@ -2840,54 +2840,46 @@ div[id^="breaking-content-"] a:hover {
 
         // --- UNIFIED CLICK HANDLER FOR ALL NEWS TABS ---
         
-        // Vertical Headlines Tabs (League-Specific)
-        document.querySelectorAll('.headlines-tabs-column').forEach(container => {
-            container.addEventListener('click', (event) => {
-                const clickedTab = event.target.closest('.headlines-tab[data-url]');
-                if (clickedTab) {
-                    container.querySelectorAll('.headlines-tab').forEach(tab => tab.classList.remove('active'));
-                    clickedTab.classList.add('active');
-                    fetchFeed(`#headlines-content-${selectedSection}`, clickedTab.dataset.url);
-                }
-            });
+    // This script now handles the horizontal tabs within the news section header.
+
+// Make the "Headlines" tab active on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Find the "Headlines" tab to activate it on page load
+    const headlinesTab = document.querySelector('.news-tab[data-url="https://rss.app/feeds/SBOH0Loz05FALZrr.xml"]');
+    if (headlinesTab) {
+        // Programmatically click the tab to trigger the existing event listener
+        headlinesTab.click();
+    }
+});
+
+document.querySelectorAll('.news-section-header').forEach(header => {
+    header.addEventListener('click', (event) => {
+        // Find the clicked element that is a news tab
+        const clickedTab = event.target.closest('.news-tab');
+        if (!clickedTab) {
+            return;
+        }
+
+        // Get the parent container to scope the active class removal
+        const tabContainer = clickedTab.parentElement;
+
+        // Remove the 'active' class from all tabs in this container
+        tabContainer.querySelectorAll('.news-tab').forEach(tab => {
+            tab.classList.remove('active');
         });
 
-        // Horizontal News Tabs (Breaking, etc.) - HANDLES BOTH HOME & LEAGUE PAGES
-        document.querySelectorAll(".news").forEach(newsContainer => {
-            newsContainer.addEventListener('click', (event) => {
-                const clickedTab = event.target.closest('.news-tab');
-                if (!clickedTab) return;
+        // Add the 'active' class to the clicked tab
+        clickedTab.classList.add('active');
 
-                const tabType = clickedTab.dataset.tab;
-                const dynamicUrl = clickedTab.dataset.url;
+        // Since all horizontal tabs will load into the same content area,
+        // we can directly target the correct content pane.
+        const contentPaneId = clickedTab.closest('.news-section').querySelector('.news-feed-content').id;
+        
+        // Fetch the new content using the data-url
+        fetchFeed(`#${contentPaneId}`, clickedTab.dataset.url);
+    });
+});
 
-                clickedTab.parentElement.querySelectorAll('.news-tab').forEach(tab => tab.classList.remove('active'));
-                clickedTab.classList.add('active');
-
-                if (dynamicUrl) {
-                    // Logic for League Pages
-                    const newsSection = clickedTab.closest('.content-section');
-                    if (!newsSection) return;
-                    newsSection.querySelectorAll('.news-content-pane').forEach(pane => pane.style.display = 'none');
-                    const sectionId = newsSection.id.replace('news-', '');
-                    const contentPane = newsSection.querySelector(`#${tabType}-content-${sectionId}`);
-                    if (contentPane) {
-                        contentPane.style.display = 'block';
-                        fetchFeed(`#${contentPane.id}`, dynamicUrl);
-                    }
-                } else {
-                    // Fallback Logic for Home Page
-                    document.querySelectorAll('#news-Home .news-content-pane').forEach(pane => pane.style.display = 'none');
-                    const targetPaneId = `${tabType}-feed`;
-                    const targetPane = document.getElementById(targetPaneId);
-                    const fallbackUrl = HOME_PAGE_FEEDS[tabType];
-                    if (targetPane && fallbackUrl) {
-                        targetPane.style.display = 'block';
-                        fetchFeed(`#${targetPaneId}`, fallbackUrl);
-                    }
-                }
-            });
-        });
 
         // Other original listeners (scroll, search, etc.)
         const feeds = ["feed-ESPN", "feed-CBS", "feed-FOX", "feed-Yahoo"];
