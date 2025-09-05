@@ -2087,15 +2087,17 @@ div[id^="breaking-content-"] a:hover {
         <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
             <div class="news-section-header">NWSL News</div>
             
-            <div id="nwsltabs-NWSL" class="headlines-tabs">
+            <!-- Tabs at the top -->
+            <div id="nwsltabs-NWSL" class="headlines-tabs" style="display: flex; border-bottom: 1px solid #374151;">
                 <div class="headlines-tab active" data-source="headlines" data-url="https://rss.app/feeds/tnA7WHOi3hNDP2Wr.xml">Headlines</div>
                 <div class="headlines-tab" data-source="breaking" data-url="https://rss.app/feeds/PE7NGL6ftSREkzv9.xml">Breaking</div>
                 <div class="headlines-tab" data-source="reddit" data-url="https://rss.app/feeds/HL9rA42ELIkqWXJg.xml">Reddit</div>
             </div>
             
-            <div class="news-feed-content" id="headlines-feed-NWSL" style="display: block;"></div>
-            <div class="news-feed-content" id="breaking-feed-NWSL" style="display: none;"></div>
-            <div class="news-feed-content" id="reddit-feed-NWSL" style="display: none;"></div>
+            <!-- RSS feed content below tabs, taking full height -->
+            <div class="news-feed-content" id="headlines-feed-NWSL" style="display: block; height: calc(100% - 36px); overflow-y: auto;"></div>
+            <div class="news-feed-content" id="breaking-feed-NWSL" style="display: none; height: calc(100% - 36px); overflow-y: auto;"></div>
+            <div class="news-feed-content" id="reddit-feed-NWSL" style="display: none; height: calc(100% - 36px); overflow-y: auto;"></div>
         </div>
 
     </div>
@@ -3899,87 +3901,87 @@ if (gamesTabsContainer) {
 });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const nwsltabs = document.getElementById('nwsltabs-NWSL');
+<script>document.addEventListener('DOMContentLoaded', function() {
+    const nwsltabs = document.getElementById('nwsltabs-NWSL');
 
-        const feedMapNWSL = {
-            headlines: "https://rss.app/feeds/tnA7WHOi3hNDP2Wr.xml",
-            breaking: "https://rss.app/feeds/PE7NGL6ftSREkzv9.xml",
-            reddit: "https://rss.app/feeds/HL9rA42ELIkqWXJg.xml"
-        };
+    const feedMapNWSL = {
+        headlines: "https://rss.app/feeds/tnA7WHOi3hNDP2Wr.xml",
+        breaking: "https://rss.app/feeds/PE7NGL6ftSREkzv9.xml",
+        reddit: "https://rss.app/feeds/HL9rA42ELIkqWXJg.xml"
+    };
+    
+    function fetchFeedNWSL(targetId, url) {
+        const contentPane = document.querySelector(targetId);
+        if (!contentPane) return;
         
-        function fetchFeedNWSL(targetId, url) {
-            const contentPane = document.querySelector(targetId);
-            if (!contentPane) return;
-            
-            contentPane.innerHTML = '<p>Loading...</p>';
-            
-            const proxyUrl = 'https://api.allorigins.win/raw?url=';
-            const finalUrl = proxyUrl + encodeURIComponent(url);
-            
-            fetch(finalUrl)
-                .then(response => response.text())
-                .then(str => {
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(str, "text/xml");
+        contentPane.innerHTML = '<p>Loading...</p>';
+        
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const finalUrl = proxyUrl + encodeURIComponent(url);
+        
+        fetch(finalUrl)
+            .then(response => response.text())
+            .then(str => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(str, "text/xml");
+                
+                const items = xmlDoc.querySelectorAll("item");
+                let html = '<ul style="margin: 0; padding: 0; list-style: none;">';
+                items.forEach(el => {
+                    const title = el.querySelector("title")?.textContent || 'No title';
+                    const link = el.querySelector("link")?.textContent || '#';
                     
-                    const items = xmlDoc.querySelectorAll("item");
-                    let html = '<ul>';
-                    items.forEach(el => {
-                        const title = el.querySelector("title")?.textContent || 'No title';
-                        const link = el.querySelector("link")?.textContent || '#';
-                        const description = el.querySelector("description")?.textContent || '';
-                        
-                        html += `
-                            <li>
-                                <a href="${link}" target="_blank">
-                                    <h4>${title}</h4>
-                                    <p>${description}</p>
-                                </a>
-                            </li>
-                        `;
-                    });
-                    html += '</ul>';
-                    contentPane.innerHTML = html;
-                })
-                .catch(error => {
-                    console.error("Error fetching RSS feed:", error);
-                    contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+                    html += `
+                        <li style="margin-bottom: 0.5em; padding: 4px 0; border-bottom: 1px solid #eee;">
+                            <a href="${link}" target="_blank" style="text-decoration: none; color: inherit;">
+                                ${title}
+                            </a>
+                        </li>
+                    `;
                 });
-        }
-        
-        if (nwsltabs) {
-            nwsltabs.addEventListener('click', function(e) {
-                if (e.target.classList.contains('headlines-tab')) {
-                    document.querySelectorAll('#news-NWSL .news-feed-content').forEach(pane => {
-                        pane.style.display = 'none';
-                    });
-                    
-                    document.querySelectorAll('#nwsltabs-NWSL .headlines-tab').forEach(tab => {
-                        tab.classList.remove('active');
-                    });
-                    
-                    const source = e.target.dataset.source;
-                    const targetPane = document.getElementById(source + '-feed-NWSL');
-                    if (targetPane) {
-                        targetPane.style.display = 'block';
-                        e.target.classList.add('active');
-                    }
-                    
-                    if (feedMapNWSL[source]) {
-                        fetchFeedNWSL(`#${source}-feed-NWSL`, feedMapNWSL[source]);
-                    }
-                }
+                html += '</ul>';
+                contentPane.innerHTML = html;
+            })
+            .catch(error => {
+                console.error("Error fetching RSS feed:", error);
+                contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
             });
-            
-            const initialActiveTab = document.querySelector('#nwsltabs-NWSL .headlines-tab.active');
-            if (initialActiveTab) {
-                const source = initialActiveTab.dataset.source;
-                fetchFeedNWSL(`#${source}-feed-NWSL`, feedMapNWSL[source]);
+    }
+    
+    if (nwsltabs) {
+        nwsltabs.addEventListener('click', function(e) {
+            if (e.target.classList.contains('headlines-tab')) {
+                // Hide all content panes
+                document.querySelectorAll('#news-NWSL .news-feed-content').forEach(pane => {
+                    pane.style.display = 'none';
+                });
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('#nwsltabs-NWSL .headlines-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                const source = e.target.dataset.source;
+                const targetPane = document.getElementById(source + '-feed-NWSL');
+                if (targetPane) {
+                    targetPane.style.display = 'block';
+                    e.target.classList.add('active');
+                }
+                
+                if (feedMapNWSL[source]) {
+                    fetchFeedNWSL(`#${source}-feed-NWSL`, feedMapNWSL[source]);
+                }
             }
+        });
+        
+        // Load initial tab content
+        const initialActiveTab = document.querySelector('#nwsltabs-NWSL .headlines-tab.active');
+        if (initialActiveTab) {
+            const source = initialActiveTab.dataset.source;
+            fetchFeedNWSL(`#${source}-feed-NWSL`, feedMapNWSL[source]);
         }
-    });
+    }
+});
 </script>
  
   </body>
