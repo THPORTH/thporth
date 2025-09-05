@@ -3915,6 +3915,84 @@ if (gamesTabsContainer) {
 }
 });
 </script>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+    const newsTabsContainer = document.querySelector('#news-LigaMX .news-section-header');
+    const newsContentPane = document.getElementById('news-content-pane-LigaMX');
+
+    // Function to fetch and display the RSS feed
+    function fetchAndDisplayRSS(url) {
+        // Display a loading message
+        newsContentPane.innerHTML = '<p>Loading...</p>';
+
+        // Use a proxy to avoid CORS issues if needed
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const finalUrl = proxyUrl + encodeURIComponent(url);
+
+        fetch(finalUrl)
+            .then(response => response.text())
+            .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+            .then(data => {
+                const items = data.querySelectorAll("item");
+                let html = '<ul>';
+                items.forEach(el => {
+                    const title = el.querySelector("title")?.textContent || 'No title';
+                    const link = el.querySelector("link")?.textContent || '#';
+                    const description = el.querySelector("description")?.textContent || '';
+                    
+                    // Basic HTML for each news item
+                    html += `
+                        <li>
+                            <a href="${link}" target="_blank">
+                                <h4>${title}</h4>
+                                <p>${description}</p>
+                            </a>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+                newsContentPane.innerHTML = html;
+            })
+            .catch(error => {
+                console.error("Error fetching RSS feed:", error);
+                newsContentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+            });
+    }
+
+    // Add click event listener to the tabs container
+    if (newsTabsContainer) {
+        newsTabsContainer.addEventListener('click', function(event) {
+            const clickedTab = event.target;
+
+            // Check if the clicked element is a tab
+            if (clickedTab.classList.contains('news-tab')) {
+                // Remove 'active' class from all tabs
+                document.querySelectorAll('.news-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+
+                // Add 'active' class to the clicked tab
+                clickedTab.classList.add('active');
+
+                // Get the URL from the data-url attribute
+                const urlToFetch = clickedTab.dataset.url;
+                
+                // Call the function to fetch and display the new content
+                if (urlToFetch) {
+                    fetchAndDisplayRSS(urlToFetch);
+                }
+            }
+        });
+
+        // Initial load: load the content for the default active tab
+        const initialActiveTab = document.querySelector('#news-LigaMX .news-tab.active');
+        if (initialActiveTab) {
+            fetchAndDisplayRSS(initialActiveTab.dataset.url);
+        }
+    }
+});
+		</script>
  
   </body>
 </html>
