@@ -2106,17 +2106,21 @@ div[id^="breaking-content-"] a:hover {
 
 <div id="news-NWSL" class="content-section" style="display: none; height: calc(100% - 18px);">
     <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-            <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-NWSL" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                    <div class="headlines-tab active" data-url="https://rss.app/feeds/tnA7WHOi3hNDP2Wr.xml">Headlines</div>
-                    <div class="headlines-tab" data-url="https://rss.app/feeds/PE7NGL6ftSREkzv9.xml">Breaking</div>
-                    <div class="headlines-tab" data-url="https://rss.app/feeds/HL9rA42ELIkqWXJg.xml">Reddit</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
-                </div>
-                <div id="headlines-content-NWSL" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
+        
+        <div class="news-section headlines-section" style="flex: 1 1 100%; min-height: 0;">
+            <!-- Tabs at the top -->
+            <div id="nwsltabs-NWSL" class="headlines-tabs" style="display: flex; border-bottom: 1px solid #374151;">
+                <div class="headlines-tab active" data-source="headlines" data-url="https://rss.app/feeds/tnA7WHOi3hNDP2Wr.xml">Headlines</div>
+                <div class="headlines-tab" data-source="breaking" data-url="https://rss.app/feeds/PE7NGL6ftSREkzv9.xml">Breaking</div>
+                <div class="headlines-tab" data-source="reddit" data-url="https://rss.app/feeds/HL9rA42ELIkqWXJg.xml">Reddit</div>
             </div>
+            
+            <!-- RSS feed content below tabs, taking full height -->
+            <div class="news-feed-content" id="headlines-feed-NWSL" style="display: block; height: calc(100% - 18px); overflow-y: auto;"></div>
+            <div class="news-feed-content" id="breaking-feed-NWSL" style="display: none; height: calc(100% - 18px); overflow-y: auto;"></div>
+            <div class="news-feed-content" id="reddit-feed-NWSL" style="display: none; height: calc(100% - 18px); overflow-y: auto;"></div>
         </div>
+
     </div>
 </div>
 		  
@@ -4005,4 +4009,3 @@ if (gamesTabsContainer) {
 </html>
 
     
-
