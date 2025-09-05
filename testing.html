@@ -2083,21 +2083,19 @@ div[id^="breaking-content-"] a:hover {
 
 <div id="news-LigaMX" class="content-section" style="display: none; height: calc(100% - 18px);">
     <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
+        
         <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-            <div class="news-section-header">Headlines</div>
-            <div style="display: flex; height: calc(100% - 18px);">
-                <span class="news-tab active" data-tab="headlines" data-url="https://rss.app/feeds/VjIXP9zxnpIWJjsU.xml">Headlines</span>
-                
-                <span class="news-tab" data-tab="breaking" data-url="https://rss.app/feeds/jEo9SeX0mg1s2Zcy.xml">Breaking</span>
+            <div class="news-section-header">LigaMX News</div>
+            
+            <div id="ligaMX-tabs" class="headlines-tabs">
+                <div class="headlines-tab active" data-source="headlines">Headlines</div>
+                <div class="headlines-tab" data-source="breaking">Breaking</div>
             </div>
-            <div id="headlines-content-LigaMX" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
+            
+            <div class="news-feed-content" id="headlines-feed-LigaMX" style="display: block;">Loading Headlines...</div>
+            <div class="news-feed-content" id="breaking-feed-LigaMX" style="display: none;">Loading Breaking...</div>
         </div>
-        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-            <div class="news-section-header breaking-tabs-header">
-                <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/jEo9SeX0mg1s2Zcy.xml">Breaking</span>
-            </div>
-            <div class="news-content-pane" id="breaking-content-LigaMX" style="display: block;"></div>
-        </div>
+
     </div>
 </div>
 
@@ -3920,6 +3918,88 @@ if (gamesTabsContainer) {
     if (todayTab) todayTab.click();
 }
 });
+</script>
+
+		<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ligaMXTabs = document.getElementById('ligaMX-tabs');
+
+        const feedMapLigaMX = {
+            headlines: "https://rss.app/feeds/VjIXP9zxnpIWJjsU.xml",
+            breaking: "https://rss.app/feeds/jEo9SeX0mg1s2Zcy.xml"
+        };
+        
+        function fetchFeedLigaMX(targetId, url) {
+            const contentPane = document.querySelector(targetId);
+            if (!contentPane) return;
+            
+            contentPane.innerHTML = '<p>Loading...</p>';
+            
+            const proxyUrl = 'https://api.allorigins.win/raw?url=';
+            const finalUrl = proxyUrl + encodeURIComponent(url);
+            
+            fetch(finalUrl)
+                .then(response => response.text())
+                .then(str => {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(str, "text/xml");
+                    
+                    const items = xmlDoc.querySelectorAll("item");
+                    let html = '<ul>';
+                    items.forEach(el => {
+                        const title = el.querySelector("title")?.textContent || 'No title';
+                        const link = el.querySelector("link")?.textContent || '#';
+                        const description = el.querySelector("description")?.textContent || '';
+                        
+                        html += `
+                            <li>
+                                <a href="${link}" target="_blank">
+                                    <h4>${title}</h4>
+                                    <p>${description}</p>
+                                </a>
+                            </li>
+                        `;
+                    });
+                    html += '</ul>';
+                    contentPane.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error("Error fetching RSS feed:", error);
+                    contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+                });
+        }
+        
+        if (ligaMXTabs) {
+            ligaMXTabs.addEventListener('click', function(e) {
+                if (e.target.classList.contains('headlines-tab')) {
+                    document.querySelectorAll('#news-LigaMX .news-feed-content').forEach(pane => {
+                        pane.style.display = 'none';
+                    });
+                    
+                    document.querySelectorAll('#ligaMX-tabs .headlines-tab').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    
+                    const source = e.target.dataset.source;
+                    const targetPane = document.getElementById(source + '-feed-LigaMX');
+                    if (targetPane) {
+                        targetPane.style.display = 'block';
+                        e.target.classList.add('active');
+                    }
+                    
+                    if (feedMapLigaMX[source]) {
+                        fetchFeedLigaMX(`#${source}-feed-LigaMX`, feedMapLigaMX[source]);
+                    }
+                }
+            });
+            
+            const initialActiveTab = document.querySelector('#ligaMX-tabs .headlines-tab.active');
+            if (initialActiveTab) {
+                const source = initialActiveTab.dataset.source;
+                fetchFeedLigaMX(`#${source}-feed-LigaMX`, feedMapLigaMX[source]);
+            }
+        }
+    });
 </script>
  
   </body>
