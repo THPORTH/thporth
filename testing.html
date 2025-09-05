@@ -2083,23 +2083,14 @@ div[id^="breaking-content-"] a:hover {
 
 <div id="news-LigaMX" class="content-section" style="display: none; height: calc(100% - 18px);">
     <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-        
-        <!-- Headlines Section -->
-        <div class="news-section headlines-section" style="flex: 1 1 50%; min-height: 0;">
-            <div class="news-section-header">Headlines</div>
-            <div class="news-feed-content" id="headlines-content-LigaMX" style="height: calc(100% - 18px); overflow-y: auto;">
-                Loading Headlines...
+        <div class="news-section" style="flex: 1 1 auto; min-height: 0;">
+            <div id="news-content-LigaMX" class="news-feed-content" style="overflow-y: auto; height: 100%;">
+                <div class="news-section-header">
+                    <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/jEo9SeX0mg1s2Zcy.xml">Breaking</span>
+                </div>
+                <div class="news-content-pane" id="breaking-content-LigaMX" style="display: block;"></div>
             </div>
         </div>
-        
-        <!-- Breaking Section -->
-        <div class="news-section breaking-section" style="flex: 1 1 50%; min-height: 0;">
-            <div class="news-section-header">Breaking</div>
-            <div class="news-feed-content" id="breaking-content-LigaMX" style="height: calc(100% - 18px); overflow-y: auto;">
-                Loading Breaking...
-            </div>
-        </div>
-
     </div>
 </div>
 
@@ -3921,66 +3912,6 @@ if (gamesTabsContainer) {
     // Initial load
     if (todayTab) todayTab.click();
 }
-});
-</script>
-
-		<script>
- document.addEventListener('DOMContentLoaded', function() {
-    const ligaMXHeadlines = document.getElementById('headlines-content-LigaMX');
-    const ligaMXBreaking = document.getElementById('breaking-content-LigaMX');
-    
-    const feedMapLigaMX = {
-        headlines: "https://rss.app/feeds/VjIXP9zxnpIWJjsU.xml",
-        breaking: "https://rss.app/feeds/jEo9SeX0mg1s2Zcy.xml"  // This might be wrong
-    };
-    
-    // Let's add some debugging to see what feeds are being loaded
-    console.log('LigaMX Headlines feed:', feedMapLigaMX.headlines);
-    console.log('LigaMX Breaking feed:', feedMapLigaMX.breaking);
-    
-    function fetchFeedLigaMX(targetId, url) {
-        const contentPane = document.querySelector(targetId);
-        if (!contentPane) return;
-        
-        contentPane.innerHTML = '<p>Loading...</p>';
-        
-        const proxyUrl = 'https://api.allorigins.win/raw?url=';
-        const finalUrl = proxyUrl + encodeURIComponent(url);
-        
-        fetch(finalUrl)
-            .then(response => response.text())
-            .then(str => {
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(str, "text/xml");
-                
-                const items = xmlDoc.querySelectorAll("item");
-                let html = '<ul style="margin: 0; padding: 0; list-style: none;">';
-                items.forEach(el => {
-                    const title = el.querySelector("title")?.textContent || 'No title';
-                    const link = el.querySelector("link")?.textContent || '#';
-                    
-                    html += `
-                        <li style="margin-bottom: 0.5em;">
-                            <a href="${link}" target="_blank" style="text-decoration: none; color: inherit;">
-                                ${title}
-                            </a>
-                        </li>
-                    `;
-                });
-                html += '</ul>';
-                contentPane.innerHTML = html;
-            })
-            .catch(error => {
-                console.error("Error fetching RSS feed:", error);
-                contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
-            });
-    }
-    
-    // Load both feeds when LigaMX section is shown
-    if (ligaMXHeadlines && ligaMXBreaking) {
-        fetchFeedLigaMX('#headlines-content-LigaMX', feedMapLigaMX.headlines);
-        fetchFeedLigaMX('#breaking-content-LigaMX', feedMapLigaMX.breaking);
-    }
 });
 </script>
  
