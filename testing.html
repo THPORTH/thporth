@@ -3925,14 +3925,18 @@ if (gamesTabsContainer) {
 </script>
 
 		<script>
-  document.addEventListener('DOMContentLoaded', function() {
+ document.addEventListener('DOMContentLoaded', function() {
     const ligaMXHeadlines = document.getElementById('headlines-content-LigaMX');
     const ligaMXBreaking = document.getElementById('breaking-content-LigaMX');
     
     const feedMapLigaMX = {
         headlines: "https://rss.app/feeds/VjIXP9zxnpIWJjsU.xml",
-        breaking: "https://rss.app/feeds/jEo9SeX0mg1s2Zcy.xml"
+        breaking: "https://rss.app/feeds/jEo9SeX0mg1s2Zcy.xml"  // This might be wrong
     };
+    
+    // Let's add some debugging to see what feeds are being loaded
+    console.log('LigaMX Headlines feed:', feedMapLigaMX.headlines);
+    console.log('LigaMX Breaking feed:', feedMapLigaMX.breaking);
     
     function fetchFeedLigaMX(targetId, url) {
         const contentPane = document.querySelector(targetId);
