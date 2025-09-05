@@ -2083,24 +2083,15 @@ div[id^="breaking-content-"] a:hover {
 
 <div id="news-LigaMX" class="content-section" style="display: none; height: calc(100% - 18px);">
     <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-            <div class="news-section-header">Headlines</div>
-            <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-LigaMX" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
-                </div>
-                <div id="headlines-content-LigaMX" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
-            </div>
+        
+        <div class="news-section-header horizontal-tabs-header">
+            <span id="headlines-tab-LigaMX" class="news-tab active" data-url="YOUR_HEADLINES_URL_HERE">Headlines</span>
+            <span id="breaking-tab-LigaMX" class="news-tab" data-url="https://rss.app/feeds/6hu4o6gj1agGCz5i.xml">Breaking</span>
         </div>
-        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-            <div class="news-section-header breaking-tabs-header">
-                <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/jEo9SeX0mg1s2Zcy.xml">Breaking</span>
+        
+        <div id="news-content-pane-LigaMX" class="news-content-pane" style="flex: 1 1 auto; min-height: 0; overflow-y: auto;">
             </div>
-            <div class="news-content-pane" id="breaking-content-LigaMX" style="display: block;"></div>
-        </div>
+
     </div>
 </div>
 
