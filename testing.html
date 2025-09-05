@@ -2081,16 +2081,18 @@ div[id^="breaking-content-"] a:hover {
     </div>
 </div>
 
-<div id="news-LigaMX" class="content-section" style="height: calc(100% - 18px);">
+<div id="news-LigaMX" class="content-section">
     <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
         
-        <div class="news-section-header horizontal-tabs-header">
-            <span id="headlines-tab-LigaMX" class="news-tab active" data-url="YOUR_HEADLINES_URL_HERE">Headlines</span>
-            <span id="breaking-tab-LigaMX" class="news-tab" data-url="https://rss.app/feeds/6hu4o6gj1agGCz5i.xml">Breaking</span>
-        </div>
-        
-        <div id="news-content-pane-LigaMX" class="news-content-pane" style="flex: 1 1 auto; min-height: 0; overflow-y: auto;">
-            <p>Loading...</p>
+        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
+            <div class="news-section-header">LigaMX News</div>
+            <div id="ligaMX-tabs" class="headlines-tabs-column">
+                <div class="headlines-tab active" data-source="headlines">Headlines</div>
+                <div class="headlines-tab" data-source="breaking">Breaking</div>
+            </div>
+            
+            <div class="news-feed-content" id="headlines-feed-LigaMX" style="display: block;">Loading Headlines...</div>
+            <div class="news-feed-content" id="breaking-feed-LigaMX" style="display: none;">Loading Breaking...</div>
         </div>
 
     </div>
@@ -3918,82 +3920,93 @@ if (gamesTabsContainer) {
 </script>
 
 		<script>
-			document.addEventListener('DOMContentLoaded', function() {
-    const newsTabsContainer = document.querySelector('#news-LigaMX .news-section-header');
-    const newsContentPane = document.getElementById('news-content-pane-LigaMX');
+    document.addEventListener('DOMContentLoaded', function() {
+        const ligaMXTabs = document.getElementById('ligaMX-tabs');
 
-    // Function to fetch and display the RSS feed
-    function fetchAndDisplayRSS(url) {
-        // Display a loading message
-        newsContentPane.innerHTML = '<p>Loading...</p>';
-
-        // Use a proxy to avoid CORS issues if needed
-        const proxyUrl = 'https://api.allorigins.win/raw?url=';
-        const finalUrl = proxyUrl + encodeURIComponent(url);
-
-        fetch(finalUrl)
-            .then(response => response.text())
-            .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
-            .then(data => {
-                const items = data.querySelectorAll("item");
-                let html = '<ul>';
-                items.forEach(el => {
-                    const title = el.querySelector("title")?.textContent || 'No title';
-                    const link = el.querySelector("link")?.textContent || '#';
-                    const description = el.querySelector("description")?.textContent || '';
+        const feedMapLigaMX = {
+            headlines: "YOUR_HEADLINES_URL_HERE", // Replace with your headlines feed URL
+            breaking: "https://rss.app/feeds/6hu4o6gj1agGCz5i.xml"
+        };
+        
+        // This function will fetch and display the feed content for LigaMX
+        function fetchFeedLigaMX(targetId, url) {
+            const contentPane = document.querySelector(targetId);
+            if (!contentPane) return;
+            
+            contentPane.innerHTML = '<p>Loading...</p>';
+            
+            const proxyUrl = 'https://api.allorigins.win/raw?url=';
+            const finalUrl = proxyUrl + encodeURIComponent(url);
+            
+            fetch(finalUrl)
+                .then(response => response.text())
+                .then(str => {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(str, "text/xml");
                     
-                    // Basic HTML for each news item
-                    html += `
-                        <li>
-                            <a href="${link}" target="_blank">
-                                <h4>${title}</h4>
-                                <p>${description}</p>
-                            </a>
-                        </li>
-                    `;
+                    const items = xmlDoc.querySelectorAll("item");
+                    let html = '<ul>';
+                    items.forEach(el => {
+                        const title = el.querySelector("title")?.textContent || 'No title';
+                        const link = el.querySelector("link")?.textContent || '#';
+                        const description = el.querySelector("description")?.textContent || '';
+                        
+                        html += `
+                            <li>
+                                <a href="${link}" target="_blank">
+                                    <h4>${title}</h4>
+                                    <p>${description}</p>
+                                </a>
+                            </li>
+                        `;
+                    });
+                    html += '</ul>';
+                    contentPane.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error("Error fetching RSS feed:", error);
+                    contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
                 });
-                html += '</ul>';
-                newsContentPane.innerHTML = html;
-            })
-            .catch(error => {
-                console.error("Error fetching RSS feed:", error);
-                newsContentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
-            });
-    }
-
-    // Add click event listener to the tabs container
-    if (newsTabsContainer) {
-        newsTabsContainer.addEventListener('click', function(event) {
-            const clickedTab = event.target;
-
-            // Check if the clicked element is a tab
-            if (clickedTab.classList.contains('news-tab')) {
-                // Remove 'active' class from all tabs
-                document.querySelectorAll('.news-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-
-                // Add 'active' class to the clicked tab
-                clickedTab.classList.add('active');
-
-                // Get the URL from the data-url attribute
-                const urlToFetch = clickedTab.dataset.url;
-                
-                // Call the function to fetch and display the new content
-                if (urlToFetch) {
-                    fetchAndDisplayRSS(urlToFetch);
-                }
-            }
-        });
-
-        // Initial load: load the content for the default active tab
-        const initialActiveTab = document.querySelector('#news-LigaMX .news-tab.active');
-        if (initialActiveTab) {
-            fetchAndDisplayRSS(initialActiveTab.dataset.url);
         }
-    }
-});
-		</script>
+        
+        // This function handles the tab switching logic
+        if (ligaMXTabs) {
+            ligaMXTabs.addEventListener('click', function(e) {
+                if (e.target.classList.contains('headlines-tab')) {
+                    // Hide all content panes for this section
+                    document.querySelectorAll('#news-LigaMX .news-feed-content').forEach(pane => {
+                        pane.style.display = 'none';
+                    });
+                    
+                    // Remove active class from all tabs for this section
+                    document.querySelectorAll('#ligaMX-tabs .headlines-tab').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    
+                    // Show the selected content pane and set the clicked tab to active
+                    const source = e.target.dataset.source;
+                    const targetPane = document.getElementById(source + '-feed-LigaMX');
+                    if (targetPane) {
+                        targetPane.style.display = 'block';
+                        e.target.classList.add('active');
+                    }
+                    
+                    // Fetch the feed content for the selected tab
+                    if (feedMapLigaMX[source]) {
+                        fetchFeedLigaMX(`#${source}-feed-LigaMX`, feedMapLigaMX[source]);
+                    }
+                }
+            });
+            
+            // Initial load for the default active tab
+            const initialActiveTab = document.querySelector('#ligaMX-tabs .headlines-tab.active');
+            if (initialActiveTab) {
+                const source = initialActiveTab.dataset.source;
+                fetchFeedLigaMX(`#${source}-feed-LigaMX`, feedMapLigaMX[source]);
+            }
+        }
+    });
+</script>
  
   </body>
 </html>
