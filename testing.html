@@ -397,6 +397,42 @@
     box-sizing: border-box;
   }
 
+	    /* Styles for the main tab container to make tabs horizontal */
+    #ligaMX-tabs.headlines-tabs {
+        display: flex;
+        flex-direction: row;
+        gap: 10px; /* Adjust spacing between tabs as needed */
+        width: 100%;
+        border-bottom: 1px solid #ccc; /* Matches the home page's separator line */
+    }
+
+    /* Styles for individual tabs, copied from your home page's CSS */
+    .headlines-tab {
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        color: #555;
+        text-align: center;
+        transition: color 0.3s ease;
+        position: relative;
+    }
+
+    .headlines-tab.active {
+        color: #000;
+        border-bottom: 2px solid #007bff; /* Active tab highlight */
+        padding-bottom: 3px;
+    }
+
+    .headlines-tab:hover {
+        color: #007bff;
+    }
+
+    .news-feed-content {
+        /* This class is already in your CSS, but here's a reminder */
+        overflow-y: auto;
+    }
+
   /* ────────────────────────────────────────────────────────── */
   /* Layout Containers                    */
   /* ────────────────────────────────────────────────────────── */
@@ -2086,7 +2122,8 @@ div[id^="breaking-content-"] a:hover {
         
         <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
             <div class="news-section-header">LigaMX News</div>
-            <div id="ligaMX-tabs" class="headlines-tabs-column">
+            
+            <div id="ligaMX-tabs" class="headlines-tabs">
                 <div class="headlines-tab active" data-source="headlines">Headlines</div>
                 <div class="headlines-tab" data-source="breaking">Breaking</div>
             </div>
@@ -3919,7 +3956,7 @@ if (gamesTabsContainer) {
 });
 </script>
 
-		<script>
+	<script>
     document.addEventListener('DOMContentLoaded', function() {
         const ligaMXTabs = document.getElementById('ligaMX-tabs');
 
@@ -3928,7 +3965,6 @@ if (gamesTabsContainer) {
             breaking: "https://rss.app/feeds/6hu4o6gj1agGCz5i.xml"
         };
         
-        // This function will fetch and display the feed content for LigaMX
         function fetchFeedLigaMX(targetId, url) {
             const contentPane = document.querySelector(targetId);
             if (!contentPane) return;
@@ -3969,21 +4005,17 @@ if (gamesTabsContainer) {
                 });
         }
         
-        // This function handles the tab switching logic
         if (ligaMXTabs) {
             ligaMXTabs.addEventListener('click', function(e) {
                 if (e.target.classList.contains('headlines-tab')) {
-                    // Hide all content panes for this section
                     document.querySelectorAll('#news-LigaMX .news-feed-content').forEach(pane => {
                         pane.style.display = 'none';
                     });
                     
-                    // Remove active class from all tabs for this section
                     document.querySelectorAll('#ligaMX-tabs .headlines-tab').forEach(tab => {
                         tab.classList.remove('active');
                     });
                     
-                    // Show the selected content pane and set the clicked tab to active
                     const source = e.target.dataset.source;
                     const targetPane = document.getElementById(source + '-feed-LigaMX');
                     if (targetPane) {
@@ -3991,14 +4023,12 @@ if (gamesTabsContainer) {
                         e.target.classList.add('active');
                     }
                     
-                    // Fetch the feed content for the selected tab
                     if (feedMapLigaMX[source]) {
                         fetchFeedLigaMX(`#${source}-feed-LigaMX`, feedMapLigaMX[source]);
                     }
                 }
             });
             
-            // Initial load for the default active tab
             const initialActiveTab = document.querySelector('#ligaMX-tabs .headlines-tab.active');
             if (initialActiveTab) {
                 const source = initialActiveTab.dataset.source;
