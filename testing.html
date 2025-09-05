@@ -2147,30 +2147,23 @@ div[id^="breaking-content-"] a:hover {
   </div>
 </div>
 
+<div id="news-Ligue1" class="content-section" style="display:none; height:100%; overflow:hidden;">
+  <div class="news-main-container" style="display:flex; flex-direction:column; height:100%; min-height:0;">
+    <div class="news-section ligue1-headlines-section" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0;">
+      <div id="ligue1tabs-Ligue1" class="headlines-tabs" style="display:flex; border-bottom:1px solid #374151; flex:0 0 auto;">
+        <div class="headlines-tab active" data-source="headlines">Headlines</div>
+        <div class="headlines-tab" data-source="breaking">Breaking</div>
+        <div class="headlines-tab" data-source="reddit">Reddit</div>
+      </div>
 
-		  
-<div id="news-Ligue1" class="content-section" style="display: none; height: calc(100% - 18px);">
-    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-            <div class="news-section-header">Headlines</div>
-            <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-Ligue1" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
-                </div>
-                <div id="headlines-content-Ligue1" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
-            </div>
-        </div>
-        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-            <div class="news-section-header breaking-tabs-header">
-                <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/AdN94t2aMmFNKpiW.xml">Breaking</span>
-            </div>
-            <div class="news-content-pane" id="breaking-content-Ligue1" style="display: block;"></div>
-        </div>
+      <div class="news-feed-content" id="headlines-feed-Ligue1" style="display:block; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+      <div class="news-feed-content" id="breaking-feed-Ligue1" style="display:none; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+      <div class="news-feed-content" id="reddit-feed-Ligue1" style="display:none; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
     </div>
+  </div>
 </div>
+		  
+
 
 <div id="news-UEFAEuropaLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
     <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
@@ -4026,8 +4019,8 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   const ligue1Feeds = {
-    headlines: "https://rss.app/feeds/your-ligue1-headlines-feed.xml", // REPLACE WITH ACTUAL URLS
-    breaking: "https://rss.app/feeds/your-ligue1-breaking-feed.xml", // REPLACE WITH ACTUAL URLS
+    headlines: "https://rss.app/feeds/tbxA99undrBg8j4I.xml", // REPLACE WITH ACTUAL URLS
+    breaking: "https://rss.app/feeds/AdN94t2aMmFNKpiW.xml", // REPLACE WITH ACTUAL URLS
     reddit: "https://rss.app/feeds/UNtqy55sZPAGDxWp.xml" // REPLACE WITH ACTUAL URLS
   };
 
