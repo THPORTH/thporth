@@ -2107,7 +2107,7 @@ div[id^="breaking-content-"] a:hover {
 <div id="news-NWSL" class="content-section" style="display: none; height: calc(100% - 18px);">
     <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
         
-        <div class="news-section headlines-section" style="flex: 1 1 100%; min-height: 0;">
+        <div class="news-section headlines-section" style="flex: 1 1 100%; min-height: 0; position: relative;">
             <!-- Tabs at the top -->
             <div id="nwsltabs-NWSL" class="headlines-tabs" style="display: flex; border-bottom: 1px solid #374151;">
                 <div class="headlines-tab active" data-source="headlines" data-url="https://rss.app/feeds/tnA7WHOi3hNDP2Wr.xml">Headlines</div>
@@ -2115,8 +2115,10 @@ div[id^="breaking-content-"] a:hover {
                 <div class="headlines-tab" data-source="reddit" data-url="https://rss.app/feeds/HL9rA42ELIkqWXJg.xml">Reddit</div>
             </div>
             
-            <!-- Single content container that gets updated -->
-            <div class="news-feed-content" id="nwsl-content" style="height: calc(100% - 18px); overflow-y: auto;"></div>
+            <!-- RSS feed content below tabs, taking full height -->
+            <div class="news-feed-content" id="headlines-feed-NWSL" style="display: block; position: absolute; top: 18px; left: 0; right: 0; bottom: 0; overflow-y: auto;"></div>
+            <div class="news-feed-content" id="breaking-feed-NWSL" style="display: none; position: absolute; top: 18px; left: 0; right: 0; bottom: 0; overflow-y: auto;"></div>
+            <div class="news-feed-content" id="reddit-feed-NWSL" style="display: none; position: absolute; top: 18px; left: 0; right: 0; bottom: 0; overflow-y: auto;"></div>
         </div>
 
     </div>
@@ -3981,7 +3983,7 @@ if (gamesTabsContainer) {
                 });
                 
                 const source = e.target.dataset.source;
-                const targetPane = document.getElementById('nwsl-content');
+                const targetPane = document.getElementById(source + '-feed-NWSL');
                 if (targetPane) {
                     targetPane.style.display = 'block';
                     e.target.classList.add('active');
