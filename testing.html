@@ -4019,57 +4019,58 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  const ligue1tabs = document.getElementById('ligue1tabs-Ligue1');
 
-  function initializeNewsSection(leagueId) {
-    const tabsContainer = document.getElementById(`${leagueId.toLowerCase()}tabs-${leagueId.toUpperCase()}`);
-    if (!tabsContainer) {
-      console.error(`Tabs container for ${leagueId} not found.`);
-      return;
-    }
+  const feedMapLigue1 = {
+    headlines: "https://rss.app/feeds/tbxA99undrBg8j4I.xml",
+    breaking: "https://rss.app/feeds/AdN94t2aMmFNKpiW.xml",
+    reddit: "https://rss.app/feeds/UNtqy55sZPAGDxWp.xml"
+  };
 
-    function fetchFeed(url, contentPaneId) {
-      const contentPane = document.getElementById(contentPaneId);
-      if (!contentPane) return;
-      contentPane.innerHTML = '<p>Loading...</p>';
+  function fetchFeedLigue1(url, contentPaneId) {
+    const contentPane = document.getElementById(contentPaneId);
+    if (!contentPane) return;
+    contentPane.innerHTML = '<p>Loading...</p>';
 
-      const proxyUrl = 'https://api.allorigins.win/raw?url=';
-      const finalUrl = proxyUrl + encodeURIComponent(url);
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const finalUrl = proxyUrl + encodeURIComponent(url);
 
-      fetch(finalUrl)
-        .then(r => r.text())
-        .then(str => {
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(str, "text/xml");
-          const items = xmlDoc.querySelectorAll("item");
-          let html = '<ul>';
-          items.forEach(el => {
-            const title = el.querySelector("title")?.textContent || 'No title';
-            const link = el.querySelector("link")?.textContent || '#';
-            html += `
-              <li>
-                <a href="${link}" target="_blank">
-                  ${title}
-                </a>
-              </li>`;
-          });
-          html += '</ul>';
-          contentPane.innerHTML = html;
-        })
-        .catch(err => {
-          console.error("Error fetching RSS feed:", err);
-          contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+    fetch(finalUrl)
+      .then(r => r.text())
+      .then(str => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(str, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        let html = '<ul>';
+        items.forEach(el => {
+          const title = el.querySelector("title")?.textContent || 'No title';
+          const link = el.querySelector("link")?.textContent || '#';
+          html += `
+            <li>
+              <a href="${link}" target="_blank">
+                ${title}
+              </a>
+            </li>`;
         });
-    }
+        html += '</ul>';
+        contentPane.innerHTML = html;
+      })
+      .catch(err => {
+        console.error("Error fetching RSS feed:", err);
+        contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+      });
+  }
 
-    tabsContainer.addEventListener('click', function(e) {
+  if (ligue1tabs) {
+    ligue1tabs.addEventListener('click', function(e) {
       if (e.target.classList.contains('headlines-tab')) {
-        document.querySelectorAll(`#news-${leagueId.toUpperCase()} .news-feed-content`)
+        document.querySelectorAll('#news-Ligue1 .news-feed-content')
           .forEach(p => p.style.display = 'none');
-        document.querySelectorAll(`#${leagueId.toLowerCase()}tabs-${leagueId.toUpperCase()} .headlines-tab`)
+        document.querySelectorAll('#ligue1tabs-Ligue1 .headlines-tab')
           .forEach(t => t.classList.remove('active'));
 
         const source = e.target.dataset.source;
-        const targetPaneId = `${source}-feed-${leagueId.toUpperCase()}`;
+        const targetPaneId = `${source}-feed-Ligue1`;
         const targetPane = document.getElementById(targetPaneId);
         if (targetPane) {
           targetPane.style.display = 'block';
@@ -4077,23 +4078,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         const url = e.target.dataset.url;
         if (url) {
-          fetchFeed(url, targetPaneId);
+          fetchFeedLigue1(url, targetPaneId);
         }
       }
     });
 
-    const initialActiveTab = document.querySelector(`#${leagueId.toLowerCase()}tabs-${leagueId.toUpperCase()} .headlines-tab.active`);
+    const initialActiveTab = document.querySelector('#ligue1tabs-Ligue1 .headlines-tab.active');
     if (initialActiveTab) {
       const source = initialActiveTab.dataset.source;
-      const targetPaneId = `${source}-feed-${leagueId.toUpperCase()}`;
+      const targetPaneId = `${source}-feed-Ligue1`;
       const url = initialActiveTab.dataset.url;
-      fetchFeed(url, targetPaneId);
+      fetchFeedLigue1(url, targetPaneId);
     }
   }
-
-  // Initialize each news section by calling the function with its league ID
-  initializeNewsSection('NWSL');
-  initializeNewsSection('Ligue1');
 });
 </script>
  
