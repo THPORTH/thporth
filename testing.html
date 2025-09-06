@@ -654,14 +654,17 @@
     padding: 0 !important;
     margin: 0 !important;
 }
+
 .nwsl-headlines-section,
-.ligue1-headlines-section {
+.ligue1-headlines-section,
+.ligamx-headlines-section {
     flex: 1 1 auto !important;
     max-height: 100% !important;
 }
 
 .nwsl-headlines-section .news-feed-content,
-.ligue1-headlines-section .news-feed-content {
+.ligue1-headlines-section .news-feed-content,
+.ligamx-headlines-section .news-feed-content {
     flex: 1 1 auto !important;
     overflow-y: auto !important;
     padding: 0 !important;
@@ -672,17 +675,47 @@
 }
 
 .nwsl-headlines-section .news-feed-content ul,
-.ligue1-headlines-section .news-feed-content ul {
+.ligue1-headlines-section .news-feed-content ul,
+.ligamx-headlines-section .news-feed-content ul {
     list-style: none !important;
     padding: 0 10px !important;
     margin: 0 !important;
 }
 
 .nwsl-headlines-section .news-feed-content ul li,
-.ligue1-headlines-section .news-feed-content ul li {
+.ligue1-headlines-section .news-feed-content ul li,
+.ligamx-headlines-section .news-feed-content ul li {
     padding: 5px 0 !important;
     border-bottom: 1px solid #C9C8C7;
     margin: 0 !important;
+}
+
+#nwsltabs-NWSL .headlines-tab,
+#ligue1tabs-Ligue1 .headlines-tab,
+#ligamxtabs-LigaMX .headlines-tab {
+    flex: 1 !important;
+    text-align: center !important;
+    font-size: 10px !important;
+    line-height: 18px !important;
+    color: #aaa !important;
+    cursor: pointer !important;
+    background-color: #2a2a2a !important;
+    border-right: 1px solid #1f1f1f !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#nwsltabs-NWSL .headlines-tab:last-child,
+#ligue1tabs-Ligue1 .headlines-tab:last-child,
+#ligamxtabs-LigaMX .headlines-tab:last-child {
+    border-right: none !important;
+}
+
+#nwsltabs-NWSL .headlines-tab.active,
+#ligue1tabs-Ligue1 .headlines-tab.active,
+#ligamxtabs-LigaMX .headlines-tab.active {
+    background-color: #3c3c3c !important;
+    color: #fff !important;
 }
 
 /* 4) The "Headlines" header bar. Ensure it has no top margin/padding issues. */
@@ -826,32 +859,7 @@
 }
 
 	   
-/* NWSL Tab Styling */
-/* NWSL & Ligue 1 Tab Styling (Corrected) */
-#nwsltabs-NWSL .headlines-tab,
-#ligue1tabs-Ligue1 .headlines-tab {
-    flex: 1 !important;
-    text-align: center !important;
-    font-size: 10px !important;
-    line-height: 18px !important;
-    color: #aaa !important;
-    cursor: pointer !important;
-    background-color: #2a2a2a !important;
-    border-right: 1px solid #1f1f1f !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
 
-#nwsltabs-NWSL .headlines-tab:last-child,
-#ligue1tabs-Ligue1 .headlines-tab:last-child {
-    border-right: none !important;
-}
-
-#nwsltabs-NWSL .headlines-tab.active,
-#ligue1tabs-Ligue1 .headlines-tab.active {
-    background-color: #3c3c3c !important;
-    color: #fff !important;
-}
 
 
 /* 6) The news feed content area. This needs to be padding-free. */
@@ -2123,6 +2131,22 @@ div[id^="breaking-content-"] a:hover {
             <div class="news-content-pane" id="breaking-content-Bundesliga" style="display: block;"></div>
         </div>
     </div>
+</div>
+
+		  <div id="news-LigaMX" class="content-section" style="display:none; height:100%; overflow:hidden;">
+  <div class="news-main-container" style="display:flex; flex-direction:column; height:100%; min-height:0;">
+    <div class="news-section ligamx-headlines-section" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0;">
+      <div id="ligamxtabs-LigaMX" class="headlines-tabs" style="display:flex; border-bottom:1px solid #374151; flex:0 0 auto;">
+        <div class="headlines-tab active" data-source="headlines" data-url="https://rss.app/feeds/tr10VModrXb2evce.xml">Headlines</div>
+        <div class="headlines-tab" data-source="breaking" data-url="https://rss.app/feeds/jEo9SeX0mg1s2Zcy.xml">Breaking</div>
+        <div class="headlines-tab" data-source="reddit" data-url="https://rss.app/feeds/o3KVLBimGj35TqzR.xml">Reddit</div>
+      </div>
+
+      <div class="news-feed-content" id="headlines-feed-LigaMX" style="display:block; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+      <div class="news-feed-content" id="breaking-feed-LigaMX" style="display:none; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+      <div class="news-feed-content" id="reddit-feed-LigaMX" style="display:none; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+    </div>
+  </div>
 </div>
 
 <div id="news-FACup" class="content-section" style="display: none; height: calc(100% - 18px);">
@@ -4093,6 +4117,83 @@ document.addEventListener('DOMContentLoaded', function() {
       const targetPaneId = `${source}-feed-Ligue1`;
       const url = initialActiveTab.dataset.url;
       fetchFeedLigue1(url, targetPaneId);
+    }
+  }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const ligamxtabs = document.getElementById('ligamxtabs-LigaMX');
+
+  const feedMapLigaMX = {
+    headlines: "https://rss.app/feeds/tr10VModrXb2evce.xml",
+    breaking: "https://rss.app/feeds/jEo9SeX0mg1s2Zcy.xml",
+    reddit: "https://rss.app/feeds/o3KVLBimGj35TqzR.xml"
+  };
+
+  function fetchFeedLigaMX(url, contentPaneId) {
+    const contentPane = document.getElementById(contentPaneId);
+    if (!contentPane) return;
+    contentPane.innerHTML = '<p>Loading...</p>';
+
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const finalUrl = proxyUrl + encodeURIComponent(url);
+
+    fetch(finalUrl)
+      .then(r => r.text())
+      .then(str => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(str, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        let html = '<ul>';
+        items.forEach(el => {
+          const title = el.querySelector("title")?.textContent || 'No title';
+          const link = el.querySelector("link")?.textContent || '#';
+          html += `
+            <li>
+              <a href="${link}" target="_blank">
+                ${title}
+              </a>
+            </li>`;
+        });
+        html += '</ul>';
+        contentPane.innerHTML = html;
+      })
+      .catch(err => {
+        console.error("Error fetching RSS feed:", err);
+        contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+      });
+  }
+
+  if (ligamxtabs) {
+    ligamxtabs.addEventListener('click', function(e) {
+      if (e.target.classList.contains('headlines-tab')) {
+        document.querySelectorAll('#news-LigaMX .news-feed-content')
+          .forEach(p => p.style.display = 'none');
+        document.querySelectorAll('#ligamxtabs-LigaMX .headlines-tab')
+          .forEach(t => t.classList.remove('active'));
+
+        const source = e.target.dataset.source;
+        const targetPaneId = `${source}-feed-LigaMX`;
+        const targetPane = document.getElementById(targetPaneId);
+        if (targetPane) {
+          targetPane.style.display = 'block';
+          e.target.classList.add('active');
+        }
+        const url = e.target.dataset.url;
+        if (url) {
+          fetchFeedLigaMX(url, targetPaneId);
+        }
+      }
+    });
+
+    const initialActiveTab = document.querySelector('#ligamxtabs-LigaMX .headlines-tab.active');
+    if (initialActiveTab) {
+      const source = initialActiveTab.dataset.source;
+      const targetPaneId = `${source}-feed-LigaMX`;
+      const url = initialActiveTab.dataset.url;
+      fetchFeedLigaMX(url, targetPaneId);
     }
   }
 });
