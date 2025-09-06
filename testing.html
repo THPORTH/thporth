@@ -655,10 +655,15 @@
     margin: 0 !important;
 }
 
-.nwsl-headlines-section,
+	   .nwsl-headlines-section,
 .ligue1-headlines-section,
 .ligamx-headlines-section,
-.uefaeuropaleague-headlines-section {
+.uefaeuropaleague-headlines-section,
+.uefaconferenceleague-headlines-section,
+.livgolf-headlines-section,
+.indycar-headlines-section,
+.lpgatour-headlines-section,
+.trackandfield-headlines-section {
     flex: 1 1 auto !important;
     max-height: 100% !important;
 }
@@ -666,7 +671,12 @@
 .nwsl-headlines-section .news-feed-content,
 .ligue1-headlines-section .news-feed-content,
 .ligamx-headlines-section .news-feed-content,
-.uefaeuropaleague-headlines-section .news-feed-content {
+.uefaeuropaleague-headlines-section .news-feed-content,
+.uefaconferenceleague-headlines-section .news-feed-content,
+.livgolf-headlines-section .news-feed-content,
+.indycar-headlines-section .news-feed-content,
+.lpgatour-headlines-section .news-feed-content,
+.trackandfield-headlines-section .news-feed-content {
     flex: 1 1 auto !important;
     overflow-y: auto !important;
     padding: 0 !important;
@@ -679,7 +689,12 @@
 .nwsl-headlines-section .news-feed-content ul,
 .ligue1-headlines-section .news-feed-content ul,
 .ligamx-headlines-section .news-feed-content ul,
-.uefaeuropaleague-headlines-section .news-feed-content ul {
+.uefaeuropaleague-headlines-section .news-feed-content ul,
+.uefaconferenceleague-headlines-section .news-feed-content ul,
+.livgolf-headlines-section .news-feed-content ul,
+.indycar-headlines-section .news-feed-content ul,
+.lpgatour-headlines-section .news-feed-content ul,
+.trackandfield-headlines-section .news-feed-content ul {
     list-style: none !important;
     padding: 0 10px !important;
     margin: 0 !important;
@@ -688,7 +703,12 @@
 .nwsl-headlines-section .news-feed-content ul li,
 .ligue1-headlines-section .news-feed-content ul li,
 .ligamx-headlines-section .news-feed-content ul li,
-.uefaeuropaleague-headlines-section .news-feed-content ul li {
+.uefaeuropaleague-headlines-section .news-feed-content ul li,
+.uefaconferenceleague-headlines-section .news-feed-content ul li,
+.livgolf-headlines-section .news-feed-content ul li,
+.indycar-headlines-section .news-feed-content ul li,
+.lpgatour-headlines-section .news-feed-content ul li,
+.trackandfield-headlines-section .news-feed-content ul li {
     padding: 5px 0 !important;
     border-bottom: 1px solid #C9C8C7;
     margin: 0 !important;
@@ -697,7 +717,12 @@
 #nwsltabs-NWSL .headlines-tab,
 #ligue1tabs-Ligue1 .headlines-tab,
 #ligamxtabs-LigaMX .headlines-tab,
-#uefaeuropaleaguetabs-UEFAEuropaLeague .headlines-tab {
+#uefaeuropaleaguetabs-UEFAEuropaLeague .headlines-tab,
+#uefaconferenceleaguetabs-UEFAConferenceLeague .headlines-tab,
+#livgolftabs-LIVGolf .headlines-tab,
+#indycarrtabs-IndyCar .headlines-tab,
+#lpgatourtabs-LPGATour .headlines-tab,
+#trackandfieldtabs-TrackAndField .headlines-tab {
     flex: 1 !important;
     text-align: center !important;
     font-size: 10px !important;
@@ -713,14 +738,24 @@
 #nwsltabs-NWSL .headlines-tab:last-child,
 #ligue1tabs-Ligue1 .headlines-tab:last-child,
 #ligamxtabs-LigaMX .headlines-tab:last-child,
-#uefaeuropaleaguetabs-UEFAEuropaLeague .headlines-tab:last-child {
+#uefaeuropaleaguetabs-UEFAEuropaLeague .headlines-tab:last-child,
+#uefaconferenceleaguetabs-UEFAConferenceLeague .headlines-tab:last-child,
+#livgolftabs-LIVGolf .headlines-tab:last-child,
+#indycarrtabs-IndyCar .headlines-tab:last-child,
+#lpgatourtabs-LPGATour .headlines-tab:last-child,
+#trackandfieldtabs-TrackAndField .headlines-tab:last-child {
     border-right: none !important;
 }
 
 #nwsltabs-NWSL .headlines-tab.active,
 #ligue1tabs-Ligue1 .headlines-tab.active,
 #ligamxtabs-LigaMX .headlines-tab.active,
-#uefaeuropaleaguetabs-UEFAEuropaLeague .headlines-tab.active {
+#uefaeuropaleaguetabs-UEFAEuropaLeague .headlines-tab.active,
+#uefaconferenceleaguetabs-UEFAConferenceLeague .headlines-tab.active,
+#livgolftabs-LIVGolf .headlines-tab.active,
+#indycarrtabs-IndyCar .headlines-tab.active,
+#lpgatourtabs-LPGATour .headlines-tab.active,
+#trackandfieldtabs-TrackAndField .headlines-tab.active {
     background-color: #3c3c3c !important;
     color: #fff !important;
 }
@@ -2213,27 +2248,17 @@ div[id^="breaking-content-"] a:hover {
   </div>
 </div>
 
-<div id="news-UEFAConferenceLeague" class="content-section" style="display: none; height: calc(100% - 18px);">
-    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-            <div class="news-section-header">Headlines</div>
-            <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-UEFAConferenceLeague" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
-                </div>
-                <div id="headlines-content-UEFAConferenceLeague" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
-            </div>
-        </div>
-        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-            <div class="news-section-header breaking-tabs-header">
-                <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/0zeKHWCVNtBCrCro.xml">Breaking</span>
-            </div>
-            <div class="news-content-pane" id="breaking-content-UEFAConferenceLeague" style="display: block;"></div>
-        </div>
+<div id="news-UEFAConferenceLeague" class="content-section" style="display:none; height:100%; overflow:hidden;">
+  <div class="news-main-container" style="display:flex; flex-direction:column; height:100%; min-height:0;">
+    <div class="news-section uefaconferenceleague-headlines-section" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0;">
+      <div id="uefaconferenceleaguetabs-UEFAConferenceLeague" class="headlines-tabs" style="display:flex; border-bottom:1px solid #374151; flex:0 0 auto;">
+        <div class="headlines-tab active" data-source="headlines" data-url="https://rss.app/feeds/tpoJCJ6SHNu5XMoG.xml">Headlines</div>
+        <div class="headlines-tab" data-source="breaking" data-url="https://rss.app/feeds/0zeKHWCVNtBCrCro.xml">Breaking</div>
+      </div>
+      <div class="news-feed-content" id="headlines-feed-UEFAConferenceLeague" style="display:block; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+      <div class="news-feed-content" id="breaking-feed-UEFAConferenceLeague" style="display:none; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
     </div>
+  </div>
 </div>
 
 <div id="news-FormulaOne" class="content-section" style="display: none; height: calc(100% - 18px);">
@@ -2449,50 +2474,32 @@ div[id^="breaking-content-"] a:hover {
     </div>
 </div>
 
-<div id="news-LIVGolf" class="content-section" style="display: none; height: calc(100% - 18px);">
-    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-            <div class="news-section-header">Headlines</div>
-            <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-LIVGolf" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
-                </div>
-                <div id="headlines-content-LIVGolf" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
-            </div>
-        </div>
-        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-            <div class="news-section-header breaking-tabs-header">
-                <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/InHgRAqAOeKlilq8.xml">Breaking</span>
-            </div>
-            <div class="news-content-pane" id="breaking-content-LIVGolf" style="display: block;"></div>
-        </div>
+<div id="news-LIVGolf" class="content-section" style="display:none; height:100%; overflow:hidden;">
+  <div class="news-main-container" style="display:flex; flex-direction:column; height:100%; min-height:0;">
+    <div class="news-section livgolf-headlines-section" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0;">
+      <div id="livgolftabs-LIVGolf" class="headlines-tabs" style="display:flex; border-bottom:1px solid #374151; flex:0 0 auto;">
+        <div class="headlines-tab active" data-source="headlines" data-url="https://rss.app/feeds/teYHPC2ZpUGeMBx5.xml">Headlines</div>
+        <div class="headlines-tab" data-source="breaking" data-url="https://rss.app/feeds/InHgRAqAOeKlilq8.xml">Breaking</div>
+      </div>
+      <div class="news-feed-content" id="headlines-feed-LIVGolf" style="display:block; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+      <div class="news-feed-content" id="breaking-feed-LIVGolf" style="display:none; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
     </div>
+  </div>
 </div>
 
-<div id="news-IndyCar" class="content-section" style="display: none; height: calc(100% - 18px);">
-    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-            <div class="news-section-header">Headlines</div>
-            <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-IndyCar" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
-                    <div class="headlines-tab" data-url="https://rss.app/feeds/eDNITFaeWMMWd8qM.xml">Racer</div>
-                </div>
-                <div id="headlines-content-IndyCar" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
-            </div>
-        </div>
-        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-            <div class="news-section-header breaking-tabs-header">
-                <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/Zo7JsQDXIT8D0pCD.xml">Breaking</span>
-            </div>
-            <div class="news-content-pane" id="breaking-content-IndyCar" style="display: block;"></div>
-        </div>
+<div id="news-IndyCar" class="content-section" style="display:none; height:100%; overflow:hidden;">
+  <div class="news-main-container" style="display:flex; flex-direction:column; height:100%; min-height:0;">
+    <div class="news-section indycar-headlines-section" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0;">
+      <div id="indycarrtabs-IndyCar" class="headlines-tabs" style="display:flex; border-bottom:1px solid #374151; flex:0 0 auto;">
+        <div class="headlines-tab active" data-source="headlines" data-url="https://rss.app/feeds/tBzOR3X3d0NpmoAA.xml">Headlines</div>
+        <div class="headlines-tab" data-source="breaking" data-url="https://rss.app/feeds/Zo7JsQDXIT8D0pCD.xml">Breaking</div>
+        <div class="headlines-tab" data-source="reddit" data-url="https://rss.app/feeds/8qBnW4yImPpMqMDD.xml">Reddit</div>
+      </div>
+      <div class="news-feed-content" id="headlines-feed-IndyCar" style="display:block; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+      <div class="news-feed-content" id="breaking-feed-IndyCar" style="display:none; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+      <div class="news-feed-content" id="reddit-feed-IndyCar" style="display:none; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
     </div>
+  </div>
 </div>
 
 <div id="news-NCAAM" class="content-section" style="display: none; height: calc(100% - 18px);">
@@ -2611,50 +2618,30 @@ div[id^="breaking-content-"] a:hover {
     </div>
 </div>
 
-<div id="news-LPGATour" class="content-section" style="display: none; height: calc(100% - 18px);">
-    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-            <div class="news-section-header">Headlines</div>
-            <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-LPGATour" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
-                </div>
-                <div id="headlines-content-LPGATour" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
-            </div>
-        </div>
-        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-            <div class="news-section-header breaking-tabs-header">
-                <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/0afVGov5MVxxBF7B.xml">Breaking</span>
-            </div>
-            <div class="news-content-pane" id="breaking-content-LPGATour" style="display: block;"></div>
-        </div>
+<div id="news-LPGATour" class="content-section" style="display:none; height:100%; overflow:hidden;">
+  <div class="news-main-container" style="display:flex; flex-direction:column; height:100%; min-height:0;">
+    <div class="news-section lpgatour-headlines-section" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0;">
+      <div id="lpgatourtabs-LPGATour" class="headlines-tabs" style="display:flex; border-bottom:1px solid #374151; flex:0 0 auto;">
+        <div class="headlines-tab active" data-source="headlines" data-url="https://rss.app/feeds/tqz9SwQPuclR1mSF.xml">Headlines</div>
+        <div class="headlines-tab" data-source="breaking" data-url="https://rss.app/feeds/0afVGov5MVxxBF7B.xml">Breaking</div>
+      </div>
+      <div class="news-feed-content" id="headlines-feed-LPGATour" style="display:block; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+      <div class="news-feed-content" id="breaking-feed-LPGATour" style="display:none; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
     </div>
+  </div>
 </div>
 
-<div id="news-TrackAndField" class="content-section" style="display: none; height: calc(100% - 18px);">
-    <div class="news-main-container" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="news-section headlines-section" style="flex: 1 1 auto; min-height: 0;">
-            <div class="news-section-header">Headlines</div>
-            <div style="display: flex; height: calc(100% - 18px);">
-                <div id="headlines-tabs-TrackAndField" class="headlines-tabs-column" style="width: 20%; flex-shrink: 0;">
-                    <div class="headlines-tab active" data-url="YOUR_URL_HERE_1">1</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_2">2</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_3">3</div>
-                    <div class="headlines-tab" data-url="YOUR_URL_HERE_4">4</div>
-                </div>
-                <div id="headlines-content-TrackAndField" class="news-feed-content" style="width: 80%; overflow-y: auto;"></div>
-            </div>
-        </div>
-        <div class="news-section breaking-section" style="flex: 1 1 40%; min-height: 0;">
-            <div class="news-section-header breaking-tabs-header">
-                <span class="news-tab active" data-tab="breaking" data-url="https://rss.app/feeds/VqavgJOoX0LKkfkb.xml">Breaking</span>
-            </div>
-            <div class="news-content-pane" id="breaking-content-TrackAndField" style="display: block;"></div>
-        </div>
+<div id="news-TrackAndField" class="content-section" style="display:none; height:100%; overflow:hidden;">
+  <div class="news-main-container" style="display:flex; flex-direction:column; height:100%; min-height:0;">
+    <div class="news-section trackandfield-headlines-section" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0;">
+      <div id="trackandfieldtabs-TrackAndField" class="headlines-tabs" style="display:flex; border-bottom:1px solid #374151; flex:0 0 auto;">
+        <div class="headlines-tab active" data-source="headlines" data-url="https://rss.app/feeds/wR4WbSpa3kRgWcdl.xml">Headlines</div>
+        <div class="headlines-tab" data-source="breaking" data-url="https://rss.app/feeds/VqavgJOoX0LKkfkb.xml">Breaking</div>
+      </div>
+      <div class="news-feed-content" id="headlines-feed-TrackAndField" style="display:block; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
+      <div class="news-feed-content" id="breaking-feed-TrackAndField" style="display:none; flex:1 1 0; min-height:0; overflow:auto; position:relative;"></div>
     </div>
+  </div>
 </div>
 	  </div>
 
@@ -4294,6 +4281,387 @@ document.addEventListener('DOMContentLoaded', function() {
       const targetPaneId = `${source}-feed-UEFAEuropaLeague`;
       const url = initialActiveTab.dataset.url;
       fetchFeedUEFAEuropaLeague(url, targetPaneId);
+    }
+  }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const uefaconferenceleaguetabs = document.getElementById('uefaconferenceleaguetabs-UEFAConferenceLeague');
+
+  const feedMapUEFAConferenceLeague = {
+    headlines: "https://rss.app/feeds/tpoJCJ6SHNu5XMoG.xml",
+    breaking: "https://rss.app/feeds/0zeKHWCVNtBCrCro.xml"
+  };
+
+  function fetchFeedUEFAConferenceLeague(url, contentPaneId) {
+    const contentPane = document.getElementById(contentPaneId);
+    if (!contentPane) return;
+    contentPane.innerHTML = '<p>Loading...</p>';
+
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const finalUrl = proxyUrl + encodeURIComponent(url);
+
+    fetch(finalUrl)
+      .then(r => r.text())
+      .then(str => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(str, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        let html = '<ul>';
+        items.forEach(el => {
+          const title = el.querySelector("title")?.textContent || 'No title';
+          const link = el.querySelector("link")?.textContent || '#';
+          html += `
+            <li>
+              <a href="${link}" target="_blank">
+                ${title}
+              </a>
+            </li>`;
+        });
+        html += '</ul>';
+        contentPane.innerHTML = html;
+      })
+      .catch(err => {
+        console.error("Error fetching RSS feed:", err);
+        contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+      });
+  }
+
+  if (uefaconferenceleaguetabs) {
+    uefaconferenceleaguetabs.addEventListener('click', function(e) {
+      if (e.target.classList.contains('headlines-tab')) {
+        document.querySelectorAll('#news-UEFAConferenceLeague .news-feed-content')
+          .forEach(p => p.style.display = 'none');
+        document.querySelectorAll('#uefaconferenceleaguetabs-UEFAConferenceLeague .headlines-tab')
+          .forEach(t => t.classList.remove('active'));
+
+        const source = e.target.dataset.source;
+        const targetPaneId = `${source}-feed-UEFAConferenceLeague`;
+        const targetPane = document.getElementById(targetPaneId);
+        if (targetPane) {
+          targetPane.style.display = 'block';
+          e.target.classList.add('active');
+        }
+        const url = e.target.dataset.url;
+        if (url) {
+          fetchFeedUEFAConferenceLeague(url, targetPaneId);
+        }
+      }
+    });
+
+    const initialActiveTab = document.querySelector('#uefaconferenceleaguetabs-UEFAConferenceLeague .headlines-tab.active');
+    if (initialActiveTab) {
+      const source = initialActiveTab.dataset.source;
+      const targetPaneId = `${source}-feed-UEFAConferenceLeague`;
+      const url = initialActiveTab.dataset.url;
+      fetchFeedUEFAConferenceLeague(url, targetPaneId);
+    }
+  }
+});
+</script>
+
+		<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const livgolftabs = document.getElementById('livgolftabs-LIVGolf');
+
+  const feedMapLIVGolf = {
+    headlines: "https://rss.app/feeds/teYHPC2ZpUGeMBx5.xml",
+    breaking: "https://rss.app/feeds/InHgRAqAOeKlilq8.xml"
+  };
+
+  function fetchFeedLIVGolf(url, contentPaneId) {
+    const contentPane = document.getElementById(contentPaneId);
+    if (!contentPane) return;
+    contentPane.innerHTML = '<p>Loading...</p>';
+
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const finalUrl = proxyUrl + encodeURIComponent(url);
+
+    fetch(finalUrl)
+      .then(r => r.text())
+      .then(str => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(str, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        let html = '<ul>';
+        items.forEach(el => {
+          const title = el.querySelector("title")?.textContent || 'No title';
+          const link = el.querySelector("link")?.textContent || '#';
+          html += `
+            <li>
+              <a href="${link}" target="_blank">
+                ${title}
+              </a>
+            </li>`;
+        });
+        html += '</ul>';
+        contentPane.innerHTML = html;
+      })
+      .catch(err => {
+        console.error("Error fetching RSS feed:", err);
+        contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+      });
+  }
+
+  if (livgolftabs) {
+    livgolftabs.addEventListener('click', function(e) {
+      if (e.target.classList.contains('headlines-tab')) {
+        document.querySelectorAll('#news-LIVGolf .news-feed-content')
+          .forEach(p => p.style.display = 'none');
+        document.querySelectorAll('#livgolftabs-LIVGolf .headlines-tab')
+          .forEach(t => t.classList.remove('active'));
+
+        const source = e.target.dataset.source;
+        const targetPaneId = `${source}-feed-LIVGolf`;
+        const targetPane = document.getElementById(targetPaneId);
+        if (targetPane) {
+          targetPane.style.display = 'block';
+          e.target.classList.add('active');
+        }
+        const url = e.target.dataset.url;
+        if (url) {
+          fetchFeedLIVGolf(url, targetPaneId);
+        }
+      }
+    });
+
+    const initialActiveTab = document.querySelector('#livgolftabs-LIVGolf .headlines-tab.active');
+    if (initialActiveTab) {
+      const source = initialActiveTab.dataset.source;
+      const targetPaneId = `${source}-feed-LIVGolf`;
+      const url = initialActiveTab.dataset.url;
+      fetchFeedLIVGolf(url, targetPaneId);
+    }
+  }
+});
+</script>
+
+		<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const indycarrtabs = document.getElementById('indycarrtabs-IndyCar');
+
+  const feedMapIndyCar = {
+    headlines: "https://rss.app/feeds/tBzOR3X3d0NpmoAA.xml",
+    breaking: "https://rss.app/feeds/Zo7JsQDXIT8D0pCD.xml",
+    reddit: "https://rss.app/feeds/8qBnW4yImPpMqMDD.xml"
+  };
+
+  function fetchFeedIndyCar(url, contentPaneId) {
+    const contentPane = document.getElementById(contentPaneId);
+    if (!contentPane) return;
+    contentPane.innerHTML = '<p>Loading...</p>';
+
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const finalUrl = proxyUrl + encodeURIComponent(url);
+
+    fetch(finalUrl)
+      .then(r => r.text())
+      .then(str => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(str, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        let html = '<ul>';
+        items.forEach(el => {
+          const title = el.querySelector("title")?.textContent || 'No title';
+          const link = el.querySelector("link")?.textContent || '#';
+          html += `
+            <li>
+              <a href="${link}" target="_blank">
+                ${title}
+              </a>
+            </li>`;
+        });
+        html += '</ul>';
+        contentPane.innerHTML = html;
+      })
+      .catch(err => {
+        console.error("Error fetching RSS feed:", err);
+        contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+      });
+  }
+
+  if (indycarrtabs) {
+    indycarrtabs.addEventListener('click', function(e) {
+      if (e.target.classList.contains('headlines-tab')) {
+        document.querySelectorAll('#news-IndyCar .news-feed-content')
+          .forEach(p => p.style.display = 'none');
+        document.querySelectorAll('#indycarrtabs-IndyCar .headlines-tab')
+          .forEach(t => t.classList.remove('active'));
+
+        const source = e.target.dataset.source;
+        const targetPaneId = `${source}-feed-IndyCar`;
+        const targetPane = document.getElementById(targetPaneId);
+        if (targetPane) {
+          targetPane.style.display = 'block';
+          e.target.classList.add('active');
+        }
+        const url = e.target.dataset.url;
+        if (url) {
+          fetchFeedIndyCar(url, targetPaneId);
+        }
+      }
+    });
+
+    const initialActiveTab = document.querySelector('#indycarrtabs-IndyCar .headlines-tab.active');
+    if (initialActiveTab) {
+      const source = initialActiveTab.dataset.source;
+      const targetPaneId = `${source}-feed-IndyCar`;
+      const url = initialActiveTab.dataset.url;
+      fetchFeedIndyCar(url, targetPaneId);
+    }
+  }
+});
+</script>
+
+		<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lpgatourtabs = document.getElementById('lpgatourtabs-LPGATour');
+
+  const feedMapLPGATour = {
+    headlines: "https://rss.app/feeds/tqz9SwQPuclR1mSF.xml",
+    breaking: "https://rss.app/feeds/0afVGov5MVxxBF7B.xml"
+  };
+
+  function fetchFeedLPGATour(url, contentPaneId) {
+    const contentPane = document.getElementById(contentPaneId);
+    if (!contentPane) return;
+    contentPane.innerHTML = '<p>Loading...</p>';
+
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const finalUrl = proxyUrl + encodeURIComponent(url);
+
+    fetch(finalUrl)
+      .then(r => r.text())
+      .then(str => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(str, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        let html = '<ul>';
+        items.forEach(el => {
+          const title = el.querySelector("title")?.textContent || 'No title';
+          const link = el.querySelector("link")?.textContent || '#';
+          html += `
+            <li>
+              <a href="${link}" target="_blank">
+                ${title}
+              </a>
+            </li>`;
+        });
+        html += '</ul>';
+        contentPane.innerHTML = html;
+      })
+      .catch(err => {
+        console.error("Error fetching RSS feed:", err);
+        contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+      });
+  }
+
+  if (lpgatourtabs) {
+    lpgatourtabs.addEventListener('click', function(e) {
+      if (e.target.classList.contains('headlines-tab')) {
+        document.querySelectorAll('#news-LPGATour .news-feed-content')
+          .forEach(p => p.style.display = 'none');
+        document.querySelectorAll('#lpgatourtabs-LPGATour .headlines-tab')
+          .forEach(t => t.classList.remove('active'));
+
+        const source = e.target.dataset.source;
+        const targetPaneId = `${source}-feed-LPGATour`;
+        const targetPane = document.getElementById(targetPaneId);
+        if (targetPane) {
+          targetPane.style.display = 'block';
+          e.target.classList.add('active');
+        }
+        const url = e.target.dataset.url;
+        if (url) {
+          fetchFeedLPGATour(url, targetPaneId);
+        }
+      }
+    });
+
+    const initialActiveTab = document.querySelector('#lpgatourtabs-LPGATour .headlines-tab.active');
+    if (initialActiveTab) {
+      const source = initialActiveTab.dataset.source;
+      const targetPaneId = `${source}-feed-LPGATour`;
+      const url = initialActiveTab.dataset.url;
+      fetchFeedLPGATour(url, targetPaneId);
+    }
+  }
+});
+</script>
+
+		<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const trackandfieldtabs = document.getElementById('trackandfieldtabs-TrackAndField');
+
+  const feedMapTrackAndField = {
+    headlines: "https://rss.app/feeds/wR4WbSpa3kRgWcdl.xml",
+    breaking: "https://rss.app/feeds/VqavgJOoX0LKkfkb.xml"
+  };
+
+  function fetchFeedTrackAndField(url, contentPaneId) {
+    const contentPane = document.getElementById(contentPaneId);
+    if (!contentPane) return;
+    contentPane.innerHTML = '<p>Loading...</p>';
+
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const finalUrl = proxyUrl + encodeURIComponent(url);
+
+    fetch(finalUrl)
+      .then(r => r.text())
+      .then(str => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(str, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        let html = '<ul>';
+        items.forEach(el => {
+          const title = el.querySelector("title")?.textContent || 'No title';
+          const link = el.querySelector("link")?.textContent || '#';
+          html += `
+            <li>
+              <a href="${link}" target="_blank">
+                ${title}
+              </a>
+            </li>`;
+        });
+        html += '</ul>';
+        contentPane.innerHTML = html;
+      })
+      .catch(err => {
+        console.error("Error fetching RSS feed:", err);
+        contentPane.innerHTML = `<p>Failed to load news. Please try again later.</p>`;
+      });
+  }
+
+  if (trackandfieldtabs) {
+    trackandfieldtabs.addEventListener('click', function(e) {
+      if (e.target.classList.contains('headlines-tab')) {
+        document.querySelectorAll('#news-TrackAndField .news-feed-content')
+          .forEach(p => p.style.display = 'none');
+        document.querySelectorAll('#trackandfieldtabs-TrackAndField .headlines-tab')
+          .forEach(t => t.classList.remove('active'));
+
+        const source = e.target.dataset.source;
+        const targetPaneId = `${source}-feed-TrackAndField`;
+        const targetPane = document.getElementById(targetPaneId);
+        if (targetPane) {
+          targetPane.style.display = 'block';
+          e.target.classList.add('active');
+        }
+        const url = e.target.dataset.url;
+        if (url) {
+          fetchFeedTrackAndField(url, targetPaneId);
+        }
+      }
+    });
+
+    const initialActiveTab = document.querySelector('#trackandfieldtabs-TrackAndField .headlines-tab.active');
+    if (initialActiveTab) {
+      const source = initialActiveTab.dataset.source;
+      const targetPaneId = `${source}-feed-TrackAndField`;
+      const url = initialActiveTab.dataset.url;
+      fetchFeedTrackAndField(url, targetPaneId);
     }
   }
 });
