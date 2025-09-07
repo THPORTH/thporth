@@ -2896,31 +2896,45 @@ div[id^="breaking-content-"] a:hover {
             });
         });
 
-        // --- ADDED: NEW CODE FOR MENU FILTERS ---
-        document.getElementById("menuFilters").addEventListener("click", e => {
-            const clickedFilter = e.target.closest(".menu-filter");
-            if (!clickedFilter) return;
+       // --- UPDATED: NEW CODE FOR MENU FILTERS ---
+    document.getElementById("menuFilters").addEventListener("click", e => {
+        const clickedFilter = e.target.closest(".menu-filter");
+        if (!clickedFilter) return;
 
-            // Remove active class from all filters
-            document.querySelectorAll("#menuFilters .menu-filter").forEach(filter => {
-                filter.classList.remove("active");
-            });
-            // Add active class to the clicked filter
-            clickedFilter.classList.add("active");
+        // Find the currently selected league (before we change the filter)
+        const currentSelectedLi = document.querySelector("#menuList li.selected");
+        const selectedSection = currentSelectedLi ? currentSelectedLi.dataset.section : null;
 
-            const filterId = clickedFilter.dataset.filter;
-
-            // Hide all menu lists
-            document.querySelectorAll("#menuList > ul").forEach(list => {
-                list.style.display = "none";
-            });
-
-            // Show the list that matches the data-filter
-            const targetList = document.getElementById(`menuList-${filterId}`);
-            if (targetList) {
-                targetList.style.display = "block";
-            }
+        // Remove active class from all filters
+        document.querySelectorAll("#menuFilters .menu-filter").forEach(filter => {
+            filter.classList.remove("active");
         });
+        // Add active class to the clicked filter
+        clickedFilter.classList.add("active");
+
+        const filterId = clickedFilter.dataset.filter;
+
+        // Hide all menu lists and remove the 'selected' class from ALL li items
+        // This is important to prevent duplicates when switching back and forth
+        document.querySelectorAll("#menuList > ul").forEach(list => {
+            list.style.display = "none";
+            list.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
+        });
+
+        // Show the list that matches the data-filter
+        const targetList = document.getElementById(`menuList-${filterId}`);
+        if (targetList) {
+            targetList.style.display = "block";
+
+            // If a league was previously selected, find it in the new list and select it
+            if (selectedSection) {
+                const newSelectedLi = targetList.querySelector(`li[data-section="${selectedSection}"]`);
+                if (newSelectedLi) {
+                    newSelectedLi.classList.add("selected");
+                }
+            }
+        }
+    });
 
 
         function loadHeadlinesAndBreakingFeeds(section) {
