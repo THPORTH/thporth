@@ -1141,6 +1141,34 @@ div[id^="breaking-content-"] a:hover {
     min-width: 30px;
 }
 
+	   /* Styles for the new tab system */
+.tab-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #6b7280;
+    transition: color 0.3s, border-bottom 0.3s;
+}
+
+.tab-button.active {
+    color: #3b82f6;
+    border-bottom: 2px solid #3b82f6;
+}
+
+.tab-content {
+    padding: 15px 0;
+}
+
 
   /* ────────────────────────────────────────────────────────── */
   /* Fonts (Owners)                       */
@@ -1822,8 +1850,20 @@ div[id^="breaking-content-"] a:hover {
     <!-- Container for Schedule -->
     <div id="league-schedule-container" style="padding: 1rem;">
         <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff; margin-bottom: 1rem;">Schedule</h2>
-        <div id="league-schedule-content"><p style="color: #9ca3af;">Loading schedule...</p></div>
+        <div id="league-schedule-content">
+    <div class="tab-container">
+        <button class="tab-button active" data-tab="today" onclick="activateGamesTab('today', 'LaLiga')">Today</button>
+        <button class="tab-button" data-tab="upcoming" onclick="activateGamesTab('upcoming', 'LaLiga')">Upcoming</button>
     </div>
+
+    <div id="today-games-container" class="tab-content">
+        <p>Loading today's games...</p>
+    </div>
+
+    <div id="upcoming-games-container" class="tab-content" style="display: none;">
+        <p>Loading upcoming games...</p>
+    </div>
+</div>
 
     <!-- Container for Standings -->
     <div id="league-standings-container" style="padding: 1rem; border-top: 1px solid #374151;">
