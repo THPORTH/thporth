@@ -4763,34 +4763,87 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 		<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const contentPaneNCAABaseball = document.getElementById('breaking-content-NCAABaseball');
-    const urlNCAABaseball = document.querySelector('#news-NCAABaseball .news-tab').dataset.url;
-
-    function fetchFeedNCAABaseball(url, contentPane) {
+function fetchFeedNCAABaseball(url, contentPane) {
         if (!contentPane) return;
         contentPane.innerHTML = '<p>Loading...</p>';
         const proxyUrl = 'https://api.allorigins.win/raw?url=';
         const finalUrl = proxyUrl + encodeURIComponent(url);
+
         fetch(finalUrl)
             .then(r => r.text())
             .then(str => {
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(str, "text/xml");
                 const items = xmlDoc.querySelectorAll("item");
-                let html = '<ul>';
+
+                let todayGamesHtml = '<ul>';
+                let upcomingGamesHtml = '<ul>';
+                const today = new Date().toLocaleDateString();
+
                 items.forEach(el => {
                     const title = el.querySelector("title")?.textContent || 'No title';
                     const link = el.querySelector("link")?.textContent || '#';
-                    html += `
-                    <li>
-                        <a href="${link}" target="_blank">
-                            ${title}
-                        </a>
-                    </li>`;
+                    
+                    // Simple logic to separate games based on a keyword.
+                    // This can be improved by parsing a date from the title if available.
+                    const isUpcoming = title.includes("at") || title.includes("vs");
+
+                    const listItem = `
+                        <li>
+                            <a href="${link}" target="_blank">
+                                ${title}
+                            </a>
+                        </li>`;
+
+                    if (isUpcoming) {
+                        upcomingGamesHtml += listItem;
+                    } else {
+                        todayGamesHtml += listItem;
+                    }
                 });
-                html += '</ul>';
-                contentPane.innerHTML = html;
+
+                todayGamesHtml += '</ul>';
+                upcomingGamesHtml += '</ul>';
+                
+                // Construct the full HTML with tabs and content panes
+                const fullHtml = `
+                    <div class="flex border-b border-gray-300">
+                        <button id="tab-today" class="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border-r border-gray-300 active">
+                            Today's Games
+                        </button>
+                        <button id="tab-upcoming" class="px-4 py-2 text-sm font-semibold text-gray-700 bg-white">
+                            Upcoming Games
+                        </button>
+                    </div>
+                    <div id="content-today" class="p-4 border-l border-r border-b border-gray-300">
+                        ${todayGamesHtml}
+                    </div>
+                    <div id="content-upcoming" class="p-4 border-l border-r border-b border-gray-300" style="display:none;">
+                        ${upcomingGamesHtml}
+                    </div>
+                `;
+
+                contentPane.innerHTML = fullHtml;
+
+                // Add event listeners to the new tabs
+                const tabToday = document.getElementById('tab-today');
+                const tabUpcoming = document.getElementById('tab-upcoming');
+                const contentToday = document.getElementById('content-today');
+                const contentUpcoming = document.getElementById('content-upcoming');
+
+                tabToday.addEventListener('click', () => {
+                    tabToday.classList.add('active');
+                    tabUpcoming.classList.remove('active');
+                    contentToday.style.display = 'block';
+                    contentUpcoming.style.display = 'none';
+                });
+
+                tabUpcoming.addEventListener('click', () => {
+                    tabUpcoming.classList.add('active');
+                    tabToday.classList.remove('active');
+                    contentUpcoming.style.display = 'block';
+                    contentToday.style.display = 'none';
+                });
             })
             .catch(err => {
                 console.error("Error fetching RSS feed:", err);
@@ -4798,10 +4851,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // Call the function when the page loads
+    const urlNCAABaseball = document.querySelector('.news-tab[data-tab="NCAABaseball"]').dataset.url;
+    const contentPaneNCAABaseball = document.getElementById('NCAABaseball-schedule');
     if (urlNCAABaseball && contentPaneNCAABaseball) {
         fetchFeedNCAABaseball(urlNCAABaseball, contentPaneNCAABaseball);
     }
-});
 </script>
  
   </body>
