@@ -2771,7 +2771,7 @@ div[id^="breaking-content-"] a:hover {
 }
       </script>
 
-   <script>
+  <script>
     document.addEventListener("DOMContentLoaded", () => {
         // --- GRAB ELEMENTS FOR COLUMN SWITCHING ---
         const gamesColumn = document.getElementById('games-column');
@@ -2842,7 +2842,7 @@ div[id^="breaking-content-"] a:hover {
         Object.entries(feedMap).forEach(([source, url]) => {
             fetchFeed(`#${source}-feed`, url);
         });
-        
+
         // --- Main Menu and Page Switching Logic ---
         let selectedSection = "Home";
         document.querySelectorAll("#menuList li").forEach(item => {
@@ -2865,10 +2865,10 @@ div[id^="breaking-content-"] a:hover {
                     gamesContent.style.display = 'block';
                     f1Content.style.display = 'none';
 
-				const espnTab = document.querySelector('#headlines-tabs .headlines-tab[data-source="espn"]');
-   		 		if (espnTab) {
-        			espnTab.click();
-    			}
+                    const espnTab = document.querySelector('#headlines-tabs .headlines-tab[data-source="espn"]');
+                    if (espnTab) {
+                        espnTab.click();
+                    }
                 } else if (section === 'FormulaOne') {
                     gamesColumn.style.display = 'block';
                     leagueSpecificColumn.style.display = 'none';
@@ -2896,6 +2896,33 @@ div[id^="breaking-content-"] a:hover {
             });
         });
 
+        // --- ADDED: NEW CODE FOR MENU FILTERS ---
+        document.getElementById("menuFilters").addEventListener("click", e => {
+            const clickedFilter = e.target.closest(".menu-filter");
+            if (!clickedFilter) return;
+
+            // Remove active class from all filters
+            document.querySelectorAll("#menuFilters .menu-filter").forEach(filter => {
+                filter.classList.remove("active");
+            });
+            // Add active class to the clicked filter
+            clickedFilter.classList.add("active");
+
+            const filterId = clickedFilter.dataset.filter;
+
+            // Hide all menu lists
+            document.querySelectorAll("#menuList > ul").forEach(list => {
+                list.style.display = "none";
+            });
+
+            // Show the list that matches the data-filter
+            const targetList = document.getElementById(`menuList-${filterId}`);
+            if (targetList) {
+                targetList.style.display = "block";
+            }
+        });
+
+
         function loadHeadlinesAndBreakingFeeds(section) {
             const newsSection = document.getElementById(`news-${section}`);
             if (!newsSection) return;
@@ -2908,7 +2935,7 @@ div[id^="breaking-content-"] a:hover {
         }
 
         // --- UNIFIED CLICK HANDLER FOR ALL NEWS TABS ---
-        
+
         // Vertical Headlines Tabs (League-Specific)
         document.querySelectorAll('.headlines-tabs-column').forEach(container => {
             container.addEventListener('click', (event) => {
