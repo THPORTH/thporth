@@ -1814,24 +1814,34 @@ div[id^="breaking-content-"] a:hover {
 
 <!-- ─── LEAGUE-SPECIFIC COLUMN (New, Initially Hidden) ────────────────────────── -->
 <div class="column" id="league-specific-column" style="display: none; flex: 0 0 250px; background-color: #1f1f1f; color: #e5e7eb; padding: 0;">
-    <!-- Header will be dynamically set -->
     <div id="league-specific-header" style="position: sticky; top: 0; width: 100%; height: 18px; background-color: #3c3c3c; font-family: Helvetica, Arial, sans-serif; font-size: 10px; display: flex; align-items: center; padding-left: 10px; z-index: 11; border-bottom: 1px solid #1f1f1f; font-weight: bold;">
         League Info
     </div>
-    
-    <!-- Container for Schedule -->
     <div id="league-schedule-container" style="padding: 1rem;">
         <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff; margin-bottom: 1rem;">Schedule</h2>
-        <div id="league-schedule-content"><p style="color: #9ca3af;">Loading schedule...</p></div>
+        <div id="league-schedule-content">
+          <div class="tab-container">
+        <button class="tab-button active" data-tab="today" onclick="handleTabClick(event)">Today</button>
+        <button class="tab-button" data-tab="upcoming" onclick="handleTabClick(event)">Upcoming</button>
     </div>
 
-    <!-- Container for Standings -->
+            <div id="today-games-container" class="tab-content">
+                <p>Loading today's games...</p>
+            </div>
+
+            <div id="upcoming-games-container" class="tab-content" style="display: none;">
+                <p>Loading upcoming games...</p>
+            </div>
+        </div>
+        </div>
+
     <div id="league-standings-container" style="padding: 1rem; border-top: 1px solid #374151;">
         <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff; margin-bottom: 1rem;">Standings</h2>
-        <div id="league-standings-content"><p style="color: #9ca3af;">Loading standings...</p></div>
+        <div id="league-standings-content">
+            <p style="color: #9ca3af;">Loading standings...</p>
+        </div>
     </div>
 </div>
-
 
       <!-- DIVIDER BETWEEN STANDINGS AND NEWS -->
       <div class="divider"></div>
