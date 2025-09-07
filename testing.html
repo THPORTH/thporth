@@ -1820,10 +1820,27 @@ div[id^="breaking-content-"] a:hover {
     </div>
     
     <!-- Container for Schedule -->
-    <div id="league-schedule-container" style="padding: 1rem;">
-        <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff; margin-bottom: 1rem;">Schedule</h2>
-        <div id="league-schedule-content"><p style="color: #9ca3af;">Loading schedule...</p></div>
+   <div id="league-schedule-container" style="padding: 1rem;">
+    <h2 style="font-size: 1.125rem; font-weight: 700; color: #fff; margin-bottom: 1rem;">Schedule</h2>
+    
+    <!-- Tab Buttons -->
+    <div class="flex">
+        <button id="today-tab-button" class="px-4 py-2 font-semibold text-gray-700 bg-white border-b-2 border-blue-500 active" style="border-radius: 0.5rem 0 0 0;">
+            Today's Games
+        </button>
+        <button id="upcoming-tab-button" class="px-4 py-2 font-semibold text-gray-700 bg-white border-b-2 border-transparent" style="border-radius: 0 0.5rem 0 0;">
+            Upcoming Games
+        </button>
     </div>
+
+    <!-- Tab Content -->
+    <div id="league-schedule-today-content" class="tab-content p-4 border border-t-0 border-gray-300" style="border-radius: 0 0 0.5rem 0.5rem;">
+        <p style="color: #4b5563;">This is where today's games will go.</p>
+    </div>
+    <div id="league-schedule-upcoming-content" class="tab-content p-4 border border-t-0 border-gray-300" style="display: none; border-radius: 0 0 0.5rem 0.5rem;">
+        <p style="color: #4b5563;">This is where upcoming games will go.</p>
+    </div>
+</div>
 
     <!-- Container for Standings -->
     <div id="league-standings-container" style="padding: 1rem; border-top: 1px solid #374151;">
@@ -4857,6 +4874,42 @@ function fetchFeedNCAABaseball(url, contentPane) {
     if (urlNCAABaseball && contentPaneNCAABaseball) {
         fetchFeedNCAABaseball(urlNCAABaseball, contentPaneNCAABaseball);
     }
+</script>
+
+		<script>
+    // This script handles the tab functionality for the schedule section.
+    document.addEventListener('DOMContentLoaded', () => {
+        const todayButton = document.getElementById('today-tab-button');
+        const upcomingButton = document.getElementById('upcoming-tab-button');
+        const todayContent = document.getElementById('league-schedule-today-content');
+        const upcomingContent = document.getElementById('league-schedule-upcoming-content');
+
+        if (todayButton && upcomingButton && todayContent && upcomingContent) {
+            todayButton.addEventListener('click', () => {
+                // Activate "Today's Games" tab
+                todayButton.classList.add('active');
+                todayButton.style.borderColor = '#3b82f6';
+                upcomingButton.classList.remove('active');
+                upcomingButton.style.borderColor = 'transparent';
+
+                // Show "Today's Games" content
+                todayContent.style.display = 'block';
+                upcomingContent.style.display = 'none';
+            });
+
+            upcomingButton.addEventListener('click', () => {
+                // Activate "Upcoming Games" tab
+                upcomingButton.classList.add('active');
+                upcomingButton.style.borderColor = '#3b82f6';
+                todayButton.classList.remove('active');
+                todayButton.style.borderColor = 'transparent';
+
+                // Show "Upcoming Games" content
+                upcomingContent.style.display = 'block';
+                todayContent.style.display = 'none';
+            });
+        }
+    });
 </script>
  
   </body>
