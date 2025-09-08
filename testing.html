@@ -4008,6 +4008,14 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchLeagueStandings(leagueInfo.standingsUrl);
 };
 
+	 // Helper: parse ET date/time into milliseconds for chronological sorting
+    function __parseEtMillis(dateStr, timeStr) {
+        const { DateTime } = luxon;
+        const safeTime = timeStr && timeStr.trim() ? timeStr : '12:00 AM';
+        const a = DateTime.fromFormat(`${dateStr} ${safeTime}`, 'LLL d h:mm a', { zone: 'America/New_York' });
+        const dt = a.isValid ? a : DateTime.fromFormat(`${dateStr} ${safeTime}`, 'LLLL d h:mm a', { zone: 'America/New_York' });
+        return (dt && dt.isValid) ? dt.toMillis() : Number.MAX_SAFE_INTEGER;
+    }
     // Function to load upcoming schedule from Google Sheets
     window.loadUpcomingSchedule = function() {
         const upcomingContent = document.getElementById('league-schedule-upcoming-content');
@@ -4038,11 +4046,17 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(csvText => {
                 const games = parseUpcomingScheduleCSV(csvText);
+				 // Sort chronologically by actual ET date/time (not string order)
+                const sortedGames = games.slice().sort((a, b) => {
+                    const aMs = __parseEtMillis(a.date || a.dateStr, a.time || a.timeET);
+                    const bMs = __parseEtMillis(b.date || b.dateStr, b.time || b.timeET);
+                    return aMs - bMs;
+                });
                 if (games.length === 0) {
                     upcomingContent.innerHTML = '<p>No upcoming games found.</p>';
                     return;
                 }
-                renderUpcomingGamesGrouped(upcomingContent, games);
+                renderUpcomingGamesGrouped(upcomingContent, sortedGames);
             })
             .catch(error => {
                 console.error('Error loading upcoming schedule:', error);
