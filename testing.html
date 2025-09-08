@@ -4008,11 +4008,19 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchLeagueStandings(leagueInfo.standingsUrl);
 };
 
-	// Helper: parse ET date/time into milliseconds for chronological sorting (tolerates many formats)
+// Helper: parse ET date/time into milliseconds for chronological sorting (tolerates many formats)
 function __parseEtMillis(dateStr, timeStr) {
   const { DateTime } = luxon;
 
-  // Normalize date like: "Sun Sep 9", "September 09, 2025", "Sep 9", etc.
+  // First, try to parse the M/d/yyyy format from the CSV
+  const dateFromCsv = DateTime.fromFormat(dateStr, 'M/d/yyyy', { zone: 'America/New_York' });
+  if (dateFromCsv.isValid) {
+    const combined = DateTime.fromFormat(`${dateStr} ${timeStr}`, 'M/d/yyyy h:mm a', { zone: 'America/New_York' });
+    if (combined.isValid) return combined.toMillis();
+    return dateFromCsv.toMillis();
+  }
+
+  // Fallback to the original logic for other date formats
   const s = String(dateStr || '').trim().replace(/,/g, '').replace(/\s+/g, ' ');
   const m = s.match(/([A-Za-z]+)\s+(\d{1,2})(?:\s+(\d{4}))?$/);
   if (!m) return Number.MAX_SAFE_INTEGER;
@@ -4064,7 +4072,7 @@ window.loadUpcomingSchedule = function() {
   let csvUrl = leagueInfo.upcomingScheduleUrl;
   if (!/\/export\?format=csv/.test(csvUrl)) {
     csvUrl = csvUrl.replace('/edit#gid=', '/export?format=csv&gid=')
-                   .replace('/edit?gid=', '/export?format=csv&gid=');
+                     .replace('/edit?gid=', '/export?format=csv&gid=');
   }
 
   fetch(csvUrl)
@@ -4139,7 +4147,7 @@ window.loadUpcomingSchedule = function() {
         return games;
     }
 
-   // Uses Luxon (already in your page) for robust timezone handling
+    // Uses Luxon (already in your page) for robust timezone handling
 const { DateTime } = luxon;
 
 // Parse "Sep 4" or "September 4" and "8:20 PM" in ET -> return DateTime in user's local tz
@@ -4224,10 +4232,10 @@ function renderUpcomingGamesGrouped(container, games) {
       const local = g.timeET ? toLocal(g.dateStr, g.timeET) : null;
       return {
         ...g,
-        local,                         // Luxon DateTime or null
+        local,
         dateHeader: local
-          ? local.toFormat('MMMM d')   // e.g., September 4
-          : g.dateStr                  // fallback if parse failed
+          ? local.toFormat('MMMM d')
+          : g.dateStr
       };
     })
     // Sort by actual local date/time
