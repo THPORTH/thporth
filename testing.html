@@ -4008,240 +4008,89 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchLeagueStandings(leagueInfo.standingsUrl);
 };
 
-	 // Helper: parse ET date/time into milliseconds for chronological sorting
-    function __parseEtMillis(dateStr, timeStr) {
-        const { DateTime } = luxon;
-        const safeTime = timeStr && timeStr.trim() ? timeStr : '12:00 AM';
-        const a = DateTime.fromFormat(`${dateStr} ${safeTime}`, 'LLL d h:mm a', { zone: 'America/New_York' });
-        const dt = a.isValid ? a : DateTime.fromFormat(`${dateStr} ${safeTime}`, 'LLLL d h:mm a', { zone: 'America/New_York' });
-        return (dt && dt.isValid) ? dt.toMillis() : Number.MAX_SAFE_INTEGER;
-    }
-    // Function to load upcoming schedule from Google Sheets
-    window.loadUpcomingSchedule = function() {
-        const upcomingContent = document.getElementById('league-schedule-upcoming-content');
-        if (!upcomingContent) return;
-        
-        // Get the current league info
-        const leagueHeader = document.getElementById('league-specific-header');
-        if (!leagueHeader) return;
-        
-        const currentLeague = leagueHeader.innerText;
-        const leagueInfo = LEAGUE_DATA_CONFIG[currentLeague];
-        if (!leagueInfo || !leagueInfo.upcomingScheduleUrl) {
-            upcomingContent.innerHTML = '<p style="color: #ef4444;">No upcoming schedule URL configured for this league.</p>';
-            return;
-        }
-        
-        upcomingContent.innerHTML = '<p style="color: #9ca3af;">Loading upcoming schedule...</p>';
-        
-        // Convert Google Sheets URL to CSV format
-        const csvUrl = leagueInfo.upcomingScheduleUrl.replace('/edit#gid=', '/export?format=csv&gid=');
-        
-        fetch(csvUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text();
-            })
-            .then(csvText => {
-                const games = parseUpcomingScheduleCSV(csvText);
-				 // Sort chronologically by actual ET date/time (not string order)
-                const sortedGames = games.slice().sort((a, b) => {
-                    const aMs = __parseEtMillis(a.date || a.dateStr, a.time || a.timeET);
-                    const bMs = __parseEtMillis(b.date || b.dateStr, b.time || b.timeET);
-                    return aMs - bMs;
-                });
-                if (games.length === 0) {
-                    upcomingContent.innerHTML = '<p>No upcoming games found.</p>';
-                    return;
-                }
-                renderUpcomingGamesGrouped(upcomingContent, sortedGames);
-            })
-            .catch(error => {
-                console.error('Error loading upcoming schedule:', error);
-                upcomingContent.innerHTML = '<p style="color: #ef4444;">Error loading upcoming schedule.</p>';
-            });
-    };
+	 // Helper: parse ET date/time into milliseconds for chronological sorting (tolerates many formats)
+function __parseEtMillis(dateStr, timeStr) {
+  const { DateTime } = luxon;
 
-    // Function to parse CSV data for upcoming schedule
-    function parseUpcomingScheduleCSV(csvText) {
-        const lines = csvText.split('\n');
-        const games = [];
-        
-        // Skip header row if it exists
-        const startIndex = lines[0].toLowerCase().includes('date') || lines[0].toLowerCase().includes('time') ? 1 : 0;
-        
-        for (let i = startIndex; i < lines.length; i++) {
-            const line = lines[i].trim();
-            if (!line) continue;
-            
-            // Parse CSV line (handle quoted fields)
-            const fields = [];
-            let currentField = '';
-            let inQuotes = false;
-            
-            for (let j = 0; j < line.length; j++) {
-                const char = line[j];
-                if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    fields.push(currentField.trim());
-                    currentField = '';
-                } else {
-                    currentField += char;
-                }
-            }
-            fields.push(currentField.trim());
-            
-            // Expect format: Date, Time, Home Team, Away Team, (optional: Location, TV)
-            if (fields.length >= 4) {
-                const game = {
-                    date: fields[0],
-                    time: fields[1],
-                    homeTeam: fields[2],
-                    awayTeam: fields[3],
-                    location: fields[4] || '',
-                    tv: fields[5] || ''
-                };
-                games.push(game);
-            }
-        }
-        
-        return games;
-    }
+  // Normalize date like: "Sun Sep 9", "September 09, 2025", "Sep 9", etc.
+  const s = String(dateStr || '').trim().replace(/,/g, '').replace(/\s+/g, ' ');
+  const m = s.match(/([A-Za-z]+)\s+(\d{1,2})(?:\s+(\d{4}))?$/);
+  
+  let dt;
 
-   // Uses Luxon (already in your page) for robust timezone handling
-const { DateTime } = luxon;
+  // First, try a robust parse that handles common text formats
+  const candidates = [
+    `${s} ${timeStr}`,
+    s
+  ];
+  const fmts = [
+    'LLL d yyyy h:mm a',
+    'LLLL d yyyy h:mm a',
+    'LLL d yyyy',
+    'LLLL d yyyy',
+    'M/d/yyyy h:mm a', // Added this format for robust parsing
+    'M/d/yyyy',
+  ];
 
-// Parse "Sep 4" or "September 4" and "8:20 PM" in ET -> return DateTime in user's local tz
-function toLocal(dtStr, timeStr) {
-  // Allow both "Sep 4" and "September 4"
-  const parsed = DateTime.fromFormat(`${dtStr} ${timeStr}`, 'LLL d h:mm a', { zone: 'America/New_York' })
-    || DateTime.fromFormat(`${dtStr} ${timeStr}`, 'LLLL d h:mm a', { zone: 'America/New_York' });
+  for (const cand of candidates) {
+    for (const fmt of fmts) {
+      dt = DateTime.fromFormat(cand, fmt, { zone: 'America/New_York' });
+      if (dt.isValid) return dt.toMillis();
+    }
+  }
 
-  // If parse failed, return null
-  if (!parsed || !parsed.isValid) return null;
-
-  return parsed.setZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  return Number.MAX_SAFE_INTEGER;
 }
 
-// OPTIONAL: If your CSV header row changed names, adjust these indices
-// CSV columns assumed: [Date, Time (ET), Away Team, Home Team, (Location optional), (TV optional)]
-function parseUpcomingScheduleCSV(csvText) {
-  const lines = csvText.split('\n').map(l => l.trim()).filter(Boolean);
-  if (lines.length === 0) return [];
+// Function to load upcoming schedule from Google Sheets
+window.loadUpcomingSchedule = function() {
+  const upcomingContent = document.getElementById('league-schedule-upcoming-content');
+  if (!upcomingContent) return;
 
-  // detect header row
-  const hasHeader = /^date/i.test(lines[0]) || /time/i.test(lines[0]);
-  const startIdx = hasHeader ? 1 : 0;
+  // Get the current league info
+  const leagueHeader = document.getElementById('league-specific-header');
+  if (!leagueHeader) return;
 
-  const games = [];
+  const currentLeague = leagueHeader.innerText;
+  const leagueInfo = LEAGUE_DATA_CONFIG[currentLeague];
+  if (!leagueInfo || !leagueInfo.upcomingScheduleUrl) {
+    upcomingContent.innerHTML = '<p style="color: #ef4444;">No upcoming schedule URL configured for this league.</p>';
+    return;
+  }
 
-  for (let i = startIdx; i < lines.length; i++) {
-    const raw = lines[i];
+  upcomingContent.innerHTML = '<p style="color: #9ca3af;">Loading upcoming schedule...</p>';
 
-    // Basic CSV split respecting quotes
-    const fields = [];
-    let buf = '', q = false;
-    for (let j = 0; j < raw.length; j++) {
-      const ch = raw[j];
-      if (ch === '"') {
-        q = !q;
-      } else if (ch === ',' && !q) {
-        fields.push(buf);
-        buf = '';
-      } else {
-        buf += ch;
-      }
-    }
-    fields.push(buf);
+  // Convert Google Sheets URL to CSV format (supports /edit#gid= and /edit?gid=; if already /export keep as is)
+  let csvUrl = leagueInfo.upcomingScheduleUrl;
+  if (!/\/export\?format=csv/.test(csvUrl)) {
+    csvUrl = csvUrl.replace('/edit#gid=', '/export?format=csv&gid=')
+                   .replace('/edit?gid=', '/export?format=csv&gid=');
+  }
 
-    // Trim all fields
-    for (let k = 0; k < fields.length; k++) fields[k] = fields[k].trim().replace(/^"|"$/g, '');
-
-    // Indices: 0 Date, 1 Time (ET), 2 Away, 3 Home, 4 Location?, 5 TV?
-    if (fields.length >= 4) {
-      const dateStr = fields[0];
-      const timeET = fields[1];
-      const away = fields[2];
-      const home = fields[3];
-
-      if (!dateStr || !away || !home) continue;
-
-      games.push({
-        dateStr,
-        timeET,
-        awayTeam: away,
-        homeTeam: home,
-        location: fields[4] || '',
-        tv: fields[5] || ''
-      });
-    }
-  }
-
-  return games;
-}
-
-// New grouped renderer: date header once, games below; time in user's local tz
-function renderUpcomingGamesGrouped(container, games) {
-  if (!games || games.length === 0) {
-    container.innerHTML = '<p>No upcoming games found.</p>';
-    return;
-  }
-
-  // Build normalized records with local DateTime for sorting/grouping
-  const normalized = games
-    .map(g => {
-      const local = g.timeET ? toLocal(g.dateStr, g.timeET) : null;
-      return {
-        ...g,
-        local,                         // Luxon DateTime or null
-        dateHeader: local
-          ? local.toFormat('MMMM d')   // e.g., September 4
-          : g.dateStr                  // fallback if parse failed
-      };
-    })
-    // Sort by actual local date/time
-    .sort((a, b) => {
-      if (a.local && b.local) return a.local.toMillis() - b.local.toMillis();
-      return (a.dateStr + a.timeET).localeCompare(b.dateStr + b.timeET);
-    });
-
-  // Group by dateHeader
-  const byDate = new Map();
-  for (const g of normalized) {
-    const key = g.dateHeader;
-    if (!byDate.has(key)) byDate.set(key, []);
-    byDate.get(key).push(g);
-  }
-
-  // Build HTML
-  let html = '';
-  byDate.forEach((gamesForDay, dateKey) => {
-    html += `
-      <div class="upcoming-day">
-        <div class="upcoming-date-header">${dateKey}</div>
-        <div class="upcoming-day-body">
-          ${gamesForDay.map(game => {
-            const timeLocal = game.local ? game.local.toFormat('h:mm a') : (game.timeET || '');
-            return `
-              <div class="up-row">
-                <div class="up-teams">
-                  <div class="up-team away">${game.awayTeam}</div>
-                  <div class="up-team home">${game.homeTeam}</div>
-                </div>
-                <div class="up-time">${timeLocal}</div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    `;
-  });
-
-  container.innerHTML = html;
-}
+  fetch(csvUrl)
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return response.text();
+    })
+    .then(csvText => {
+      const games = parseUpcomingScheduleCSV(csvText);
+      // Sort chronologically by actual ET date/time (not string order)
+      const sortedGames = games.slice().sort((a, b) => {
+        const aMs = __parseEtMillis(a.date || a.dateStr, a.time || a.timeET);
+        const bMs = __parseEtMillis(b.date || b.dateStr, b.time || b.timeET);
+        return aMs - bMs;
+      });
+      if (sortedGames.length === 0) {
+        upcomingContent.innerHTML = '<p>No upcoming games found.</p>';
+        return;
+      }
+      renderUpcomingGamesGrouped(upcomingContent, sortedGames);
+    })
+    .catch(error => {
+      console.error('Error loading upcoming schedule:', error);
+      upcomingContent.innerHTML = '<p style="color: #ef4444;">Error loading upcoming schedule.</p>';
+    });
+};
 
   // --- 7. TABS AND FILTER INITIALIZATION ---
 const gamesTabsContainer = document.getElementById('games-tabs');
