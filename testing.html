@@ -373,6 +373,39 @@
   text-decoration: underline;
 }
 
+	   /* Container spacing */
+#league-schedule-upcoming-content { padding: 0 8px; }
+
+/* Date header bar */
+.upcoming-date-header {
+  background: #cfcfcf;      /* light gray bar */
+  color: #111;              /* dark text for contrast */
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 2px;
+  margin: 10px 0 6px;
+}
+
+/* Day block */
+.upcoming-day { border: 1px solid #111; background: #000; padding: 8px; margin-bottom: 10px; }
+
+/* Game rows */
+.up-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 2px;
+  border-bottom: 1px solid #2f2f2f;
+}
+.up-row:last-child { border-bottom: 0; }
+
+/* Teams (left column) */
+.up-teams { display: flex; flex-direction: column; gap: 2px; }
+.up-team { color: #fff; font-size: 16px; line-height: 1.1; }
+
+/* Time (right column) */
+.up-time { color: #ddd; font-size: 14px; white-space: nowrap; padding-left: 12px; }
 /* ──────────────────────────────────────────────── */
   /* ────────────────────────────────────────────────────────── */
   /* Top Bars                          */
@@ -3984,7 +4017,7 @@ if (upcomingScheduleContent) upcomingScheduleContent.innerHTML = '';        cons
                     upcomingContent.innerHTML = '<p>No upcoming games found.</p>';
                     return;
                 }
-                renderUpcomingGames(upcomingContent, games);
+                renderUpcomingGamesGrouped(upcomingContent, games);
             })
             .catch(error => {
                 console.error('Error loading upcoming schedule:', error);
@@ -4039,30 +4072,137 @@ if (upcomingScheduleContent) upcomingScheduleContent.innerHTML = '';        cons
         return games;
     }
 
-    // Function to render upcoming games
-    function renderUpcomingGames(container, games) {
-        if (games.length === 0) {
-            container.innerHTML = '<p>No upcoming games found.</p>';
-            return;
-        }
-        
-        const gamesHtml = games.map(game => `
-            <div style="padding: 0.5rem; border-bottom: 1px solid #374151; font-size: 0.875rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                    <span style="color: #9ca3af; font-size: 0.75rem;">${game.date} ${game.time}</span>
-                    ${game.tv ? `<span style="color: #60a5fa; font-size: 0.75rem;">${game.tv}</span>` : ''}
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="color: #fff;">${game.awayTeam}</span>
-                    <span style="color: #9ca3af; margin: 0 0.5rem;">@</span>
-                    <span style="color: #fff;">${game.homeTeam}</span>
-                </div>
-                ${game.location ? `<div style="color: #9ca3af; font-size: 0.75rem; margin-top: 0.25rem;">${game.location}</div>` : ''}
-            </div>
-        `).join('');
-        
-        container.innerHTML = gamesHtml;
+   // Uses Luxon (already in your page) for robust timezone handling
+const { DateTime } = luxon;
+
+// Parse "Sep 4" or "September 4" and "8:20 PM" in ET -> return DateTime in user's local tz
+function toLocal(dtStr, timeStr) {
+  // Allow both "Sep 4" and "September 4"
+  const parsed = DateTime.fromFormat(`${dtStr} ${timeStr}`, 'LLL d h:mm a', { zone: 'America/New_York' })
+    || DateTime.fromFormat(`${dtStr} ${timeStr}`, 'LLLL d h:mm a', { zone: 'America/New_York' });
+
+  // If parse failed, return null
+  if (!parsed || !parsed.isValid) return null;
+
+  return parsed.setZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+}
+
+// OPTIONAL: If your CSV header row changed names, adjust these indices
+// CSV columns assumed: [Date, Time (ET), Away Team, Home Team, (Location optional), (TV optional)]
+function parseUpcomingScheduleCSV(csvText) {
+  const lines = csvText.split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length === 0) return [];
+
+  // detect header row
+  const hasHeader = /^date/i.test(lines[0]) || /time/i.test(lines[0]);
+  const startIdx = hasHeader ? 1 : 0;
+
+  const games = [];
+
+  for (let i = startIdx; i < lines.length; i++) {
+    const raw = lines[i];
+
+    // Basic CSV split respecting quotes
+    const fields = [];
+    let buf = '', q = false;
+    for (let j = 0; j < raw.length; j++) {
+      const ch = raw[j];
+      if (ch === '"') {
+        q = !q;
+      } else if (ch === ',' && !q) {
+        fields.push(buf);
+        buf = '';
+      } else {
+        buf += ch;
+      }
     }
+    fields.push(buf);
+
+    // Trim all fields
+    for (let k = 0; k < fields.length; k++) fields[k] = fields[k].trim().replace(/^"|"$/g, '');
+
+    // Indices: 0 Date, 1 Time (ET), 2 Away, 3 Home, 4 Location?, 5 TV?
+    if (fields.length >= 4) {
+      const dateStr = fields[0];
+      const timeET = fields[1];
+      const away = fields[2];
+      const home = fields[3];
+
+      if (!dateStr || !away || !home) continue;
+
+      games.push({
+        dateStr,
+        timeET,
+        awayTeam: away,
+        homeTeam: home,
+        location: fields[4] || '',
+        tv: fields[5] || ''
+      });
+    }
+  }
+
+  return games;
+}
+
+// New grouped renderer: date header once, games below; time in user's local tz
+function renderUpcomingGamesGrouped(container, games) {
+  if (!games || games.length === 0) {
+    container.innerHTML = '<p>No upcoming games found.</p>';
+    return;
+  }
+
+  // Build normalized records with local DateTime for sorting/grouping
+  const normalized = games
+    .map(g => {
+      const local = g.timeET ? toLocal(g.dateStr, g.timeET) : null;
+      return {
+        ...g,
+        local,                         // Luxon DateTime or null
+        dateHeader: local
+          ? local.toFormat('MMMM d')   // e.g., September 4
+          : g.dateStr                  // fallback if parse failed
+      };
+    })
+    // Sort by actual local date/time
+    .sort((a, b) => {
+      if (a.local && b.local) return a.local.toMillis() - b.local.toMillis();
+      return (a.dateStr + a.timeET).localeCompare(b.dateStr + b.timeET);
+    });
+
+  // Group by dateHeader
+  const byDate = new Map();
+  for (const g of normalized) {
+    const key = g.dateHeader;
+    if (!byDate.has(key)) byDate.set(key, []);
+    byDate.get(key).push(g);
+  }
+
+  // Build HTML
+  let html = '';
+  byDate.forEach((gamesForDay, dateKey) => {
+    html += `
+      <div class="upcoming-day">
+        <div class="upcoming-date-header">${dateKey}</div>
+        <div class="upcoming-day-body">
+          ${gamesForDay.map(game => {
+            const timeLocal = game.local ? game.local.toFormat('h:mm a') : (game.timeET || '');
+            return `
+              <div class="up-row">
+                <div class="up-teams">
+                  <div class="up-team away">${game.awayTeam}</div>
+                  <div class="up-team home">${game.homeTeam}</div>
+                </div>
+                <div class="up-time">${timeLocal}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
 
   // --- 7. TABS AND FILTER INITIALIZATION ---
 const gamesTabsContainer = document.getElementById('games-tabs');
