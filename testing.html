@@ -1104,26 +1104,24 @@ div[id^="breaking-content-"] a:hover {
   }
 
   .schedule-tab {
-    flex: 1;
-    text-align: center;
-    font-size: 10px;
-    line-height: 18px;
-    color: #aaa;
-    cursor: pointer;
-    background-color: #2a2a2a;
-    border-right: 1px solid #1f1f1f;
-    transition: all 0.2s ease;
-  }
-
-  .schedule-tab.active {
-    background-color: #3c3c3c;
-    color: #fff;
-  }
-
-  .schedule-tab:hover {
-    background-color: #333;
-    color: #fff;
-  }
+  flex: 1;
+  text-align: center;
+  font-size: 10px;
+  line-height: 18px;
+  color: #aaa;
+  cursor: pointer;
+  background-color: #2a2a2a;
+  border-right: 1px solid #1f1f1f;
+  transition: all 0.2s ease;
+}
+.schedule-tab.active {
+  background-color: #3c3c3c;
+  color: #fff;
+}
+.schedule-tab:hover {
+  background-color: #333;
+  color: #fff;
+}
 
   .schedule-content {
     min-height: 100px;
@@ -1851,8 +1849,8 @@ div[id^="breaking-content-"] a:hover {
         
         <!-- Schedule Tabs -->
         <div id="schedule-tabs" style="display: flex; height: 18px; background-color: #2a2a2a; margin-bottom: 1rem; border-radius: 3px; overflow: hidden;">
-            <div class="schedule-tab active" data-schedule-tab="today" style="flex: 1; text-align: center; font-size: 10px; line-height: 18px; color: #fff; cursor: pointer; background-color: #3c3c3c; border-right: 1px solid #1f1f1f;">TODAY</div>
-            <div class="schedule-tab" data-schedule-tab="upcoming" style="flex: 1; text-align: center; font-size: 10px; line-height: 18px; color: #aaa; cursor: pointer; background-color: #2a2a2a;">UPCOMING</div>
+          <div class="schedule-tab active" data-schedule-tab="today">TODAY</div>
+          <div class="schedule-tab" data-schedule-tab="upcoming">UPCOMING</div>
         </div>
         
         <!-- Schedule Content -->
@@ -3632,7 +3630,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- 1. CONFIGURATION ---
     const LEAGUE_DATA_CONFIG = {
-        'NFL': { leagueId: 'USA: NFL', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoXI911JBowIVpsOtYo7Jk0WwwNlujQ76rR4lgDAqxGWLa_q67gOXI0DyKsC4YkKIfbSYqerHp17-m/pub?gid=1628205730&single=true&output=csv', upcomingScheduleUrl: 'https://docs.google.com/spreadsheets/d/YOUR_NFL_UPCOMING_SCHEDULE_ID/edit#gid=0' },
+        'NFL': { leagueId: 'USA: NFL', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoXI911JBowIVpsOtYo7Jk0WwwNlujQ76rR4lgDAqxGWLa_q67gOXI0DyKsC4YkKIfbSYqerHp17-m/pub?gid=1628205730&single=true&output=csv', upcomingScheduleUrl: 'https://docs.google.com/spreadsheets/d/1gGY9dr485hf4WrdGkx01kC6Gw7oTuKeYYh_UQD5qkt4/edit?gid=441088133#gid=441088133' },
         'NBA': { leagueId: 'USA: NBA', standingsUrl: 'YOUR_NBA_STANDINGS_CSV_URL_HERE', upcomingScheduleUrl: 'https://docs.google.com/spreadsheets/d/YOUR_NBA_UPCOMING_SCHEDULE_ID/edit#gid=0' },
         'MLB': { leagueId: 'USA: MLB', standingsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRQHOSDTxfJ554E0MhgZPfmnarCUunnYmxDBSZ78APQ3QfvPWBnn1i68JPSuNCNByd1IzYEbj-6AVAZ/pub?gid=1312763847&single=true&output=csv', upcomingScheduleUrl: 'https://docs.google.com/spreadsheets/d/YOUR_MLB_UPCOMING_SCHEDULE_ID/edit#gid=0' },
         'NHL': { leagueId: 'USA: NHL', standingsUrl: 'YOUR_NHL_STANDINGS_CSV_URL_HERE' },
@@ -3926,8 +3924,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!leagueInfo) return;
         if (leagueHeader) leagueHeader.innerText = leagueKey;
         const todayScheduleContent = document.getElementById('league-schedule-today-content');
-        const upcomingScheduleContent = document.getElementById('league-schedule-upcoming-content');
-        const standingsContent = document.getElementById('league-standings-content');
+// During league change
+const upcomingScheduleContent = document.getElementById('league-schedule-upcoming-content');
+// Optional: clear or leave as-is; do NOT set a blocking message
+if (upcomingScheduleContent) upcomingScheduleContent.innerHTML = '';        const standingsContent = document.getElementById('league-standings-content');
         
         // Load TODAY schedule from Firestore
         todayScheduleContent.innerHTML = '<p style="color: #9ca3af;">Loading today\'s schedule...</p>';
@@ -4145,36 +4145,36 @@ if (gamesTabsContainer) {
 // --- SCHEDULE TABS INITIALIZATION ---
 const scheduleTabsContainer = document.getElementById('schedule-tabs');
 if (scheduleTabsContainer) {
-    const todayScheduleTab = scheduleTabsContainer.querySelector('.schedule-tab[data-schedule-tab="today"]');
-    const upcomingScheduleTab = scheduleTabsContainer.querySelector('.schedule-tab[data-schedule-tab="upcoming"]');
-    
-    todayScheduleTab.addEventListener('click', () => {
-        // Remove active class from all tabs
-        scheduleTabsContainer.querySelectorAll('.schedule-tab').forEach(tab => tab.classList.remove('active'));
-        // Add active class to clicked tab
-        todayScheduleTab.classList.add('active');
-        
-        // Show today content, hide upcoming content
-        document.getElementById('league-schedule-today-content').style.display = 'block';
-        document.getElementById('league-schedule-upcoming-content').style.display = 'none';
-    });
-    
-    upcomingScheduleTab.addEventListener('click', () => {
-        // Remove active class from all tabs
-        scheduleTabsContainer.querySelectorAll('.schedule-tab').forEach(tab => tab.classList.remove('active'));
-        // Add active class to clicked tab
-        upcomingScheduleTab.classList.add('active');
-        
-        // Show upcoming content, hide today content
-        document.getElementById('league-schedule-today-content').style.display = 'none';
-        document.getElementById('league-schedule-upcoming-content').style.display = 'block';
-        
-        // Load upcoming data if not already loaded
-        const upcomingContent = document.getElementById('league-schedule-upcoming-content');
-        if (upcomingContent.innerHTML.includes('Loading upcoming schedule...')) {
-            loadUpcomingSchedule();
-        }
-    });
+  const todayScheduleTab = scheduleTabsContainer.querySelector('.schedule-tab[data-schedule-tab="today"]');
+  const upcomingScheduleTab = scheduleTabsContainer.querySelector('.schedule-tab[data-schedule-tab="upcoming"]');
+
+  todayScheduleTab.addEventListener('click', () => {
+    scheduleTabsContainer.querySelectorAll('.schedule-tab').forEach(tab => tab.classList.remove('active'));
+    todayScheduleTab.classList.add('active');
+
+    const todayEl = document.getElementById('league-schedule-today-content');
+    const upcomingEl = document.getElementById('league-schedule-upcoming-content');
+    if (todayEl && upcomingEl) {
+      todayEl.style.display = 'block';
+      upcomingEl.style.display = 'none';
+    }
+  });
+
+  upcomingScheduleTab.addEventListener('click', () => {
+    scheduleTabsContainer.querySelectorAll('.schedule-tab').forEach(tab => tab.classList.remove('active'));
+    upcomingScheduleTab.classList.add('active');
+
+    const todayEl = document.getElementById('league-schedule-today-content');
+    const upcomingEl = document.getElementById('league-schedule-upcoming-content');
+    if (todayEl && upcomingEl) {
+      todayEl.style.display = 'none';
+      upcomingEl.style.display = 'block';
+      upcomingEl.innerHTML = '<p style="color: #9ca3af;">Loading upcoming schedule...</p>';
+    }
+
+    // Always fetch, do NOT gate on placeholder text
+    loadUpcomingSchedule();
+  });
 }
 });
 </script>
