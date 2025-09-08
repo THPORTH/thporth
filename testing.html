@@ -3950,35 +3950,63 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     window.loadLeagueSpecificData = function(leagueKey) {
-        const leagueInfo = LEAGUE_DATA_CONFIG[leagueKey];
-        if (!leagueInfo) return;
-        if (leagueHeader) leagueHeader.innerText = leagueKey;
-        const todayScheduleContent = document.getElementById('league-schedule-today-content');
-// During league change
-const upcomingScheduleContent = document.getElementById('league-schedule-upcoming-content');
-// Optional: clear or leave as-is; do NOT set a blocking message
-if (upcomingScheduleContent) upcomingScheduleContent.innerHTML = '';        const standingsContent = document.getElementById('league-standings-content');
-        
-        // Load TODAY schedule from Firestore
-        todayScheduleContent.innerHTML = '<p style="color: #9ca3af;">Loading today\'s schedule...</p>';
-        const { DateTime } = luxon;
-        const todayStr = DateTime.now().setZone('America/New_York').toISODate();
-        gamesCollectionRef.where('League', '==', leagueInfo.leagueId).where('gameDate', '==', todayStr)
-            .onSnapshot(snapshot => {
-                if (snapshot.empty) {
-                    todayScheduleContent.innerHTML = `<p>No games found for today.</p>`;
-                    return;
-                }
-                const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
-                renderGames(todayScheduleContent, gamesData, false);
-            }, err => { todayScheduleContent.innerHTML = '<p style="color: #ef4444;">Error loading today\'s schedule.</p>'; });
+  // Force TODAY tab as default (always show TODAY on league load)
+  const tabs = document.getElementById('schedule-tabs');
+  if (tabs) {
+    const todayTab = tabs.querySelector('.schedule-tab[data-schedule-tab="today"]');
+    const upcomingTab = tabs.querySelector('.schedule-tab[data-schedule-tab="upcoming"]');
+    if (todayTab && upcomingTab) {
+      tabs.querySelectorAll('.schedule-tab').forEach(t => t.classList.remove('active'));
+      todayTab.classList.add('active');
+    }
+  }
+  const todayEl = document.getElementById('league-schedule-today-content');
+  const upcomingEl = document.getElementById('league-schedule-upcoming-content');
+  if (todayEl && upcomingEl) {
+    todayEl.style.display = 'block';
+    upcomingEl.style.display = 'none';
+  }
 
-        // Initialize upcoming schedule content
-        upcomingScheduleContent.innerHTML = '<p style="color: #9ca3af;">Click UPCOMING tab to load schedule...</p>';
+  const leagueInfo = LEAGUE_DATA_CONFIG[leagueKey];
+  if (!leagueInfo) return;
 
-        // Reusing the standings fetcher
-        fetchLeagueStandings(leagueInfo.standingsUrl);
-    };
+  if (leagueHeader) leagueHeader.innerText = leagueKey;
+
+  const todayScheduleContent = document.getElementById('league-schedule-today-content');
+  const upcomingScheduleContent = document.getElementById('league-schedule-upcoming-content');
+  const standingsContent = document.getElementById('league-standings-content');
+
+  // Clear UPCOMING content (no blocking placeholder)
+  if (upcomingScheduleContent) upcomingScheduleContent.innerHTML = '';
+
+  // Load TODAY schedule from Firestore
+  todayScheduleContent.innerHTML = '<p style="color: #9ca3af;">Loading today\'s schedule...</p>';
+  const { DateTime } = luxon;
+  const todayStr = DateTime.now().setZone('America/New_York').toISODate();
+
+  // Unsubscribe any prior listener if you track it externally (optional)
+  // if (window.__leagueTodayUnsub) { window.__leagueTodayUnsub(); window.__leagueTodayUnsub = null; }
+
+  const unsubscribe = gamesCollectionRef
+    .where('League', '==', leagueInfo.leagueId)
+    .where('gameDate', '==', todayStr)
+    .onSnapshot(snapshot => {
+      if (snapshot.empty) {
+        todayScheduleContent.innerHTML = '<p>No games found for today.</p>';
+        return;
+      }
+      const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
+      renderGames(todayScheduleContent, gamesData, false);
+    }, err => {
+      todayScheduleContent.innerHTML = '<p style="color: #ef4444;">Error loading today\'s schedule.</p>';
+    });
+
+  // Optionally store unsubscribe to clean up later (if you manage listeners)
+  // window.__leagueTodayUnsub = unsubscribe;
+
+  // Standings
+  fetchLeagueStandings(leagueInfo.standingsUrl);
+};
 
     // Function to load upcoming schedule from Google Sheets
     window.loadUpcomingSchedule = function() {
