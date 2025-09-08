@@ -3661,7 +3661,20 @@ document.addEventListener('DOMContentLoaded', function () {
 // --- FINAL UNIFIED SCRIPT for ALL Game, Schedule, and Standings Logic ---
 document.addEventListener('DOMContentLoaded', function () {
 
-   // --- 1. CONFIGURATION for Firestore ---
+  // --- FINAL UNIFIED SCRIPT for ALL Game, Schedule, and Standings Logic ---
+// This script now uses Firestore as its data source.
+
+// IMPORTANT: This script uses the latest Firebase modular SDK.
+// You must ensure your HTML file loads the Firebase SDKs with `type="module"`.
+// Example: <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { DateTime } from "https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js";
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // --- 1. CONFIGURATION for Firestore ---
     // The keys here correspond to the names you'll use in your website's UI (e.g., "NFL", "MLB").
     // The collection names should exactly match the sheet names from your Google Sheets.
     const LEAGUE_DATA_CONFIG = {
@@ -3700,25 +3713,25 @@ document.addEventListener('DOMContentLoaded', function () {
     const LEAGUE_DISPLAY_ORDER = ["NFL", "U.S. Open - Men's", "U.S. Open - Women's", "NBA", "MLB", "Premier League", "UEFA Champions League", "ATP", "WTA", "LaLiga", "Bundesliga", "Serie A", "WNBA", "UEFA Europa League", "UEFA Conference League", "Leagues Cup", "NWSL", "FIBA AmeriCup", "Copa Libertadores", "Coppa Italia", "DFB-Pokal", "Brasileirão", "Super Lig", "Copa Sudamericana", "Club Friendly"];
 
     // --- 2. FIREBASE INITIALIZATION ---
-    if (!firebase.apps.length) {
-        const firebaseConfig = {
-            apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
-            authDomain: "flashlive-daily-scraper.firebaseapp.com",
-            projectId: "flashlive-daily-scraper",
-            storageBucket: "flashlive-daily-scraper.appspot.com",
-            messagingSenderId: "124291936014",
-            appId: "1:124291936014:web:acadcaa791d6046849315f"
-        };
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
+    // This is the core setup. Without this, nothing works.
+    const firebaseConfig = {
+        apiKey: "AIzaSyD3bw8d4q2oO2qpbgGiUG6Qnlf4aABK3Bc",
+        authDomain: "flashlive-daily-scraper.firebaseapp.com",
+        projectId: "flashlive-daily-scraper",
+        storageBucket: "flashlive-daily-scraper.appspot.com",
+        messagingSenderId: "124291936014",
+        appId: "1:124291936014:web:acadcaa791d6046849315f"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
     // --- 3. ELEMENT REFERENCES ---
     const leagueHeader = document.getElementById('league-specific-header');
     const scheduleContent = document.getElementById('league-schedule-content');
     const standingsContent = document.getElementById('league-standings-content');
-    
-    // --- 4. HELPER FUNCTIONS ---
+    const upcomingContent = document.getElementById('league-schedule-upcoming-content');
+
+    // --- 4. HELPER FUNCTIONS (unchanged) ---
     function getLeagueDisplayName(name) {
         const map = { "USA: WNBA": "WNBA", "USA: MLB": "MLB", "USA: NFL": "NFL", "USA: US Open ATP, hard": "U.S. Open - Men's", "USA: US Open WTA, hard": "U.S. Open - Women's", "ENGLAND: PREMIER LEAGUE": "Premier League", "USA: NWSL Women": "NWSL", "World: Club Friendly": "Club Friendly", "USA: Cleveland WTA, hard": "WTA", "Germany: DFB Pokal": "DFB-Pokal", "Italy: Coppa Italia": "Coppa Italia", "Turkey: Super Lig": "Super Lig", "Spain: LaLiga": "LaLiga", "England: Premier League": "Premier League", "Europe: Champions League - Qualification": "UEFA Champions League", "Brazil: Serie A Betano": "Brasileirão", "South America: Copa Libertadores - Play Offs": "Copa Libertadores", "North & Central America: Leagues Cup - Play Offs": "Leagues Cup", "South America: Copa Sudamericana - Play Offs": "Copa Sudamericana", "World: AmeriCup": "FIBA AmeriCup", "Europe: Champions League Women - Qualification - Second stage": "UEFA Women's Champions League", "Europe: Europa League - Qualification": "UEFA Europa League", "Europe: Conference League - Qualification": "UEFA Conference League", "Germany: Bundesliga": "Bundesliga" };
         return map[name] || name;
@@ -3728,12 +3741,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const map = { "Arizona Diamondbacks": "Diamondbacks", "Atlanta Braves": "Braves", "Baltimore Orioles": "Orioles", "Boston Red Sox": "Red Sox", "Chicago Cubs": "Cubs", "Chicago White Sox": "White Sox", "Cincinnati Reds": "Reds", "Cleveland Guardians": "Guardians", "Colorado Rockies": "Rockies", "Detroit Tigers": "Tigers", "Houston Astros": "Astros", "Kansas City Royals": "Royals", "Los Angeles Angels": "Angels", "Los Angeles Dodgers": "Dodgers", "Miami Marlins": "Marlins", "Milwaukee Brewers": "Brewers", "Minnesota Twins": "Twins", "New York Mets": "Mets", "New York Yankees": "Yankees", "Athletics": "Athletics", "Philadelphia Phillies": "Phillies", "Pittsburgh Pirates": "Pirates", "San Diego Padres": "Padres", "San Francisco Giants": "Giants", "Seattle Mariners": "Mariners", "St. Louis Cardinals": "Cardinals", "Tampa Bay Rays": "Rays", "Texas Rangers": "Rangers", "Toronto Blue Jays": "Blue Jays", "Washington Nationals": "Nationals", "Atlanta Dream": "Dream", "Chicago Sky": "Sky", "Connecticut Sun": "Sun", "Dallas Wings": "Wings", "Indiana Fever": "Fever", "Las Vegas Aces": "Aces", "Los Angeles Sparks": "Sparks", "Minnesota Lynx": "Lynx", "New York Liberty": "Liberty", "Phoenix Mercury": "Mercury", "Seattle Storm": "Storm", "Washington Mystics": "Mystics" };
         return map[p] || p;
     }
-    
-    // --- 5. CORE RENDERING FUNCTION (UNCHANGED) ---
+
+    // --- 5. CORE RENDERING FUNCTION (unchanged) ---
     function renderGames(container, gamesData, isGroupedByLeague) {
         container.innerHTML = "";
         const leagueGroups = {};
-
+        
         if (isGroupedByLeague) {
             gamesData.forEach(game => {
                 const leagueDisplayName = getLeagueDisplayName(game.League) || "Other";
@@ -3793,7 +3806,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else if (isFinal) {
                     currentTimeLabel = "F";
                 } else if (rawStart && rawStart.toDate) {
-                    currentTimeLabel = luxon.DateTime.fromJSDate(rawStart.toDate()).toFormat('h:mm a');
+                    currentTimeLabel = DateTime.fromJSDate(rawStart.toDate()).toFormat('h:mm a');
                 } else {
                     currentTimeLabel = "TBD";
                 }
@@ -3857,18 +3870,16 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const standingsRef = db.collection(collectionName);
-        standingsRef.get().then(snapshot => {
+        const standingsRef = collection(db, collectionName);
+        getDocs(standingsRef).then(snapshot => {
             if (snapshot.empty) {
                 standingsContent.innerHTML = '<p>No standings data available.</p>';
                 return;
             }
             
-            // Assuming the first document contains the header row, and the rest are data.
-            // This is a simple assumption, may need adjustment based on your data structure.
             const docs = snapshot.docs.map(doc => doc.data());
-            const headerDoc = docs.find(doc => doc.Rank === 'Rank'); // Find the header doc
-            const dataDocs = docs.filter(doc => doc.Rank !== 'Rank'); // Filter for data docs
+            const headerDoc = docs.find(doc => doc.Rank === 'Rank');
+            const dataDocs = docs.filter(doc => doc.Rank !== 'Rank');
             
             if (!headerDoc || dataDocs.length === 0) {
                  standingsContent.innerHTML = '<p>No standings data available.</p>';
@@ -3894,7 +3905,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // New Firestore-based function to fetch upcoming schedule
     function fetchUpcomingSchedule(leagueKey) {
-        const upcomingContent = document.getElementById('league-schedule-upcoming-content');
         if (!upcomingContent) return;
 
         upcomingContent.innerHTML = '<p style="color: #9ca3af;">Loading upcoming schedule...</p>';
@@ -3905,8 +3915,8 @@ document.addEventListener('DOMContentLoaded', function () {
              return;
         }
 
-        const upcomingRef = db.collection(collectionName);
-        upcomingRef.get().then(snapshot => {
+        const upcomingRef = collection(db, collectionName);
+        getDocs(upcomingRef).then(snapshot => {
             const games = snapshot.docs.map(doc => doc.data());
             
             if (games.length === 0) {
@@ -3914,7 +3924,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Group games by date and render
             renderUpcomingGamesGrouped(upcomingContent, games);
 
         }).catch(error => {
@@ -3930,16 +3939,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!todayContainer || !errorDiv) return () => {};
 
         errorDiv.textContent = "";
-        const { DateTime } = luxon;
         const todayStr = DateTime.now().setZone('America/New_York').toISODate();
 
-        // This will now get data from all relevant collections
         const promises = Object.values(LEAGUE_DATA_CONFIG)
             .filter(config => config.games)
             .map(config => {
-                return db.collection(config.games)
-                    .where('gameDate', '==', todayStr)
-                    .get()
+                const q = query(collection(db, config.games), where('gameDate', '==', todayStr));
+                return getDocs(q)
                     .then(snapshot => snapshot.docs.map(doc => doc.data()));
             });
 
@@ -3973,15 +3979,14 @@ document.addEventListener('DOMContentLoaded', function () {
         scoresError.style.display = 'none';
         scoresContainer.innerHTML = '';
 
-        const { DateTime } = luxon;
         const yesterdayStr = DateTime.now().setZone('America/New_York').minus({ days: 1 }).toISODate();
 
-        const scoresDocRef = db.collection('dailyScores').doc(yesterdayStr);
+        const scoresDocRef = doc(db, 'dailyScores', yesterdayStr);
 
-        scoresDocRef.get().then(doc => {
+        getDoc(scoresDocRef).then(docSnapshot => {
             scoresLoading.style.display = 'none';
-            if (doc.exists) {
-                const gamesData = doc.data().games;
+            if (docSnapshot.exists()) {
+                const gamesData = docSnapshot.data().games;
                 if (gamesData && gamesData.length > 0) {
                     renderGames(scoresContainer, gamesData, true);
                 } else {
@@ -4023,31 +4028,32 @@ document.addEventListener('DOMContentLoaded', function () {
         if (leagueHeader) leagueHeader.innerText = leagueKey;
 
         const todayScheduleContent = document.getElementById('league-schedule-today-content');
-        const standingsContent = document.getElementById('league-standings-content');
         
-        // Load TODAY schedule from Firestore
         todayScheduleContent.innerHTML = '<p style="color: #9ca3af;">Loading today\'s schedule...</p>';
-        const { DateTime } = luxon;
         const todayStr = DateTime.now().setZone('America/New_York').toISODate();
 
         // Clear UPCOMING content (no blocking placeholder)
         if (upcomingEl) upcomingEl.innerHTML = '';
 
-        const unsubscribe = db.collection(leagueInfo.games)
-            .where('gameDate', '==', todayStr)
-            .onSnapshot(snapshot => {
-                if (snapshot.empty) {
-                    todayScheduleContent.innerHTML = '<p>No games found for today.</p>';
-                    return;
-                }
-                const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
-                renderGames(todayScheduleContent, gamesData, false);
-            }, err => {
-                todayScheduleContent.innerHTML = '<p style="color: #ef4444;">Error loading today\'s schedule.</p>';
-            });
-
         // Standings and Upcoming Schedule now use Firestore
         fetchLeagueStandings(leagueKey);
+        fetchUpcomingSchedule(leagueKey);
+
+        // Fetch Today's games
+        const todayGamesRef = collection(db, leagueInfo.games);
+        const q = query(todayGamesRef, where('gameDate', '==', todayStr));
+
+        onSnapshot(q, (snapshot) => {
+            if (snapshot.empty) {
+                todayScheduleContent.innerHTML = '<p>No games found for today.</p>';
+            } else {
+                const gamesData = snapshot.docs.map(doc => doc.data()).sort(sortGames);
+                renderGames(todayScheduleContent, gamesData, false);
+            }
+        }, err => {
+            todayScheduleContent.innerHTML = '<p style="color: #ef4444;">Error loading today\'s schedule.</p>';
+            console.error(err);
+        });
     };
 
     // New grouped renderer for upcoming schedule
@@ -4060,7 +4066,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Group by date
         const byDate = new Map();
         for (const g of games) {
-            const dateStr = g.dateStr; // Use the raw date string from Firestore
+            const dateStr = g.dateStr;
             if (!byDate.has(dateStr)) byDate.set(dateStr, []);
             byDate.get(dateStr).push(g);
         }
@@ -4091,6 +4097,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         container.innerHTML = html;
     }
+
+    // Call fetchTodayGames on page load to display the initial data
+    window.onload = function() {
+        fetchTodayGames(() => {
+            // Optional: You can do something after today's games are loaded.
+        });
+    };
+});
+
 
   // --- 7. TABS AND FILTER INITIALIZATION ---
 const gamesTabsContainer = document.getElementById('games-tabs');
